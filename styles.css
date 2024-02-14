@@ -1,0 +1,373 @@
+:root {
+--fondo: white;
+--crema-logo: #DFC5B4; 
+--azul-logo: #033452;
+}/*Variables*/
+
+
+/* Barra principal */
+.header{
+	box-sizing: border-box;
+	display: block;
+	height: 110px;
+} /* Barra superior */
+
+.header-a{
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	padding: 10px;
+	color: var(--azul-logo);
+
+} /* Letra de los botones de la barra superior*/
+
+.grid{
+	display: grid;
+    justify-content: center;
+  
+	grid-template-rows: 110px;
+	grid-template-columns: 300px min-content repeat(4, max-content);
+	
+	background-color: var(var(--fondo));
+
+	align-items: center;
+	justify-items: center;
+
+}/*Contenedor de la barra principal*/
+.header-resposive__div{
+display: none;
+}
+
+/*Imagen*/
+.grid__div-logo__img{
+    border-radius: 30px;
+    height: 90px;
+    
+}
+.grid__div-logo{
+	margin: 10px;
+}
+/*///////////////////////////*/
+
+/* Barra de busqueda */
+.grid__form-busqueda__input{
+	padding: 10px;
+	border: 0px;
+    border-bottom: 2px;
+    border-style: solid;
+	border-radius: 0px;
+	border-color: var(--azul-logo);
+	justify-items: center;
+    align-items: center;
+	width: 400px;
+	margin: 0px 10px;
+}
+.grid__form-busqueda__input:focus{
+	border: 0px;
+	border-radius: 10px;
+}
+/*///////////////////////////*/
+
+/*Botones*/
+.grid__header-a{
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	padding: 10px;
+	color: var(--azul-logo);
+
+} /* Letra de los botones de la barra superior*/
+.grid__header__div-carrito,.grid__header__div-pedidos,.grid__header__div-contacto,.grid__header__div-catalogo{
+    background: white;
+    justify-items: center;
+    align-items: center;
+	border-radius:0px;
+	border: 0px;
+	border-bottom: 2px;
+	border-color: var(--azul-logo);
+	border-style: solid;
+	margin: 0px 10px;
+	transition: 0.5s ease-out;
+	
+} /*Estilos de los botones*/
+/*///////////////////////////*/
+
+/* Seleccion */
+.grid__header__div-carrito:hover,.grid__header__div-pedidos:hover,.grid__header__div-contacto:hover,.grid__header__div-catalogo:hover{
+	
+	background: var(--azul-logo) ;
+	transform: scale(1.1);
+	border: 0px;
+	border-radius:10px;
+} 
+.grid__header__div-carrito:hover>.grid__header-a,.grid__header__div-pedidos:hover>.grid__header-a,.grid__header__div-contacto:hover>.grid__header-a,.grid__header__div-catalogo:hover>.grid__header-a{
+	color: white;
+}
+/*///////////////////////////*/
+/*///////////////////////////*/
+
+
+
+
+
+
+
+
+
+
+
+/*Inicio*/
+.inicio-grid {
+	display: grid;
+	grid-template-rows: repeat(2, 300px);
+	grid-template-columns: repeat(3, 300px);
+	background-color: var(var(--fondo));
+	grid-gap: 20px;
+	grid-auto-rows: dense;
+	justify-content: center;
+	grid-auto-flow: row;
+	padding: 50px;
+
+}
+
+/*Categorias*/
+.inicio-grid__div__a{
+	height: 100%;
+	display: flex;
+	flex-direction: column-reverse ;
+	text-align: right;
+	font-size: 40px;
+	padding: 10px;
+	color: white;
+	font-family: arial black;
+	transition: transform 0.5s;
+} /*Letra de los botones del inicio*/
+.inicio-grid__div{
+	border-radius: 15px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	filter: grayscale(80%) brightness(0.8);
+	transition: 0.5s;
+	overflow: hidden;
+	background-size: cover;
+	transform: skew(5deg);
+} /*Botones del inicio*/
+.inicio-grid__div:hover{
+    filter: grayscale(0%) brightness(1);
+    scale: 1.05;
+}
+.inicio-grid__div:hover>.inicio-grid__div__a{
+	transform: translate(20%,20%);
+}
+/*/////////////////////*/
+
+.inicio-grid__div:nth-child(1){
+	grid-column: 1/span 2;
+	background-image: url(bicicletas-mtb.png);
+}/* Bicicletas MTB */
+.inicio-grid__div:nth-child(2){
+	background-image: url(accesorios.png);
+}/* Accesorios */
+.inicio-grid__div:nth-child(3){
+	background-image: url(niños.png);
+}/* Niños */
+.inicio-grid__div:nth-child(4){
+	background-image: url(BMX.png);
+	grid-column: 2/span 2;
+}/* BMX */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media screen and (max-width:1200px){
+.inicio-grid {
+	grid-template-columns: repeat(2, 450px);
+	grid-template-rows: repeat(3, 450px);
+}
+.inicio-grid__div{
+background-size: cover;
+filter: grayscale(0%) brightness(1);
+}
+.inicio-grid__div:nth-child(1){
+	grid-column: 1/span 2;
+}/* Bicicletas MTB */
+.inicio-grid__div:nth-child(2){
+	background-image: url(accesorios.png);
+		grid-column: 1/span 1;
+}/* Accesorios */
+.inicio-grid__div:nth-child(3){
+	grid-column: 2/span 1;
+}/* Niños */
+.inicio-grid__div:nth-child(4){
+	grid-column: 1/span 2;
+}/* BMX */
+.inicio-grid__div__a{
+	font-size: 70px;
+} /*Letra de los botones del inicio*/
+
+
+
+
+
+
+/* Barra principal */
+.header{
+	height: 330px;
+}
+.grid {
+  display: none;
+  grid-template-rows: repeat(3, max-content);
+  grid-template-columns: repeat(4, max-content);
+}
+.grid__div-logo {
+  grid-column: 1 / span 4;
+}
+.grid__div-busqueda {
+	grid-column: 1 / span 4;
+}
+.grid__form-busqueda__input{
+height: 100px;
+width: 80vw;
+font-size: 40px;
+}
+.grid__div-logo__img{
+    border-radius: 30px;
+    height: 150px;
+}
+.grid__header__div-carrito,.grid__header__div-pedidos,.grid__header__div-contacto,.grid__header__div-catalogo{
+    height: 80px;
+    margin-top: 10px;
+    text-align: center;
+	
+} /*Estilos de los botones*/
+.grid__header-a{
+	font-size: 50px;
+} /*Letra de los botones del inicio*/
+
+
+
+
+
+
+
+
+.header-resposive__div{
+	background-color: var(var(--fondo));
+	display: grid;
+    grid-template-rows: 1fr 100px;
+    grid-template-columns: max-content 1fr max-content;
+	width: 100%;
+	height: 100%;
+	align-content: top;
+	justify-content: center;
+	align-items: center;
+	justify-items: center;
+	padding-top: 20px;
+}
+.header-resposive__div__img{
+	height: 200px;
+    border-radius: 30px;
+}
+
+.header-resposive__div__form-busqueda{
+	grid-column: 1/span 2;
+}
+.header-resposive__div__form-busqueda__input{
+	width: 85vw;
+	height: 70px;
+	font-size: 35px;
+	padding: 15px;
+	margin-left: 50px;
+	border: 0px;
+	border-bottom: 2px;
+	border-style: solid;
+	border-color: var(--azul-logo);
+
+}
+.header-resposive__div__form-busqueda__input:focus{
+	border: 0px;
+	outline-color: var(--azul-logo);
+}
+
+.header-resposive__div__buttom-menu,.header-resposive__div__buttom-carrito{
+	width: 100px;
+	height: 100px;
+	border-radius: 50px;
+	border: 0px;
+	margin: 10px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: white;
+	border-color: var(--azul-logo);
+
+}
+.header-resposive__div__buttom-menu{
+	background-image: url(menu-icono.png);
+	background-size: 90%;
+}
+.header-resposive__div__buttom-carrito{
+	background-image: url(icono-carrito.png);
+	background-size: 75%;
+}
+
+.header-resposive__div__buttom-summit{
+	width: 70px;
+	height: 70px;
+	background-image: url(lupa-icono.png);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: white;
+	background-size: 75%;
+	border: 0px;
+	border-bottom: 2px;
+	border-style: solid;
+	border-color: var(--azul-logo);
+
+}
+
+.header-responsive-menu-active__ul{
+	display: grid;
+	grid-template-rows: 400px repeat(4,max-content) 1fr;
+	transform: translateX(-117%) translatey(37%);
+	transition: transform 0.25s;
+	position: fixed;
+	width: 75vw;
+	height: 120vh;
+	background-color: var(--crema-logo);
+	z-index: 100;
+	flex-wrap: wrap-reverse;
+	align-items: flex-start;
+}
+.header-responsive-menu-active__ul__a{
+	width: 100%;
+	font-size: 70px;
+	margin: 50px;
+	text-decoration: none;
+	color: var(--azul-logo);
+}
+
+
+.header-responsive-menu-active__ul:hover{
+	transform: translateX(-17%) translatey(37%);
+}
+.header-resposive__div__buttom-menu:hover ~ .header-responsive-menu-active__ul{
+transform: translateX(-17%) translatey(37%);
+}
+}
