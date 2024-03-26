@@ -23,3 +23,46 @@ document.addEventListener("DOMContentLoaded", function() {
         catalogo.appendChild(nuevoProducto);
     });
 });
+////////////////////////////////
+
+//Alternar el active en los botones del indice
+document.addEventListener("DOMContentLoaded", function() {
+    var filtroCategoriaBoton1 = document.getElementById("filtroCategoriaBoton1");
+    var filtroCategoriaBoton2 = document.getElementById("filtroCategoriaBoton2");
+    var filtroCategoriaBoton3 = document.getElementById("filtroCategoriaBoton3");
+    var filtroCategoriaBoton4 = document.getElementById("filtroCategoriaBoton4");
+    filtroCategoriaBoton1.addEventListener("click", function() {
+        filtroCategoriaBoton1.classList.toggle(`botonActive`);
+    });
+    filtroCategoriaBoton2.addEventListener("click", function() {
+        filtroCategoriaBoton2.classList.toggle(`botonActive`);
+    });
+    filtroCategoriaBoton3.addEventListener("click", function() {
+        filtroCategoriaBoton3.classList.toggle(`botonActive`);
+    });
+    filtroCategoriaBoton4.addEventListener("click", function() {
+        filtroCategoriaBoton4.classList.toggle(`botonActive`);
+    });
+
+    var filtroRodadoBoton1 = document.getElementById("filtroRodadoBoton1");
+    var filtroRodadoBoton2 = document.getElementById("filtroRodadoBoton2");
+    var filtroRodadoBoton3 = document.getElementById("filtroRodadoBoton3");
+    var filtroRodadoBoton4 = document.getElementById("filtroRodadoBoton4");
+    var filtroRodadoBoton5 = document.getElementById("filtroRodadoBoton5");
+    filtroRodadoBoton1.addEventListener("click", function() {
+        filtroRodadoBoton1.classList.toggle(`botonActive`);
+    });
+    filtroRodadoBoton2.addEventListener("click", function() {
+        filtroRodadoBoton2.classList.toggle(`botonActive`);
+    });
+    filtroRodadoBoton3.addEventListener("click", function() {
+        filtroRodadoBoton3.classList.toggle(`botonActive`);
+    });
+    filtroRodadoBoton4.addEventListener("click", function() {
+        filtroRodadoBoton4.classList.toggle(`botonActive`);
+    });
+    filtroRodadoBoton5.addEventListener("click", function() {
+        filtroRodadoBoton5.classList.toggle(`botonActive`);
+    });
+});
+//
