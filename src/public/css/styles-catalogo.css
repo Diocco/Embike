@@ -1,0 +1,483 @@
+:root {
+--fondo: white;
+--crema-logo: #DFC5B4; 
+--azul-logo: #033452;
+}/*Variables*/
+
+
+/* Barra principal */
+.header{
+	box-sizing: border-box;
+	display: block;
+	height: 110px;
+} /* Barra superior */
+
+.header-a{
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	padding: 10px;
+	color: var(--azul-logo);
+} /* Letra de los botones de la barra superior*/
+
+.grid{
+	display: grid;
+    justify-content: center;
+
+	grid-template-rows: 110px;
+	grid-template-columns: 300px min-content repeat(4, max-content);
+	
+	background-color: var(var(--fondo));
+
+	align-items: center;
+	justify-items: center;
+
+}/*Contenedor de la barra principal*/
+.header-resposive__div{
+display: none;
+}
+
+/*Imagen*/
+.grid__div-logo__img{
+    border-radius: 30px;
+    height: 90px;
+    
+}
+.grid__div-logo{
+	margin: 10px;
+}
+/*///////////////////////////*/
+
+/* Barra de busqueda */
+.grid__form-busqueda__input{
+	padding: 10px;
+	border: 0px;
+    border-bottom: 2px;
+    border-style: solid;
+	border-radius: 0px;
+	border-color: var(--azul-logo);
+	justify-items: center;
+    align-items: center;
+	width: 400px;
+	margin: 0px 10px;
+}
+.grid__form-busqueda__input:focus{
+	border: 0px;
+	border-radius: 10px;
+}
+/*///////////////////////////*/
+
+/*Botones*/
+.grid__header-a{
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	padding: 10px;
+	color: var(--azul-logo);
+
+} /* Letra de los botones de la barra superior*/
+.grid__header__div-carrito,.grid__header__div-pedidos,.grid__header__div-contacto,.grid__header__div-catalogo{
+    background: white;
+    justify-items: center;
+    align-items: center;
+	border-radius:0px;
+	border: 0px;
+	border-bottom: 2px;
+	border-color: var(--azul-logo);
+	border-style: solid;
+	margin: 0px 10px;
+	transition: 0.5s ease-out;
+	
+} /*Estilos de los botones*/
+/*///////////////////////////*/
+
+/* Seleccion */
+.grid__header__div-carrito:hover,.grid__header__div-pedidos:hover,.grid__header__div-contacto:hover,.grid__header__div-catalogo:hover{
+	
+	background: var(--azul-logo) ;
+	transform: scale(1.1);
+	border: 0px;
+	border-radius:10px;
+} 
+.grid__header__div-carrito:hover>.grid__header-a,.grid__header__div-pedidos:hover>.grid__header-a,.grid__header__div-contacto:hover>.grid__header-a,.grid__header__div-catalogo:hover>.grid__header-a{
+	color: white;
+}
+/*///////////////////////////*/
+/*///////////////////////////*/
+
+
+#catalogo {
+    display: grid;
+	grid-template-columns: 1fr 200px repeat(2,300px) 1fr;
+    justify-content: space-evenly; /* Distribuye uniformemente el espacio entre los elementos */
+    grid-gap:10px
+}
+
+#catalogo__modificar{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	order:100;
+	height: 100%
+}
+
+.catalogo__div-modificar__button{
+	transform: translateY(100vw);
+
+	width: 100px;
+	margin: 5px;
+	height: 100px;
+
+	font-size: 50px;
+    border-radius:100px;
+}
+
+
+.catalogo__margenIzquierdo{
+	grid-row:1/10;
+	grid-column: 1/2;
+}
+.catalogo__indice{
+	grid-row: 1/10;
+	grid-column: 2/3;
+}
+
+.catalogo__margenDerecho{
+	grid-row:1/10;
+	grid-column: 5/6;
+}
+
+@media screen and (min-width:1500px){
+	#catalogo{
+		grid-template-columns: 1fr 200px repeat(3,300px) 1fr;
+	}
+	.catalogo__margenDerecho{
+		grid-row:1/10;
+		grid-column: 6/7;
+	}
+}
+.catalogo__div{
+	display: grid;
+	justify-items: center;
+	align-items: center;
+	filter: opacity(0);
+	transition: border 0.25s, box-shadow 0.25s ,filter 0.5s;
+	animation: catalogo__div-aparecer 1s forwards 0.5s;
+}
+
+@keyframes catalogo__div-aparecer{
+	from{
+		filter: opacity(0);
+	}to{
+		filter: opacity(1);
+	}
+}
+
+.catalogo__div__imagen-noDisponible{
+	filter: brightness(0.5);
+}
+
+
+.catalogo__div:hover{
+	border-color: var(--azul-logo);
+	border: 2px transparent;
+	box-shadow: 0px 0px 10px 0px #033452;
+}
+
+
+.catalogo__div__imagen {
+	width: 300px;
+	height: 300px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+
+.catalogo__div__nombre{
+}
+.catalogo__div__precio{
+}
+
+.catalogo__div__comprar{
+	padding:10px;
+	margin:10px;
+	border-radius: 10px;
+}
+.catalogo__div__comprar-noDisponible {
+	filter: brightness(0.8);
+}
+
+#catalogoProducto{
+	display: grid;
+	grid-template-columns: 40vw 15vw 15vw;
+	grid-template-rows: 5vh repeat(2,10vh) 3vh 7vh 25vh 15vh 5vh;
+
+	transition: transform 0.5s;
+	z-index: 100;
+	height: 80vh;
+	width: 70vw;
+	margin: 0vw 10vw 10vh 10vw;
+	position: fixed;
+	background-color: white;
+	border: solid 1px rgb(90, 90, 90);
+	border-radius: 15px;
+	box-shadow: 0px 0px 15px 5px gray;
+	transform: translateX(-100vw);
+}
+
+
+#catalogoProducto__imagen{
+	background-color: white;
+	margin: 5vh 5vh;
+	grid-row: 1/9;
+	height: 70vh;
+	width: 35vw;
+	background-image:url("../img/catalogoImagenes/bici1.png");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+
+
+.catalogoProducto-active{
+	transform: translateX(5vw) !important;
+}
+
+#catalogoProducto__salir{
+
+	font-size: 1.7vw;
+	border-radius: 2vw;
+	width: 2vw;
+	height: 2vw;
+	margin: 1vw;
+	justify-self: end;
+	grid-column: 2/4;
+}
+
+#catalogoProducto__titulo{
+	height: max-content;
+	width: max-content;
+	align-self: center;
+	justify-self: center;
+	grid-column: 2/4;
+	font-size: 2vw;
+}
+
+#catalogoProducto__precio{
+	height: max-content;
+	width: max-content;
+	justify-self: center;
+	grid-column: 2/4;
+	font-size: 2vw;
+	font-family: tahoma;
+}
+
+#catalogoProducto__colores,#catalogoProducto__talles{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	height: 100%;
+	width: 100%;
+}
+
+#catalogoProducto__colores-titulo,#catalogoProducto__talles-titulo{
+	align-self: start;
+	font-size: 1.1vw;
+}
+
+#catalogoProducto__color1,#catalogoProducto__color2,#catalogoProducto__color3,#catalogoProducto__color4{
+	border: solid black 1px;
+	border-radius: 2px;
+	width: 2.5vw;
+	height: 2.5vw;
+	margin: 0.5vw;
+	z-index: 50;
+	transform: translate(0, 0.7vw);
+}
+
+#catalogoProducto__talle1,#catalogoProducto__talle2,#catalogoProducto__talle3,#catalogoProducto__talle4{
+	text-align: center;
+	padding-top: 0.7vw;
+	border: solid black 1px;
+	border-radius: 2px;
+	font-size: 1vw;
+	font-family: tahoma;
+	width: 2.5vw;
+	height: 2.5vw;
+	margin: 0.5vw;
+	z-index: 50;
+	transform: translate(0, 0.7vw);
+}
+
+#catalogoProducto__talle1:hover,#catalogoProducto__talle2:hover,#catalogoProducto__talle3:hover,#catalogoProducto__talle4:hover{
+	background-color: gray;
+}
+
+#catalogoProducto__talle1{
+	background-color: rgb(185, 185, 185);
+}
+
+#catalogoProducto__comprar{
+	grid-column: 2/4;
+	display:flex;
+	justify-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#catalogoProducto__comprarAhora,#catalogoProducto__comprarAgregar{
+	width: 15vw;
+	height: 2.5vw;
+	border: black solid 2px;
+	font-size: 0.8vw;
+	text-align: center;
+	padding-top: 0.8vw;
+	font-family: tahoma;
+}
+#catalogoProducto__comprarAhora{
+	width: 20vw;
+	background-color: rgb(32, 158, 32);
+	color: white;
+}
+#catalogoProducto__comprarAgregar{
+	background-color: rgb(222, 252, 222);
+}
+
+
+
+
+
+#catalogoProducto__color1{background: linear-gradient(135deg, blue 50% ,black 50%);}
+#catalogoProducto__color1:hover{background: linear-gradient(135deg, blue 100% ,black 0%)}
+
+#catalogoProducto__color2{background: linear-gradient(135deg, red 50% ,black 50%);}
+#catalogoProducto__color2:hover{background: linear-gradient(135deg, red 100% ,black 0%)}
+#catalogoProducto__color2:active{background: linear-gradient(135deg, red 100% ,black 0%)}
+
+#catalogoProducto__color3{background: linear-gradient(135deg, green 50% ,black 50%);}
+#catalogoProducto__color3:hover{background: linear-gradient(135deg, green 100% ,black 0%)}
+#catalogoProducto__color3:active{background: linear-gradient(135deg, green 100% ,black 0%)}
+
+#catalogoProducto__color4{background: linear-gradient(135deg, gray 50% ,black 50%);}
+#catalogoProducto__color4:hover{background: linear-gradient(135deg, gray 100% ,black 0%)}
+#catalogoProducto__color4:active{background: linear-gradient(135deg, gray 100% ,black 0%)}
+
+#catalogoProducto__agregar{
+	display: flex;
+	justify-content: center;
+    align-items: flex-end;
+	margin-bottom: 1.5vw;
+	grid-column: 2/4;
+}
+#catalogoProducto__agregar-restar,#catalogoProducto__agregar-cantidad,#catalogoProducto__agregar-sumar{
+	text-align: center;
+	padding-top: 0.35vw;
+	border: solid black 2px;
+	border-radius: 2px;
+	font-size: 1.5vw;
+	width: 2.5vw;
+	height: 2.5vw;
+	margin: 0.5vw;
+}
+#catalogoProducto__agregar-cantidad{
+	width: 3.5vw;
+}
+
+#catalogoProducto__agregar-restar{
+	transform: translateX(1.1vw);
+	color: red;
+}
+#catalogoProducto__agregar-restar:hover{
+	background-color: rgb(250, 176, 176);
+}
+
+#catalogoProducto__agregar-sumar{
+	transform: translateX(-1.1vw);
+	color: green;
+}
+#catalogoProducto__agregar-sumar:hover{
+	background-color: rgb(169, 247, 169);
+}
+
+
+
+#catalogo__fondo{
+	position: fixed;
+	width: 100vw;
+	height: 100vw;
+	z-index: 90;
+	transform: translateX(-100vw);
+	background-color: black;
+	transition: opacity 0.5s;
+	opacity: 0;
+}
+
+.catalogo__fondo-active{
+	transform: translateX(0vw) !important;
+	transform: translateY(-111px) !important;
+	opacity: 0.3 !important;
+	filter: blur(0.5);
+}
+
+
+
+
+
+
+
+
+
+.tituloIndice{
+	margin-top: 50px;
+	margin-bottom: 15px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.filtroBoton{
+	display: block;
+	margin:10px;
+	padding:5px;
+	border-radius: 10px;
+	transition: box-shadow 0.2s, background-color 0.2s, color 0.2s;
+}
+
+.filtroRodadoBoton {
+	display:inline;
+	margin:2px;
+}
+
+.filtroBoton:hover{
+	background-color: #033452;
+	box-shadow: 0px 0px 10px 0px #033452;
+	color: white;
+}
+
+.botonActive{
+	background-color: #033452;
+	color: white;
+}
+
+.casillaPrecio{
+	display:inline;
+	margin-left: 5px;
+	padding: 2px;
+	padding-left: 10px;
+	width: 90px;
+	border-radius: 5px;
+}
+
+.casillaPrecio:hover{
+	box-shadow: 0px 0px 10px 0px #033452;
+	outline: 0px;
+	border: 2px #033452 solid;
+
+}
+
+.casillaPrecio:focus{
+	outline: 0px;
+	border: 3px #033452 solid;
+}
+
