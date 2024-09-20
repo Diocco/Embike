@@ -18,13 +18,12 @@
 	font-size: 20px;
 	padding: 10px;
 	color: var(--azul-logo);
-
 } /* Letra de los botones de la barra superior*/
 
 .grid{
 	display: grid;
     justify-content: center;
-  
+
 	grid-template-rows: 110px;
 	grid-template-columns: 300px min-content repeat(4, max-content);
 	
@@ -163,16 +162,16 @@ display: none;
 
 .inicio-grid__div:nth-child(1){
 	grid-column: 1/span 2;
-	background-image: url(bicicletas-mtb.png);
+	background-image: url(../img/indexImagenes/bicicletas-mtb.png);
 }/* Bicicletas MTB */
 .inicio-grid__div:nth-child(2){
-	background-image: url(accesorios.png);
+	background-image: url(../img/indexImagenes/accesorios.png);
 }/* Accesorios */
 .inicio-grid__div:nth-child(3){
-	background-image: url(niños.png);
+	background-image: url(../img/indexImagenes/niños.png);
 }/* Niños */
 .inicio-grid__div:nth-child(4){
-	background-image: url(BMX.png);
+	background-image: url(../img/indexImagenes/BMX.png);
 	grid-column: 2/span 2;
 }/* BMX */
 
@@ -209,7 +208,7 @@ filter: grayscale(0%) brightness(1);
 	grid-column: 1/span 2;
 }/* Bicicletas MTB */
 .inicio-grid__div:nth-child(2){
-	background-image: url(accesorios.png);
+	background-image: url(../img/indexImagenes/accesorios.png);
 		grid-column: 1/span 1;
 }/* Accesorios */
 .inicio-grid__div:nth-child(3){
@@ -319,18 +318,18 @@ font-size: 40px;
 
 }
 .header-resposive__div__buttom-menu{
-	background-image: url(menu-icono.png);
+	background-image: url(../img/indexImagenes/menu-icono.png);
 	background-size: 90%;
 }
 .header-resposive__div__buttom-carrito{
-	background-image: url(icono-carrito.png);
+	background-image: url(../img/indexImagenes/icono-carrito.png);
 	background-size: 75%;
 }
 
 .header-resposive__div__buttom-summit{
 	width: 70px;
 	height: 70px;
-	background-image: url(lupa-icono.png);
+	background-image: url(../img/indexImagenes/lupa-icono.png);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-color: white;
