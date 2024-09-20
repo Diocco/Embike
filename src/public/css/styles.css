@@ -171,7 +171,7 @@ display: none;
 	background-image: url(../img/indexImagenes/niños.png);
 }/* Niños */
 .inicio-grid__div:nth-child(4){
-	background-image: url(../img/indexImagenes/BMX.png);
+	background-image: url(../img/indexImagenes/bmx.png);
 	grid-column: 2/span 2;
 }/* BMX */
 
