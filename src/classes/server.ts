@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path'
 import 'dotenv/config';
 import routes from '../routes/routes'; // Usa la extensión '.ts' si el archivo está en TypeScript
+import hbs from 'hbs';
 
 
 
@@ -18,8 +19,20 @@ class Server {
 
     // Configura middleware global
     configureMiddleware() {
-        this.app.use(express.json()); // Parseo de JSON
-        this.app.use(express.static(path.join(__dirname, '../../src/public')));
+        // Servir archivos estáticos
+        this.app.use(express.static(path.resolve(__dirname, '../../src/public')));
+
+        // Configurar motor de vistas Handlebars
+        this.app.set('view engine', 'hbs');
+
+        // Configurar la carpeta de vistas
+        this.app.set('views', path.resolve(__dirname, '../public/views')); 
+
+        // Registrar parciales de Handlebars
+        hbs.registerPartials(path.resolve(__dirname, '../public/views/partials'));
+
+        // Parseo de JSON
+        this.app.use(express.json());
     }
 
     // Configura las rutas

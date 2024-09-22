@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+		<link rel="stylesheet" type="text/css" href="../css/styles-catalogo.css">
+		<meta charset="utf-8">
+		<title>Embike</title>
+		<meta name="keywords" content="Bicicletas,MontainBike,Ñiños,Ruedas,Cubiertas,Frenos,Disco,Asientos">
+		<meta name="description" content="Embike, la esencia ciclista. Encontra bicicletas y accesorios en nuestra tienda virtual, ideales para recorrer las sierras o las rutas de Cordoba">
+		<meta name="author" content="Diego Nicolas Iocco">
+		<meta name="robots" content="index">
+		<link rel="icon" href="logo.ico">
+		<script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
+	</head>
+
+<body>
+    <header>{{>  header }}</header>
+		
+    <div id="catalogo">
+		<div id="catalogo__fondo"></div>
+		<div id="catalogoProducto">
+			<div id="catalogoProducto__imagen"></div>
+			<button id="catalogoProducto__salir">X</button>
+			<div id="catalogoProducto__titulo"></div>
+			<div id="catalogoProducto__precio"></div>
+			<div id="catalogoProducto__colores-titulo">Colores</div>
+			<div id="catalogoProducto__talles-titulo">Talles</div>
+			<div id="catalogoProducto__colores">
+				<div id="catalogoProducto__color1"></div>
+				<div id="catalogoProducto__color2"></div>
+				<div id="catalogoProducto__color3"></div>
+				<div id="catalogoProducto__color4"></div>
+			</div>
+			<div id="catalogoProducto__talles">
+				<div id="catalogoProducto__talle1" >XS</div>
+				<div id="catalogoProducto__talle2" >M</div>
+				<div id="catalogoProducto__talle3" >L</div>
+				<div id="catalogoProducto__talle4" >XL</div>
+			</div>
+			<div id="catalogoProducto__agregar">
+				<div id="catalogoProducto__agregar-restar">-</div>
+				<div id="catalogoProducto__agregar-cantidad">1</div>
+				<div id="catalogoProducto__agregar-sumar">+</div>
+			</div>
+			<div id="catalogoProducto__comprar">
+				<div id="catalogoProducto__comprarAhora">COMPRAR AHORA</div>
+				<div id="catalogoProducto__comprarAgregar">AGREGAR AL CARRO</div>
+			</div>
+
+		</div>
+
+
+		<div class="catalogo__indice">
+			<h3 class="tituloIndice" >Categorias</h3>
+			<button class="filtroBoton" id="filtroCategoriaBoton1">
+				MTB
+			</button>
+			<button class="filtroBoton" id="filtroCategoriaBoton2">
+				BMX
+			</button>
+			<button class="filtroBoton" id="filtroCategoriaBoton3">
+				Urbana
+			</button>
+			<button class="filtroBoton" id="filtroCategoriaBoton4">
+				Niños
+			</button>
+			<h3 class="tituloIndice" >Rodado</h3>
+			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton1">
+				16
+			</button>
+			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton2">
+				20
+			</button>
+			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton3">
+				26
+			</button>
+			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton4">
+				28
+			</button>
+			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton5">
+				29
+			</button>
+			<h3 class="tituloIndice">Precio</h3>
+			<input type="text" placeholder="Minimo" class="casillaPrecio">
+			<input type="text" placeholder="Maximo" class="casillaPrecio">
+
+		</div>
+
+		<div class="catalogo__margenDerecho"></div>
+		<div class="catalogo__margenIzquierdo"></div>
+    </div>
+
+	<script src="../js/catalogo/catalogo.js"></script>
+</body>
+
+</html>

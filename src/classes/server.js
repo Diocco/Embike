@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 require("dotenv/config");
 const routes_1 = __importDefault(require("../routes/routes")); // Usa la extensión '.ts' si el archivo está en TypeScript
+const hbs_1 = __importDefault(require("hbs"));
 class Server {
     constructor() {
         this.app = (0, express_1.default)(); // Instancia de Express
@@ -16,8 +17,16 @@ class Server {
     }
     // Configura middleware global
     configureMiddleware() {
-        this.app.use(express_1.default.json()); // Parseo de JSON
-        this.app.use(express_1.default.static(path_1.default.join(__dirname, '../../src/public')));
+        // Servir archivos estáticos
+        this.app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../src/public')));
+        // Configurar motor de vistas Handlebars
+        this.app.set('view engine', 'hbs');
+        // Configurar la carpeta de vistas
+        this.app.set('views', path_1.default.resolve(__dirname, '../public/views'));
+        // Registrar parciales de Handlebars
+        hbs_1.default.registerPartials(path_1.default.resolve(__dirname, '../public/views/partials'));
+        // Parseo de JSON
+        this.app.use(express_1.default.json());
     }
     // Configura las rutas
     routes() {
