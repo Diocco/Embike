@@ -1,6 +1,6 @@
 (()=>{
     require('dotenv').config()
-    const Server = require('./classes/server')
+    const Server = require('./models/server')
     const express= new Server()
     express.start()
     

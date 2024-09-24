@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const server_1 = __importDefault(require("./src/classes/server")); // Usa la extensión '.ts' si el archivo está en TypeScript
+const server_1 = __importDefault(require("./src/models/server")); // Usa la extensión '.ts' si el archivo está en TypeScript
 require("dotenv/config");
 const server = new server_1.default(); // Instancia la clase Server
 server.start(); // Inicia el servidor

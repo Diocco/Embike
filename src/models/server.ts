@@ -3,6 +3,7 @@ import path from 'path'
 import 'dotenv/config';
 import routes from '../routes/routes'; // Usa la extensión '.ts' si el archivo está en TypeScript
 import hbs from 'hbs';
+import { conexionDB } from '../../database/config';
 
 
 
@@ -12,9 +13,14 @@ class Server {
 
     constructor() {
         this.app = express(); // Instancia de Express
-        this.port = process.env.PORT || 3000; // Puerto con valor predeterminado
+        this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
+        this.conectarDB() // Conecta la base de datos
         this.configureMiddleware();
         this.routes(); // Configura las rutas
+    }
+
+    async conectarDB(){
+        await conexionDB(); // Conecta la base de datos
     }
 
     // Configura middleware global
