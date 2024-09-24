@@ -15,7 +15,6 @@ const router = express_1.default.Router();
 router.get('/', inicioControllers_1.cargarIndex); // Configura la ruta
 router.get('/index', inicioControllers_1.cargarIndex); // Configura la ruta
 router.get('/catalogo', catalogo_1.cargarCatalogo); // Configura la ruta
-router.get('/*', notFound_1.cargarNotFound); // Configura la ruta
 router.post('/api/usuarios', // Crea un nuevo usuario
 (0, express_validator_1.check)('nombre', 'El nombre es obligatorio').notEmpty(), // Verifica que el nombre no este vacio
 (0, express_validator_1.check)('nombre', 'El nombre es obligatorio').custom(verificaciones_1.nombreUnico), // Verifica que el nombre no exista en la base de datos
@@ -29,4 +28,11 @@ router.put('/api/usuarios/:id', //Actualiza un usuario
 (0, express_validator_1.check)('correo', 'El correo no es valido').optional().isEmail(), // Si se manda un correo verifica que sea valido
 validarCampos_1.validarCampos, // Devuelve un error al usuario si algun check fallo
 usuarios_1.actualizarUsuario); // Agrega un nuevo usuario a la base de datos
+router.get('/api/usuarios', // Devuelve los usuarios
+usuarios_1.verUsuarios);
+router.delete('/api/usuarios/:id', // Elimina el usuario con el id pasado como parametro
+(0, express_validator_1.check)('id').custom(verificaciones_1.existeUsuario), // Verifica existencia y validez del id
+validarCampos_1.validarCampos, // Devuelve un error al usuario si algun check fallo
+usuarios_1.eliminarUsuario);
+router.get('/*', notFound_1.cargarNotFound); // Configura la ruta
 exports.default = router;

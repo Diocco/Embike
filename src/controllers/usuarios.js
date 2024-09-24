@@ -46,7 +46,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.actualizarUsuario = exports.agregarUsuario = void 0;
+exports.eliminarUsuario = exports.verUsuarios = exports.actualizarUsuario = exports.agregarUsuario = void 0;
 const bcryptjs_1 = __importStar(require("bcryptjs"));
 const usuario_1 = __importDefault(require("../models/usuario"));
 const agregarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -67,16 +67,44 @@ exports.agregarUsuario = agregarUsuario;
 const actualizarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     const _a = req.body, { nombre, activo, google, _id, __v, password } = _a, resto = __rest(_a, ["nombre", "activo", "google", "_id", "__v", "password"]); // Deja en "resto" las propiedades que son modificables
-    // TODO El password tiene que tomarse (si existe), encriptarlo y volverlo a meter "resto" para su actualizacion
     if (password) { // Si se mando una contraseña:
         // Encriptar contraseña
         const salt = bcryptjs_1.default.genSaltSync(); // Genera un "salt" para indicar el nivel de encriptacion
         resto.password = (0, bcryptjs_1.hashSync)(password, salt); // Genera un hash relacionado a la contraseña del usuario y la agrega al resto de propiedades
     }
-    const usuario = yield usuario_1.default.findByIdAndUpdate(id, resto, { new: true }); // Busca por id en la base de datos que actualiza las propiedades que esten en "resto". { new: true } devuelve el documento actualizado
+    // Busca por id en la base de datos que actualiza las propiedades que esten en "resto". { new: true } devuelve el documento actualizado
+    const usuario = yield usuario_1.default.findByIdAndUpdate(id, resto, { new: true });
     res.status(200).json({
         msg: "Usuario actualizado en la base de datos",
         usuario
     });
 });
 exports.actualizarUsuario = actualizarUsuario;
+const verUsuarios = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const desde = Math.abs(Number(req.query.desde)) || 0; // Valor por defecto 0 si no se pasa el parámetro o es invalido
+    const cantidad = Math.abs(Number(req.query.cantidad)) || 10; // Valor por defecto 10 si no se pasa el parámetro o es invalido
+    const condicion = { activo: true }; // Condicion que debe cumplir la busqueda de usuarios
+    // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
+    const [usuarios, usuariosCantidad] = yield Promise.all([
+        usuario_1.default.find(condicion) // Busca a todos los usuarios en la base de datos que cumplen la condicion
+            .skip(desde).limit(cantidad),
+        usuario_1.default.countDocuments(condicion) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
+    ]);
+    // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
+    const paginasCantidad = Math.ceil(usuariosCantidad / cantidad);
+    res.status(200).json({
+        usuariosCantidad,
+        paginasCantidad,
+        usuarios
+    });
+});
+exports.verUsuarios = verUsuarios;
+const eliminarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params; // Desestructura el id
+    // Busca el usuario con ese id y cambia su estado de actividad
+    const usuario = yield usuario_1.default.findByIdAndUpdate(id, { activo: false }, { new: true });
+    res.status(200).json({
+        usuario
+    });
+});
+exports.eliminarUsuario = eliminarUsuario;
