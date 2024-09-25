@@ -19,7 +19,10 @@ const conexionDB = () => __awaiter(void 0, void 0, void 0, function* () {
     // Manejo de errores por si falla la conexion
     try {
         //Conecta la base de datos usando la variable global como argumento
-        yield mongoose_1.default.connect(process.env.MONGO_DB);
+        yield mongoose_1.default.connect(process.env.MONGO_DB, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
         console.log("Base de datos conectada con exito");
     }
     catch (error) {
