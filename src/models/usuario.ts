@@ -37,7 +37,8 @@ const usuarioSchema = new mongoose.Schema({
 // Cuando se llama a "usuarioSchema" dentro de un "toJSON" se ejecuta la siguiente funcion:
 usuarioSchema.methods.toJSON = function() {
     // Convierte el documento Mongoose a un objeto de JavaScript.
-    const { __v, password, ...usuario } = this.toObject();
+    const { __v, password, _id,...usuario } = this.toObject();
+    usuario.uid = _id; // Cambio visual del id
     
     // Retorna el objeto 'usuario' sin las propiedades 'password' y '__v'.
     return usuario;

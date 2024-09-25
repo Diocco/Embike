@@ -15,11 +15,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 require("dotenv/config");
-const routes_1 = __importDefault(require("../routes/routes")); // Usa la extensión '.ts' si el archivo está en TypeScript
 const hbs_1 = __importDefault(require("hbs"));
+// Base de datos
 const config_1 = require("../../database/config");
+// Controladores
+const archivos_1 = require("../controllers/archivos");
+// Rutas
+const usuarios_1 = __importDefault(require("../routes/usuarios")); // Usa la extensión '.ts' si el archivo está en TypeScript
+const auth_1 = __importDefault(require("../routes/auth")); // Usa la extensión '.ts' si el archivo está en TypeScript
 class Server {
     constructor() {
+        this.usuariosPath = '/api/usuarios';
+        this.authPath = '/api/auth';
         this.app = (0, express_1.default)(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
         this.conectarDB(); // Conecta la base de datos
@@ -46,8 +53,14 @@ class Server {
     }
     // Configura las rutas
     routes() {
-        this.app.use('/', routes_1.default); // Asocia las rutas a la API
-        // Puedes agregar más rutas aquí
+        // HTML
+        this.app.get('/', archivos_1.cargarIndex); // Configura la ruta
+        this.app.get('/index', archivos_1.cargarIndex); // Configura la ruta
+        this.app.get('/catalogo', archivos_1.cargarCatalogo); // Configura la ruta
+        this.app.get('/*', archivos_1.cargarNotFound); // Configura la ruta
+        // API
+        this.app.use(this.usuariosPath, usuarios_1.default);
+        this.app.use(this.authPath, auth_1.default);
     }
     // Inicia el servidor
     start() {

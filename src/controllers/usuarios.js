@@ -47,7 +47,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.eliminarUsuario = exports.verUsuarios = exports.actualizarUsuario = exports.agregarUsuario = void 0;
-const bcryptjs_1 = __importStar(require("bcryptjs"));
+const bcryptjs_1 = __importStar(require("bcryptjs")); // Encriptar contraseña
 const usuario_1 = __importDefault(require("../models/usuario"));
 const agregarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Desestructura la informacion entrante para usar solo lo que se requiera
@@ -103,8 +103,10 @@ const eliminarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function
     const { id } = req.params; // Desestructura el id
     // Busca el usuario con ese id y cambia su estado de actividad
     const usuario = yield usuario_1.default.findByIdAndUpdate(id, { activo: false }, { new: true });
+    const usuarioAutenticado = req.usuario;
     res.status(200).json({
-        usuario
+        usuario,
+        usuarioAutenticado
     });
 });
 exports.eliminarUsuario = eliminarUsuario;

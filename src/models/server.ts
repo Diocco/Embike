@@ -1,17 +1,35 @@
 import express from 'express';
 import path from 'path'
 import 'dotenv/config';
-import routes from '../routes/routes'; // Usa la extensión '.ts' si el archivo está en TypeScript
 import hbs from 'hbs';
+
+// Base de datos
 import { conexionDB } from '../../database/config';
 
+// Controladores
+import { 
+    cargarCatalogo, 
+    cargarIndex, 
+    cargarNotFound } from '../controllers/archivos';
+
+// Rutas
+import usuariosRoutes from '../routes/usuarios'; // Usa la extensión '.ts' si el archivo está en TypeScript
+import authRoutes from '../routes/auth'; // Usa la extensión '.ts' si el archivo está en TypeScript
 
 
 class Server {
+    // Variables
+    usuariosPath: string
+    authPath: string
+    
+
     app: express.Application;
     port: string | number;
 
     constructor() {
+        this.usuariosPath = '/api/usuarios';
+        this.authPath = '/api/auth';
+
         this.app = express(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
         this.conectarDB() // Conecta la base de datos
@@ -43,8 +61,16 @@ class Server {
 
     // Configura las rutas
     routes() {
-        this.app.use('/', routes); // Asocia las rutas a la API
-        // Puedes agregar más rutas aquí
+        // HTML
+        this.app.get('/', cargarIndex); // Configura la ruta
+        this.app.get('/index', cargarIndex); // Configura la ruta
+        this.app.get('/catalogo', cargarCatalogo); // Configura la ruta
+        this.app.get('/*', cargarNotFound); // Configura la ruta
+
+        // API
+        this.app.use(this.usuariosPath, usuariosRoutes);
+        this.app.use(this.authPath, authRoutes);
+
     }
 
     // Inicia el servidor

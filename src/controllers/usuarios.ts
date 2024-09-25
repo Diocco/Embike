@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import bcryptjs, { hashSync } from 'bcryptjs';
+import bcryptjs, { hashSync } from 'bcryptjs'; // Encriptar contraseña
 
 import Usuario from '../models/usuario';
 
@@ -73,9 +73,10 @@ const eliminarUsuario = async(req: Request, res: Response) =>{
     const {id} = req.params; // Desestructura el id
     // Busca el usuario con ese id y cambia su estado de actividad
     const usuario = await Usuario.findByIdAndUpdate( id , {activo: false}, { new: true }); 
-    
+    const usuarioAutenticado = (req as any).usuario
     res.status(200).json({
-        usuario
+        usuario,
+        usuarioAutenticado
     })
 }
 

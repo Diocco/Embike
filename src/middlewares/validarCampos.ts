@@ -1,7 +1,7 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
-export const validarCampos = (req: Request, res: Response,next: () => void)=>{
+export const validarCampos = (req: Request, res: Response,next:NextFunction)=>{
     // Revisa las validaciones
     const errores = validationResult(req); // Si las validaciones lanzaron errores se van a guardar aca
     if(!errores.isEmpty()){ // Si "errores" NO esta vacio entonces:
