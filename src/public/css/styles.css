@@ -165,7 +165,7 @@ display: none;
 	background-image: url(../img/indexImagenes/bicicletas-mtb.png);
 }/* Bicicletas MTB */
 .inicio-grid__div:nth-child(2){
-	background-image: url(../img/indexImagenes/accesorios.png);
+	background-image: url(../img/indexImagenes/acces.jpg);
 }/* Accesorios */
 .inicio-grid__div:nth-child(3){
 	background-image: url(../img/indexImagenes/niños.png);
@@ -208,8 +208,7 @@ filter: grayscale(0%) brightness(1);
 	grid-column: 1/span 2;
 }/* Bicicletas MTB */
 .inicio-grid__div:nth-child(2){
-	background-image: url(../img/indexImagenes/acces.jpg);
-		grid-column: 1/span 1;
+	grid-column: 1/span 1;
 }/* Accesorios */
 .inicio-grid__div:nth-child(3){
 	grid-column: 2/span 1;
