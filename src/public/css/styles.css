@@ -208,7 +208,7 @@ filter: grayscale(0%) brightness(1);
 	grid-column: 1/span 2;
 }/* Bicicletas MTB */
 .inicio-grid__div:nth-child(2){
-	background-image: url(../img/indexImagenes/accesorios.png);
+	background-image: url(/src/public/img/indexImagenes/accesorios.png);
 		grid-column: 1/span 1;
 }/* Accesorios */
 .inicio-grid__div:nth-child(3){
