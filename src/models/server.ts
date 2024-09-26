@@ -10,6 +10,7 @@ import { conexionDB } from '../../database/config';
 import { 
     cargarCatalogo, 
     cargarIndex, 
+    cargarInicioSesion, 
     cargarNotFound } from '../controllers/archivos';
 
 // Rutas
@@ -65,6 +66,7 @@ class Server {
         this.app.get('/', cargarIndex); // Configura la ruta
         this.app.get('/index', cargarIndex); // Configura la ruta
         this.app.get('/catalogo', cargarCatalogo); // Configura la ruta
+        this.app.get('/inicioSesion', cargarInicioSesion); // Configura la ruta
         this.app.get('/*', cargarNotFound); // Configura la ruta
 
         // API

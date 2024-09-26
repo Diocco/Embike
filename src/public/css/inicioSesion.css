@@ -1,0 +1,137 @@
+:root {
+    --fondo: white;
+    --crema-logo: #DFC5B4; 
+    --azul-logo: #033452;
+    }/*Variables*/
+
+#inicioSesion{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+
+#inicioSesion__imagenFondo{
+    display: grid;
+    grid-template-columns: minmax(0,500px) min-content;
+    justify-content: center;
+    flex-direction: column;
+    align-items: flex-end;
+    background-image: url(../img/inicioSesion/cilismo-al-atardecer.jpg);
+    background-size: cover;
+    border-radius: 25px;
+    margin: 100px;
+}
+
+#titulo{
+    font-size: 40px;
+}
+
+#pregunta{
+    font-size: 15px;
+    margin: 10px;
+}
+
+
+#inicioSesion__formulario{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    background-color: white;
+    height: 500px;
+    width: 500px;
+    padding: 50px;
+    margin: 80px;
+    border-radius: 20px;
+}
+
+.inicioSesion__formulario__botones{
+    height: 45px;
+    width: 400px;
+    margin-top: 20px;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 0px;
+    background-color: rgb(206, 206, 206);
+}
+
+#inicioSesion__formulario__enviar{
+    background-color: var(--azul-logo);
+    color:white
+}
+
+#inicioSesion__formulario__registrarse{
+    background-color: var(--crema-logo);
+}
+
+#otraOpcion{
+    font-size: 20px;
+    margin: 10px;
+}
+
+
+@media screen and (max-width:1000px){
+    #inicioSesion__imagenFondo{
+        display: grid;
+        grid-template-columns: min-content ;
+        justify-content: center;
+        flex-direction: column;
+        align-items: flex-end;
+        background-image: url(../img/inicioSesion/cilismo-al-atardecer.jpg);
+        background-size: cover;
+        border-radius: 25px;
+        margin: 20px;
+        height: 90vh;
+        width: 90vw;
+        align-content: center;
+    }
+    #inicioSesion__formulario{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        align-items: center;
+        background-color: white;
+        height: min-content;
+        width: min-content;
+        padding: 50px;
+        margin: 20px;
+        border-radius: 20px;
+    }
+    
+.inicioSesion__formulario__botones{
+    height: 90px;
+    width: 600px;
+    margin-top: 40px;
+    font-size: 40px;
+    padding: 20px;
+    border-radius: 20px;
+    border: 0px;
+    background-color: rgb(206, 206, 206);
+}
+
+#inicioSesion__formulario__enviar{
+    background-color: var(--azul-logo);
+    color:white
+}
+
+#inicioSesion__formulario__registrarse{
+    background-color: var(--crema-logo);
+}
+
+#otraOpcion{
+    font-size: 40px;
+    margin: 20px;
+}
+#titulo{
+    font-size: 80px;
+}
+
+#pregunta{
+    font-size: 30px;
+    margin: 20px;
+}
+}

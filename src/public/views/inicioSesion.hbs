@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+		<link rel="stylesheet" type="text/css" href="../css/styles.css">
+		<link rel="stylesheet" type="text/css" href="../css/inicioSesion.css">
+		<meta charset="utf-8">
+		<title>Embike</title>
+		<meta name="keywords" content="Bicicletas,MontainBike,Ñiños,Ruedas,Cubiertas,Frenos,Disco,Acientos">
+		<meta name="description" content="Embike, la esencia ciclista. Encontra bicicletas y accesorios en nuestra tienda virtual, ideales para recorrer las sierras o las rutas de Cordoba">
+		<meta name="author" content="Diego Nicolas Iocco">
+		<meta name="robots" content="index">
+        <meta name="google-signin-client_id" content="611639273590-btd7km1ohu4v1si94af1epgbdesgq54o.apps.googleusercontent.com.apps.googleusercontent.com">
+		<link rel="icon" href="logo.ico">
+		<script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+	</head>
+
+<body>
+    <div id="inicioSesion">
+        <div id="inicioSesion__imagenFondo">
+            <div id="volver"></div>
+            <form id="inicioSesion__formulario">
+                <div id="titulo">Iniciar sesion</div>
+                <input id="inicioSesion__formulario__ingresarNombre" class="inicioSesion__formulario__botones" placeholder="Nombre">
+                <input id="inicioSesion__formulario__ingresarContraseña" class="inicioSesion__formulario__botones" placeholder="Contraseña">
+                <button id="inicioSesion__formulario__enviar" class="inicioSesion__formulario__botones"> Enviar </button>
+
+                <button id="inicioSesion__formulario__registrarse" class="inicioSesion__formulario__botones"> Registrarse </button>
+                <div id="pregunta">¿Olvidaste la contraseña?
+                    <a href="recuperarContraseña">Recuperar Contraseña</a>
+                </div>
+                <div id="otraOpcion"> - O -</div>  
+                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        }
+    </script>
+</body>
+
+</html>

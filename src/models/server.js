@@ -57,6 +57,7 @@ class Server {
         this.app.get('/', archivos_1.cargarIndex); // Configura la ruta
         this.app.get('/index', archivos_1.cargarIndex); // Configura la ruta
         this.app.get('/catalogo', archivos_1.cargarCatalogo); // Configura la ruta
+        this.app.get('/inicioSesion', archivos_1.cargarInicioSesion); // Configura la ruta
         this.app.get('/*', archivos_1.cargarNotFound); // Configura la ruta
         // API
         this.app.use(this.usuariosPath, usuarios_1.default);

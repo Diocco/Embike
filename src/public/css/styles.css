@@ -76,7 +76,7 @@ display: none;
 	color: var(--azul-logo);
 
 } /* Letra de los botones de la barra superior*/
-.grid__header__div-carrito,.grid__header__div-pedidos,.grid__header__div-contacto,.grid__header__div-catalogo{
+.header__botones{
     background: white;
     justify-items: center;
     align-items: center;
@@ -92,14 +92,14 @@ display: none;
 /*///////////////////////////*/
 
 /* Seleccion */
-.grid__header__div-carrito:hover,.grid__header__div-pedidos:hover,.grid__header__div-contacto:hover,.grid__header__div-catalogo:hover{
+.header__botones:hover{
 	
 	background: var(--azul-logo) ;
 	transform: scale(1.1);
 	border: 0px;
 	border-radius:10px;
 } 
-.grid__header__div-carrito:hover>.grid__header-a,.grid__header__div-pedidos:hover>.grid__header-a,.grid__header__div-contacto:hover>.grid__header-a,.grid__header__div-catalogo:hover>.grid__header-a{
+.header__botones:hover>.grid__header-a{
 	color: white;
 }
 /*///////////////////////////*/
@@ -250,7 +250,7 @@ font-size: 40px;
     border-radius: 30px;
     height: 150px;
 }
-.grid__header__div-carrito,.grid__header__div-pedidos,.grid__header__div-contacto,.grid__header__div-catalogo{
+.header__botones{
     height: 80px;
     margin-top: 10px;
     text-align: center;
