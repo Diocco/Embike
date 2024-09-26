@@ -305,7 +305,7 @@ font-size: 40px;
 	outline-color: var(--azul-logo);
 }
 
-.header-resposive__div__buttom-menu,.header-resposive__div__buttom-carrito{
+.header-resposive__div__buttom-menu,.header-resposive__div__buttom-inicioSesion{
 	width: 100px;
 	height: 100px;
 	border-radius: 50px;
@@ -321,8 +321,8 @@ font-size: 40px;
 	background-image: url(../img/indexImagenes/menu-icono.png);
 	background-size: 90%;
 }
-.header-resposive__div__buttom-carrito{
-	background-image: url(../img/indexImagenes/icono-carrito.png);
+.header-resposive__div__buttom-inicioSesion{
+	background-image: url(../img/indexImagenes/logo-sesion.png);
 	background-size: 75%;
 }
 
