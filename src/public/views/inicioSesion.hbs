@@ -10,41 +10,47 @@
 		<meta name="description" content="Embike, la esencia ciclista. Encontra bicicletas y accesorios en nuestra tienda virtual, ideales para recorrer las sierras o las rutas de Cordoba">
 		<meta name="author" content="Diego Nicolas Iocco">
 		<meta name="robots" content="index">
-        <meta name="google-signin-client_id" content="611639273590-btd7km1ohu4v1si94af1epgbdesgq54o.apps.googleusercontent.com.apps.googleusercontent.com">
 		<link rel="icon" href="logo.ico">
 		<script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
-        <script src="https://apis.google.com/js/platform.js" async defer></script>
 	</head>
 
 <body>
     <div id="inicioSesion">
         <div id="inicioSesion__imagenFondo">
             <a id="volver" href="index"></a>
-            <form id="inicioSesion__formulario">
+            <form id="inicioSesion__formulario" class="inicioSesion__formulario-active" autocomplete="off">
                 <div id="titulo">Iniciar sesion</div>
-                <input id="inicioSesion__formulario__ingresarNombre" class="inicioSesion__formulario__botones" placeholder="Nombre">
-                <input id="inicioSesion__formulario__ingresarContraseña" class="inicioSesion__formulario__botones" placeholder="Contraseña">
-                <button id="inicioSesion__formulario__enviar" class="inicioSesion__formulario__botones"> Enviar </button>
+                <input required="" type="email"id="inicioSesion__formulario__ingresarCorreo" class="inicioSesion__formulario__botones" placeholder="Correo">
+                <div id="errorEmail" class="errorText"></div>
+                <input required="" type="Password" id="inicioSesion__formulario__ingresarPassword" class="inicioSesion__formulario__botones" placeholder="Password">
+                <div id="errorPassword" class="errorText"></div>
+                <button id="inicioSesion__formulario__enviar" class="inicioSesion__formulario__botones" type="submit"> Enviar </button>
 
-                <button id="inicioSesion__formulario__registrarse" class="inicioSesion__formulario__botones"> Registrarse </button>
-                <div id="pregunta">¿Olvidaste la contraseña?
-                    <a href="recuperarContraseña">Recuperar Contraseña</a>
+                <div id="inicioSesion__formulario__registrarse" class="inicioSesion__formulario__botones"> Registrarse </div>
+                <div id="pregunta">¿Olvidaste la Password?
+                    <a href="recuperarPassword">Recuperar Password</a>
                 </div>
-                <div id="otraOpcion"> - O -</div>  
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            </form>
+            <form id="registrarse__formulario" autocomplete="off">
+                <div id="titulo">Registrarse</div>
+                <input required="" id="registrarse__formulario__ingresarNombre" class="registrarse__formulario__botones" placeholder="Nombre">
+                <div id="errorNombreRegistro" class="errorText"></div>
+                <input required="" type="email" id="registrarse__formulario__ingresarCorreo" class="registrarse__formulario__botones" placeholder="Correo">
+                <div id="errorEmailRegistro" class="errorText"></div>
+                <input required="" type="Password" id="registrarse__formulario__ingresarPassword" class="registrarse__formulario__botones" placeholder="Password">
+                <div id="errorPasswordRegistro" class="errorText"></div>
+                <input required="" type="Password" id="registrarse__formulario__repetirPassword" class="registrarse__formulario__botones" placeholder="Repetir Password">
+                <div id="errorRepetirPasswordRegistro" class="errorText"></div>
+                <button id="registrarse__formulario__enviar" class="registrarse__formulario__botones" type="submit"> Enviar </button>
+
+                <div id="pregunta">¿Ya tenes una cuenta?
+                    <a id="volverIniciarSesion">Iniciar sesion</a>
+                </div>
             </form>
         </div>
     </div>
 
-    <script>
-        function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-            console.log('Name: ' + profile.getName());
-            console.log('Image URL: ' + profile.getImageUrl());
-            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-        }
-    </script>
+    <script src="../js/catalogo/iniciarSesion.js"></script>
 </body>
 
 </html>

@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 require("dotenv/config");
 const hbs_1 = __importDefault(require("hbs"));
+const cors_1 = __importDefault(require("cors"));
 // Base de datos
 const config_1 = require("../../database/config");
 // Controladores
@@ -38,8 +39,10 @@ class Server {
             yield (0, config_1.conexionDB)(); // Conecta la base de datos
         });
     }
-    // Configura middleware global
+    // Configura middleware globalnpm
     configureMiddleware() {
+        // Aplica las opciones de CORS a todas las rutas
+        this.app.use((0, cors_1.default)());
         // Servir archivos estáticos
         this.app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../src/public')));
         // Configurar motor de vistas Handlebars

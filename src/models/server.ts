@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path'
 import 'dotenv/config';
 import hbs from 'hbs';
+import cors from 'cors'
 
 // Base de datos
 import { conexionDB } from '../../database/config';
@@ -42,8 +43,14 @@ class Server {
         await conexionDB(); // Conecta la base de datos
     }
 
-    // Configura middleware global
+    // Configura middleware globalnpm
     configureMiddleware() {
+
+
+        
+        // Aplica las opciones de CORS a todas las rutas
+        this.app.use(cors());
+
         // Servir archivos estáticos
         this.app.use(express.static(path.resolve(__dirname, '../../src/public')));
 

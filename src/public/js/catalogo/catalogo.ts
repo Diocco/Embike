@@ -1,8 +1,5 @@
 
 
-"use strict";
-
-
 //Boton de agregar elementos al catalogo//
 
 // async function funcionBotonesAgregarCatalogo(){

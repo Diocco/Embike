@@ -13,7 +13,12 @@
   padding: 0;
   margin: 0;
 }
-
+a {
+  color: #0000EE;   /* Azul predeterminado */
+  cursor: pointer;  /* El cursor cambia a una mano cuando se pasa por encima */
+}
+a:visited {
+}
 
 html {
   line-height: 1.15; /* 1 */

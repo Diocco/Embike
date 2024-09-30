@@ -35,8 +35,8 @@
 }
 
 
-#inicioSesion__formulario{
-    display: flex;
+#inicioSesion__formulario,#registrarse__formulario{
+    display: none;
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: center;
@@ -47,8 +47,18 @@
     margin: 80px;
     border-radius: 20px;
 }
+.inicioSesion__formulario-active{
+    display: flex !important;
+}
 
-.inicioSesion__formulario__botones{
+#registrarse__formulario{
+    display: none;
+}
+.registrarse__formulario-active{
+    display: flex !important;
+}
+
+.inicioSesion__formulario__botones,.registrarse__formulario__botones{
     height: 45px;
     width: 400px;
     margin-top: 20px;
@@ -56,16 +66,24 @@
     padding: 10px;
     border-radius: 10px;
     border: 0px;
+    border-color: black;
+    transition: border-color 0.5s;
     background-color: rgb(206, 206, 206);
 }
 
-#inicioSesion__formulario__enviar{
+.boton__enError{
+    border:2px solid !important;
+    border-color: red !important;
+}
+
+#inicioSesion__formulario__enviar,#registrarse__formulario__enviar{
     background-color: var(--azul-logo);
     color:white
 }
 
-#inicioSesion__formulario__registrarse{
+#inicioSesion__formulario__registrarse,#registrarse__formulario__registrarse{
     background-color: var(--crema-logo);
+    text-align: center;
 }
 
 #otraOpcion{
@@ -88,8 +106,24 @@
         background-size: 60%;
 }
 
+.errorText{
+    height: 10px;
+    color: red;
+    align-self: start;
+}
+
+#volverIniciarSesion{
+    color: #0000EE;   /* Azul predeterminado */
+    cursor: pointer;  /* El cursor cambia a una mano cuando se pasa por encima */
+}
+
 
 @media screen and (max-width:1000px){
+
+    #inicioSesion{
+        height: 80vh;
+    }
+
     #inicioSesion__imagenFondo{
         display: grid;
         grid-template-columns: min-content ;
@@ -104,8 +138,8 @@
         width: 90vw;
         align-content: center;
     }
-    #inicioSesion__formulario{
-        display: flex;
+    #inicioSesion__formulario, #registrarse__formulario{
+        display: none;
         flex-direction: column;
         flex-wrap: nowrap;
         align-items: center;
@@ -117,24 +151,25 @@
         border-radius: 20px;
     }
     
-.inicioSesion__formulario__botones{
+.inicioSesion__formulario__botones,.registrarse__formulario__botones{
     height: 90px;
     width: 600px;
     margin-top: 40px;
     font-size: 40px;
     padding: 20px;
     border-radius: 20px;
-    border: 0px;
+    border:0;
     background-color: rgb(206, 206, 206);
 }
 
-#inicioSesion__formulario__enviar{
+#inicioSesion__formulario__enviar,#registrarse__formulario__enviar{
     background-color: var(--azul-logo);
     color:white
 }
 
-#inicioSesion__formulario__registrarse{
+#inicioSesion__formulario__registrarse,#registrarse__formulario__registrarse{
     background-color: var(--crema-logo);
+
 }
 
 #otraOpcion{
@@ -154,4 +189,9 @@
     height: 120px;
     position: absolute;
 }
+.errorText{
+    height: 20px;
+    font-size: 25px;
+}
+
 }
