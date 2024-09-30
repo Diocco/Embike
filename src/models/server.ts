@@ -69,6 +69,11 @@ class Server {
 
     // Configura las rutas
     routes() {
+        
+        // API
+        this.app.use(this.usuariosPath, usuariosRoutes);
+        this.app.use(this.authPath, authRoutes);
+
         // HTML
         this.app.get('/', cargarIndex); // Configura la ruta
         this.app.get('/index', cargarIndex); // Configura la ruta
@@ -76,9 +81,6 @@ class Server {
         this.app.get('/inicioSesion', cargarInicioSesion); // Configura la ruta
         this.app.get('/*', cargarNotFound); // Configura la ruta
 
-        // API
-        this.app.use(this.usuariosPath, usuariosRoutes);
-        this.app.use(this.authPath, authRoutes);
 
     }
 

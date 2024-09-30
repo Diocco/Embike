@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import bcryptjs, { hashSync } from 'bcryptjs'; // Encriptar contraseña
 
 import Usuario from '../models/usuario';
+import { generarJWT } from '../../helpers/generarJWT';
 
 
 
@@ -19,8 +20,12 @@ const agregarUsuario = async(req: Request, res: Response) => {
 
     await usuario.save(); // Guarda el modelo en la base de datos
 
+    // Generar JWT 
+    const token = await generarJWT( usuario!.id )
+
     res.status(201).json({ //Devuelve un mensaje y el usuario agregado a la base de datos
         msg: "Usuario guardado en la base de datos",
+        token,
         usuario
     })
 };

@@ -1,19 +1,22 @@
 "use strict";
 document.addEventListener("DOMContentLoaded", function () {
-    let urlInicioSesion;
-    let urlRegistro;
+    let urlInicioSesion = '/api/auth/login';
+    let urlRegistro = '/api/usuarios';
+    let url;
     const esDesarollo = window.location.hostname.includes('localhost'); // Revisa el url actual
     const botonRegistrarse = document.getElementById('inicioSesion__formulario__registrarse');
     const volverIniciarSesion = document.getElementById('volverIniciarSesion');
     const formularioRegistrarse = document.getElementById('registrarse__formulario');
     const formularioIniciarSesion = document.getElementById('inicioSesion__formulario');
     if (esDesarollo) { // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
-        urlInicioSesion = 'http://localhost:8080/api/auth/login';
-        urlRegistro = 'http://localhost:8080/api/usuarios';
+        url = 'http://localhost:8080';
+        urlInicioSesion = url + urlInicioSesion;
+        urlRegistro = url + urlRegistro;
     }
     else { // Si no tiene localhost define el url en la pagina web para la peticion
-        urlInicioSesion = 'https://embike-223a165b4ff6.herokuapp.com/api/auth/login';
-        urlRegistro = 'https://embike-223a165b4ff6.herokuapp.com/api/usuarios';
+        url = 'https://embike-223a165b4ff6.herokuapp.com';
+        urlInicioSesion = url + urlInicioSesion;
+        urlRegistro = url + urlRegistro;
     }
     // Si se hace click en "Registrarse" se muestra el formulario para registrarse
     botonRegistrarse.addEventListener('click', () => {
@@ -30,8 +33,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const mensajeErrorEmail = document.getElementById('errorEmail');
     const passwordInput = document.getElementById('inicioSesion__formulario__ingresarPassword');
     const mensajeErrorPassword = document.getElementById('errorPassword');
+    const botonEnviar = document.getElementById('inicioSesion__formulario__enviar');
     formularioIniciarSesion.addEventListener('submit', (event) => {
         event.preventDefault(); // Evita que el formulario recargue la página
+        botonEnviar.classList.add('boton__enProceso'); // Modifica el estilo del boton para aclarar que se esta procesando la solicitud
         // Elimina, si esta presente, los estados de error
         emailInput.classList.remove('boton__enError');
         passwordInput.classList.remove('boton__enError');
@@ -65,20 +70,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }
             else { // Si el servidor devuelve un inicio de sesion exitoso:
-                console.log("todo piola");
+                const tokenAcceso = data.token; // Define el token de acceso devuelto por el servidor
+                localStorage.setItem('tokenAcceso', tokenAcceso); // Guarda el token en el navegador del usuario para usarlo cuando se requiera
+                window.location.assign(url); // Redirije al usuario al inicio de la pagina
             }
         })
             .catch(error => {
             console.error(error);
+        })
+            .finally(() => {
+            botonEnviar.classList.remove('boton__enProceso'); // Modifica el estilo del boton para aclarar que la solicitud termino
         });
     });
     // Si se hace click en email y estaba marcado como con un error, lo remueve
-    emailInput.addEventListener('click', (event) => {
+    emailInput.addEventListener('click', () => {
         emailInput.classList.remove('boton__enError');
         mensajeErrorEmail.textContent = null;
     });
     // Si se hace click en password y estaba marcado como con un error, lo remueve
-    passwordInput.addEventListener('click', (event) => {
+    passwordInput.addEventListener('click', () => {
         passwordInput.classList.remove('boton__enError');
         mensajeErrorPassword.textContent = null;
     });
@@ -91,8 +101,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const mensajeErrorPasswordRegistro = document.getElementById('errorPasswordRegistro');
     const registroPasswordRepetirInput = document.getElementById('registrarse__formulario__repetirPassword');
     const mensajeErrorPasswordRepetirRegistro = document.getElementById('errorRepetirPasswordRegistro');
+    const botonEnviarRegistro = document.getElementById('registrarse__formulario__enviar');
     formularioRegistrarse.addEventListener('submit', (event) => {
         event.preventDefault(); // Evita que el formulario recargue la página
+        botonEnviarRegistro.classList.add('boton__enProceso'); // Modifica el estilo del boton para aclarar que se esta procesando la solicitud
         // Elimina, si esta presente, los estados de error
         nombreInput.classList.remove('boton__enError');
         registroPasswordRepetirInput.classList.remove('boton__enError');
@@ -147,12 +159,18 @@ document.addEventListener("DOMContentLoaded", function () {
                         });
                     }
                     else { // Si el servidor devuelve un registro exitoso:
-                        console.log("todo piola");
+                        const tokenAcceso = data.token; // Define el token de acceso devuelto por el servidor
+                        localStorage.setItem('tokenAcceso', tokenAcceso); // Guarda el token en el navegador del usuario para usarlo cuando se requiera
+                        window.location.assign(url); // Redirije al usuario al inicio de la pagina
                     }
                 })
                     .catch(error => {
                     console.error(error);
+                })
+                    .finally(() => {
+                    botonEnviarRegistro.classList.remove('boton__enProceso'); // Modifica el estilo del boton para aclarar que la solicitud termino
                 });
+                ;
             }
         }
     });

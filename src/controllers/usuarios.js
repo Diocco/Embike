@@ -49,6 +49,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.eliminarUsuario = exports.verUsuarios = exports.actualizarUsuario = exports.agregarUsuario = void 0;
 const bcryptjs_1 = __importStar(require("bcryptjs")); // Encriptar contraseña
 const usuario_1 = __importDefault(require("../models/usuario"));
+const generarJWT_1 = require("../../helpers/generarJWT");
 const agregarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     //Desestructura la informacion entrante para usar solo lo que se requiera
     const { nombre, password, correo, rol } = req.body;
@@ -58,8 +59,11 @@ const agregarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function*
     const salt = bcryptjs_1.default.genSaltSync(); // Genera un "salt" para indicar el nivel de encriptacion
     usuario.password = (0, bcryptjs_1.hashSync)(password, salt); // Genera un hash relacionado a la contraseña del usuario
     yield usuario.save(); // Guarda el modelo en la base de datos
+    // Generar JWT 
+    const token = yield (0, generarJWT_1.generarJWT)(usuario.id);
     res.status(201).json({
         msg: "Usuario guardado en la base de datos",
+        token,
         usuario
     });
 });

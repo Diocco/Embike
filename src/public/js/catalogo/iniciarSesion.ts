@@ -1,8 +1,9 @@
 
 
 document.addEventListener("DOMContentLoaded", function() {
-    let urlInicioSesion:string
-    let urlRegistro:string
+    let urlInicioSesion:string = '/api/auth/login'
+    let urlRegistro:string = '/api/usuarios'
+    let url:string
     const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
     const botonRegistrarse:HTMLElement = document.getElementById('inicioSesion__formulario__registrarse')!;
     const volverIniciarSesion:HTMLElement = document.getElementById('volverIniciarSesion')!;
@@ -10,11 +11,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const formularioIniciarSesion:HTMLElement = document.getElementById('inicioSesion__formulario')!;
 
     if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
-        urlInicioSesion='http://localhost:8080/api/auth/login'
-        urlRegistro='http://localhost:8080/api/usuarios'
+        url = 'http://localhost:8080';
+        urlInicioSesion = url + urlInicioSesion;
+        urlRegistro= url + urlRegistro;
     }else{ // Si no tiene localhost define el url en la pagina web para la peticion
-        urlInicioSesion='https://embike-223a165b4ff6.herokuapp.com/api/auth/login'
-        urlRegistro='https://embike-223a165b4ff6.herokuapp.com/api/usuarios'
+        url= 'https://embike-223a165b4ff6.herokuapp.com';
+        urlInicioSesion=url + urlInicioSesion;
+        urlRegistro= url + urlRegistro;
     }
 
 
@@ -37,9 +40,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const mensajeErrorEmail: HTMLElement = document.getElementById('errorEmail')!;
     const passwordInput:HTMLInputElement = document.getElementById('inicioSesion__formulario__ingresarPassword')! as HTMLInputElement;
     const mensajeErrorPassword: HTMLElement = document.getElementById('errorPassword')!;
+    const botonEnviar: HTMLElement = document.getElementById('inicioSesion__formulario__enviar')!;
 
     formularioIniciarSesion.addEventListener('submit',(event)=>{
         event.preventDefault(); // Evita que el formulario recargue la página
+
+        botonEnviar.classList.add('boton__enProceso') // Modifica el estilo del boton para aclarar que se esta procesando la solicitud
 
         // Elimina, si esta presente, los estados de error
         emailInput.classList.remove('boton__enError')
@@ -57,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data) // Convertir los datos a JSON
         })
+
         .then(response => response.json()) // Parsear la respuesta como JSON
         .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
             if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
@@ -74,22 +81,28 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 })
             }else{ // Si el servidor devuelve un inicio de sesion exitoso:
-                console.log("todo piola")
+                const tokenAcceso = data.token; // Define el token de acceso devuelto por el servidor
+                localStorage.setItem('tokenAcceso',tokenAcceso); // Guarda el token en el navegador del usuario para usarlo cuando se requiera
+                window.location.assign(url) // Redirije al usuario al inicio de la pagina
             }
         })
         .catch(error => { // Si hay un error se manejan 
             console.error(error);
+        })
+        .finally(()=>{
+            botonEnviar.classList.remove('boton__enProceso') // Modifica el estilo del boton para aclarar que la solicitud termino
         });
+        
     })
 
     // Si se hace click en email y estaba marcado como con un error, lo remueve
-    emailInput.addEventListener('click', (event) =>{ 
+    emailInput.addEventListener('click', () =>{ 
         emailInput.classList.remove('boton__enError')
         mensajeErrorEmail.textContent=null;
     })
 
     // Si se hace click en password y estaba marcado como con un error, lo remueve
-    passwordInput.addEventListener('click', (event) =>{ 
+    passwordInput.addEventListener('click', () =>{ 
         passwordInput.classList.remove('boton__enError')
         mensajeErrorPassword.textContent=null;
     })
@@ -111,9 +124,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const mensajeErrorPasswordRegistro:HTMLElement = document.getElementById('errorPasswordRegistro')!;
     const registroPasswordRepetirInput:HTMLInputElement = document.getElementById('registrarse__formulario__repetirPassword')! as HTMLInputElement;
     const mensajeErrorPasswordRepetirRegistro:HTMLElement = document.getElementById('errorRepetirPasswordRegistro')!;
+    const botonEnviarRegistro:HTMLElement = document.getElementById('registrarse__formulario__enviar')!;
 
     formularioRegistrarse.addEventListener('submit',(event)=>{
         event.preventDefault(); // Evita que el formulario recargue la página
+
+        botonEnviarRegistro.classList.add('boton__enProceso') // Modifica el estilo del boton para aclarar que se esta procesando la solicitud
 
         // Elimina, si esta presente, los estados de error
         nombreInput.classList.remove('boton__enError')
@@ -133,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 mensajeErrorPasswordRepetirRegistro.textContent='Las contraseñas introducidas no coinciden'
 
             }else{ // Si las contraseñas son iguales entonces se realiza la peticion POST
+
 
                 const data={ // Define los parametros inputs por el usuario para enviarlos al servidor
                     nombre:nombreInput.value,
@@ -174,12 +191,19 @@ document.addEventListener("DOMContentLoaded", function() {
                             }
                         })
                     }else{ // Si el servidor devuelve un registro exitoso:
-                        console.log("todo piola")
+
+                        const tokenAcceso = data.token; // Define el token de acceso devuelto por el servidor
+                        localStorage.setItem('tokenAcceso',tokenAcceso); // Guarda el token en el navegador del usuario para usarlo cuando se requiera
+                        window.location.assign(url) // Redirije al usuario al inicio de la pagina
+                        
                     }
                 })
                 .catch(error => { // Si hay un error se manejan 
                     console.error(error);
-                });
+                })
+                .finally( ()=>{
+                    botonEnviarRegistro.classList.remove('boton__enProceso') // Modifica el estilo del boton para aclarar que la solicitud termino
+                });;
             }
         }
 

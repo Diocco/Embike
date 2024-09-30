@@ -1,4 +1,6 @@
 
+<link rel="stylesheet" type="text/css" href="../css/styles.css">
+
 <div class="header-resposive__div">
     <button class="header-resposive__div__buttom-menu"></button>
     <a href="/index">
@@ -8,16 +10,9 @@
     <form class="header-resposive__div__form-busqueda">
         <input type="text" name="busqueda" class="header-resposive__div__form-busqueda__input" placeholder="Busca un producto"></form>
         <button class="header-resposive__div__buttom-summit" type="summit"></button>
-        <ul class="header-responsive-menu-active__ul">
-            <div></div>
-            <a class="header-responsive-menu-active__ul__a" href="contacto">- Contacto</a>
-            <a class="header-responsive-menu-active__ul__a" href="catalogo">- Catalogo</a>
-            <a class="header-responsive-menu-active__ul__a" href="pedidos">- Mis pedidos</a>
-            <a class="header-responsive-menu-active__ul__a" href="carrito">- Carrito</a>
-        </ul>
 </div>
 
-<div class="grid">
+<div class="contenedorHeader">
     <div class="grid__div-logo">
         <a href="index">
             <img src="../img/indexImagenes/logo_extendido.png"  class="grid__div-logo__img">
@@ -28,24 +23,19 @@
             <input type="text" name="busqueda" class="grid__form-busqueda__input" placeholder="Busca un producto">
         </form>
     </div>
-    <div>
-        <div class="grid__header__div-catalogo header__botones">
-            <a class="grid__header-a" href="catalogo">Catalogo</a>
-        </div>
-    </div>
-    <div>
-        <div class="grid__header__div-pedidos header__botones">
-            <a class="grid__header-a" href="pedidos">Mis pedidos</a>
-        </div>
-    </div>
-    <div>
-        <div class="grid__header__div-carrito header__botones">
-            <a class="grid__header-a" href="carrito">Carrito</a>
-        </div>
-    </div>
-        <div>
-        <div class="grid__header__div-iniciarSesion header__botones">
-            <a class="grid__header-a" href="inicioSesion">Iniciar sesion</a>
-        </div>
+
+    <a class="header__botones" href="catalogo">Catalogo</a>
+    <a class="header__botones" href="pedidos">Mis pedidos</a>
+    <a class="header__botones" href="carrito">Carrito</a>
+    <a id='botonIniciarSesion' class="header__botones" href="inicioSesion">Iniciar sesion</a>
+    <div id='botonUsuario' class="header__botones header__botones-noActive">Cuenta 
+        <li id="botonUsuario__lista">
+            <a id="botonUsuario__lista__perfil" class="botonUsuario__lista__a" href="miPerfil">Mi perfil</a>
+            <a id="botonUsuario__lista__contactos" class="botonUsuario__lista__a">Contacto</a>
+            <a id="botonUsuario__lista__salir" class="botonUsuario__lista__a">Salir</a>
+        </li>
     </div>
 </div>
+
+
+<script src="../../js/catalogo/header.js"></script>

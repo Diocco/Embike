@@ -29,7 +29,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 }]
         });
     }
-    // Generar JWT
+    // Generar JWT 
     const token = yield (0, generarJWT_1.generarJWT)(usuario.id);
     res.status(200).json({
         msg: "Login Realizado con exito",

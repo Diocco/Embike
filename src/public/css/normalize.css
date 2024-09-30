@@ -14,7 +14,8 @@
   margin: 0;
 }
 a {
-  color: #0000EE;   /* Azul predeterminado */
+  color: white;
+  text-decoration: none;
   cursor: pointer;  /* El cursor cambia a una mano cuando se pasa por encima */
 }
 a:visited {

@@ -30,7 +30,7 @@
 }
 
 #pregunta{
-    font-size: 15px;
+    font-size: 20px;
     margin: 10px;
 }
 
@@ -40,10 +40,11 @@
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: center;
+    justify-content: center;
     background-color: white;
-    height: 500px;
-    width: 500px;
-    padding: 50px;
+    height: 530px;
+    width: min-content;
+    padding: 30px;
     margin: 80px;
     border-radius: 20px;
 }
@@ -67,8 +68,13 @@
     border-radius: 10px;
     border: 0px;
     border-color: black;
-    transition: border-color 0.5s;
+    transition: border-color 1s;
+    outline: none;
     background-color: rgb(206, 206, 206);
+    box-sizing: border-box;
+}
+.boton__enProceso{
+    filter: contrast(0.7);
 }
 
 .boton__enError{
@@ -107,7 +113,8 @@
 }
 
 .errorText{
-    height: 10px;
+    min-height: 15px;
+    font-size: 15px;
     color: red;
     align-self: start;
 }
@@ -154,7 +161,7 @@
 .inicioSesion__formulario__botones,.registrarse__formulario__botones{
     height: 90px;
     width: 600px;
-    margin-top: 40px;
+    margin-top: 0px;
     font-size: 40px;
     padding: 20px;
     border-radius: 20px;
@@ -162,14 +169,12 @@
     background-color: rgb(206, 206, 206);
 }
 
-#inicioSesion__formulario__enviar,#registrarse__formulario__enviar{
-    background-color: var(--azul-logo);
-    color:white
+#inicioSesion__formulario__enviar{
+    margin-bottom: 40px;
 }
 
-#inicioSesion__formulario__registrarse,#registrarse__formulario__registrarse{
+#inicioSesion__formulario__registrarse{
     background-color: var(--crema-logo);
-
 }
 
 #otraOpcion{
@@ -178,10 +183,11 @@
 }
 #titulo{
     font-size: 80px;
+    margin-bottom: 40px;
 }
 
 #pregunta{
-    font-size: 30px;
+    font-size: 40px;
     margin: 20px;
 }
 #volver{
@@ -190,8 +196,8 @@
     position: absolute;
 }
 .errorText{
-    height: 20px;
-    font-size: 25px;
+    min-height: 70px;
+    font-size: 30px;
 }
 
 }
