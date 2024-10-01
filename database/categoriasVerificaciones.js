@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.categoriaExiste = void 0;
+exports.categoriaValida = exports.categoriaExiste = void 0;
 const categoria_1 = __importDefault(require("../src/models/categoria"));
 // Verifica si la categoria existe mediante su id
 const categoriaExiste = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,3 +28,15 @@ const categoriaExiste = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.categoriaExiste = categoriaExiste;
+const categoriaValida = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const categoriaExiste = yield categoria_1.default.findById(id); // Busca la categoria de entrada en la base de datos de categorias
+        if (!categoriaExiste) { // Si la categoria no existe:
+            throw new Error(`La categoria no es válida`); // Lanza un error dentro del check (el codigo sigue ejecutandose)
+        }
+    }
+    catch (error) {
+        throw new Error(`La categoria no tiene un formato valido`); // Lanza un error dentro del check (el codigo sigue ejecutandose)
+    }
+});
+exports.categoriaValida = categoriaValida;

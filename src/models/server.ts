@@ -18,6 +18,7 @@ import {
 import usuariosRoutes from '../routes/usuarios';
 import authRoutes from '../routes/auth'; 
 import categoriasRoutes from '../routes/categorias'; 
+import productosRoutes from '../routes/productos'; 
 
 
 
@@ -26,6 +27,7 @@ class Server {
     usuariosPath: string
     authPath: string
     categoriasPath:string
+    productosPath:string
 
     app: express.Application;
     port: string | number;
@@ -33,8 +35,9 @@ class Server {
     constructor() {
         this.usuariosPath = '/api/usuarios';
         this.authPath = '/api/auth';
-        this.categoriasPath = '/api/categorias'
-
+        this.categoriasPath = '/api/categorias';
+        this.productosPath = '/api/productos';
+        
         this.app = express(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
         this.conectarDB() // Conecta la base de datos
@@ -77,6 +80,7 @@ class Server {
         this.app.use(this.usuariosPath, usuariosRoutes);
         this.app.use(this.authPath, authRoutes);
         this.app.use(this.categoriasPath, categoriasRoutes);
+        this.app.use(this.productosPath, productosRoutes);
         
         // HTML
         this.app.get('/', cargarIndex); // Configura la ruta
