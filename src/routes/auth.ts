@@ -9,7 +9,7 @@ import { login } from '../controllers/auth'
 import { validarCampos } from '../middlewares/validarCampos';
 
 // Validaciones
-import { correoExiste } from '../../database/verificaciones';
+import { correoExiste } from '../../database/usuariosVerificaciones';
 
 
 const router = express.Router();

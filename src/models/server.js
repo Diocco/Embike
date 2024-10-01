@@ -22,12 +22,14 @@ const config_1 = require("../../database/config");
 // Controladores
 const archivos_1 = require("../controllers/archivos");
 // Rutas
-const usuarios_1 = __importDefault(require("../routes/usuarios")); // Usa la extensión '.ts' si el archivo está en TypeScript
-const auth_1 = __importDefault(require("../routes/auth")); // Usa la extensión '.ts' si el archivo está en TypeScript
+const usuarios_1 = __importDefault(require("../routes/usuarios"));
+const auth_1 = __importDefault(require("../routes/auth"));
+const categorias_1 = __importDefault(require("../routes/categorias"));
 class Server {
     constructor() {
         this.usuariosPath = '/api/usuarios';
         this.authPath = '/api/auth';
+        this.categoriasPath = '/api/categorias';
         this.app = (0, express_1.default)(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
         this.conectarDB(); // Conecta la base de datos
@@ -59,6 +61,7 @@ class Server {
         // API
         this.app.use(this.usuariosPath, usuarios_1.default);
         this.app.use(this.authPath, auth_1.default);
+        this.app.use(this.categoriasPath, categorias_1.default);
         // HTML
         this.app.get('/', archivos_1.cargarIndex); // Configura la ruta
         this.app.get('/index', archivos_1.cargarIndex); // Configura la ruta

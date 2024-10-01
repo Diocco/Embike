@@ -77,7 +77,7 @@ const actualizarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, functi
         resto.password = (0, bcryptjs_1.hashSync)(password, salt); // Genera un hash relacionado a la contraseña del usuario y la agrega al resto de propiedades
     }
     // Busca por id en la base de datos que actualiza las propiedades que esten en "resto". { new: true } devuelve el documento actualizado
-    const usuario = yield usuario_1.default.findByIdAndUpdate(id, resto, { new: true });
+    const usuario = yield usuario_1.default.findByIdAndUpdate(id, { resto }, { new: true });
     res.status(200).json({
         msg: "Usuario actualizado en la base de datos",
         usuario
@@ -107,7 +107,7 @@ const eliminarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function
     const { id } = req.params; // Desestructura el id
     // Busca el usuario con ese id y cambia su estado de actividad
     const usuario = yield usuario_1.default.findByIdAndUpdate(id, { activo: false }, { new: true });
-    const usuarioAutenticado = req.usuario;
+    const usuarioAutenticado = req.body.usuario;
     res.status(200).json({
         usuario,
         usuarioAutenticado

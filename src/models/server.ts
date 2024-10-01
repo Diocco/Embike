@@ -15,15 +15,17 @@ import {
     cargarNotFound } from '../controllers/archivos';
 
 // Rutas
-import usuariosRoutes from '../routes/usuarios'; // Usa la extensión '.ts' si el archivo está en TypeScript
-import authRoutes from '../routes/auth'; // Usa la extensión '.ts' si el archivo está en TypeScript
+import usuariosRoutes from '../routes/usuarios';
+import authRoutes from '../routes/auth'; 
+import categoriasRoutes from '../routes/categorias'; 
+
 
 
 class Server {
     // Variables
     usuariosPath: string
     authPath: string
-    
+    categoriasPath:string
 
     app: express.Application;
     port: string | number;
@@ -31,6 +33,7 @@ class Server {
     constructor() {
         this.usuariosPath = '/api/usuarios';
         this.authPath = '/api/auth';
+        this.categoriasPath = '/api/categorias'
 
         this.app = express(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
@@ -73,7 +76,8 @@ class Server {
         // API
         this.app.use(this.usuariosPath, usuariosRoutes);
         this.app.use(this.authPath, authRoutes);
-
+        this.app.use(this.categoriasPath, categoriasRoutes);
+        
         // HTML
         this.app.get('/', cargarIndex); // Configura la ruta
         this.app.get('/index', cargarIndex); // Configura la ruta

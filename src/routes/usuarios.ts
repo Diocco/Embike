@@ -21,7 +21,7 @@ import {
     esRolValido, 
     correoUnico, 
     nombreUnico, 
-    usuarioExiste } from '../../database/verificaciones';
+    usuarioExiste } from '../../database/usuariosVerificaciones';
 
 
 const router = express.Router();

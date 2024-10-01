@@ -41,7 +41,7 @@ const actualizarUsuario = async(req: Request, res: Response) =>{
     }
 
     // Busca por id en la base de datos que actualiza las propiedades que esten en "resto". { new: true } devuelve el documento actualizado
-    const usuario = await Usuario.findByIdAndUpdate( id , resto, { new: true }); 
+    const usuario = await Usuario.findByIdAndUpdate( id , { resto }, { new: true }); 
 
     res.status(200).json({ //Devuelve un mensaje y el usuario agregado a la base de datos
         msg: "Usuario actualizado en la base de datos",
@@ -78,7 +78,7 @@ const eliminarUsuario = async(req: Request, res: Response) =>{
     const {id} = req.params; // Desestructura el id
     // Busca el usuario con ese id y cambia su estado de actividad
     const usuario = await Usuario.findByIdAndUpdate( id , {activo: false}, { new: true }); 
-    const usuarioAutenticado = (req as any).usuario
+    const usuarioAutenticado = req.body.usuario
     res.status(200).json({
         usuario,
         usuarioAutenticado

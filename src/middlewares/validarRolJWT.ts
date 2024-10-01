@@ -5,7 +5,7 @@ import { usuario } from "../../interfaces/usuario";
 export const validarRolJWT = (...roles:string[]) => { 
     return (req: Request, res: Response, next:NextFunction) =>{
 
-        const usuario:usuario = (req as any).usuario // Recupera el usuario del JWT
+        const usuario:usuario = req.body.usuario // Recupera el usuario del JWT
 
         if(!usuario){ // Si no se encontro ningun usuario entonces:
             return res.status(500).json({

@@ -25,12 +25,12 @@ export const validarJWT = async(req: Request, res: Response,next:NextFunction)=>
                 msg:'Token no valido - El usuario no existe'
             })
         }
-        if(!usuario.activo){ // Si no se encontro el usuario:
+        if(!usuario.activo){ // Si el usuario no esta activo:
             return res.status(401).json({
                 msg:'Token no valido - El usuario no esta activo'
             })
         }
-        (req as any).usuario = usuario // Define el uid del usuario que esta realizando la solitud, en la request, para ser usado en los siguientes middlewares
+        req.body.usuario = usuario // Define el uid del usuario que esta realizando la solitud, en la request, para ser usado en los siguientes middlewares
         
         next() // Continúa con el siguiente middleware o controlador
     } catch (error) { // Si el token no es valido "verify" lanzara un error y se atrapa aqui
