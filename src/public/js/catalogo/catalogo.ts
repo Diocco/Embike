@@ -109,7 +109,6 @@ document.addEventListener("DOMContentLoaded", function() {
     .catch(error => { // Si hay un error se manejan 
         console.error(error);
     })
-    .finally(()=>{console.log("Termina el fetch")})
 
 })
 

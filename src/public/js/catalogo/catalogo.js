@@ -90,6 +90,5 @@ document.addEventListener("DOMContentLoaded", function () {
     })
         .catch(error => {
         console.error(error);
-    })
-        .finally(() => { console.log("Termina el fetch"); });
+    });
 });
