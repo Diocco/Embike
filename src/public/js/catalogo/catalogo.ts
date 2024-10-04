@@ -1,9 +1,13 @@
+// Define el url dependiendo si se esta en produccion o en desarrollo
+let urlProductos:string = '/api/productos'
+let urlCategorias:string = '/api/categorias'
+
+const urlObjeto = new URL(window.location.href);
 
 //Se agrega el comportamiento de cuando se hace click sobre cualquier producto
 const ventanaEmergenteProductos = () =>{
     //Se configura el comportamiento de la ventana
     const productosCargados:NodeListOf<HTMLElement> = document.querySelectorAll('.catalogo__div'); // Crea un array con los nodos de los productos existentes en el DOM
-
     const ventanaEmergenteProducto:HTMLElement = document.getElementById("catalogoProducto")!; // Ventana emergente donde aparece toda la informacion del producto seleccionado
     const catalogo__fondo:HTMLElement = document.getElementById("catalogo__fondo")!; // Fondo de la ventana emergente
     const catalogoProducto__imagen:HTMLElement = document.getElementById("catalogoProducto__imagen")!; // Imagen del producto seleccionado dentro de la ventana emergente
@@ -41,7 +45,9 @@ const ventanaEmergenteProductos = () =>{
 // Agrega los productos recibidos como parametros al DOM
 const agregarProductosDOM = (productos: any[]) => {
     const contenedorProductos: HTMLElement = document.getElementById('catalogo')!; //Toma el catalogo como el contenedor de los productos a agregar
+    contenedorProductos.innerHTML='' // Vacia el contenedor para agregar nuevos productos
     const fragmento: DocumentFragment = document.createDocumentFragment(); //Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
+
 
     productos.forEach((producto: any ) => { // Recorre los productos
 
@@ -58,41 +64,115 @@ const agregarProductosDOM = (productos: any[]) => {
 
     })
     contenedorProductos.appendChild(fragmento); //Agrega el fragmento con todos los productos al catalogo
-    ventanaEmergenteProductos();
+}
+
+const buscarProductos = ()=>{
+        // Aquí iría el código para hacer fetch y actualizar el contenedor de productos
+        const params = new URLSearchParams(window.location.search); // Define el objeto para manejar los query params
+        const desde = params.get('desde') || 0;
+        const hasta = params.get('hasta') || 20;
+        const precioMin = params.get('precioMin') || '';
+        const precioMax = params.get('precioMax') || '';
+        const palabraBuscada = params.get('palabraBuscada') || '';
+        const categorias = params.get('categorias') || '';
+        
+        // Realiza la peticion GET para obtener los productos
+        fetch(urlProductos+`?desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}`, { 
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' },
+        })
+        .then(response => response.json()) // Parsear la respuesta como JSON
+        .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
+            if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
+                (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
+                    console.log(error);
+                })
+            }else{ // Si el servidor no devuelve errores:
+                agregarProductosDOM(data.productos)
+            }
+        })
+        .catch(error => { // Si hay un error se manejan 
+            console.error(error);
+        })
+        .finally(()=>{
+            ventanaEmergenteProductos();
+        })
+}
+
+const agregarCategoriasDOM = (categorias: string[]) => {
+    const contenedorCategorias: HTMLElement = document.getElementById('catalogo__indice__categorias')!; // Selecciona el contenedor de los filtros de categorias
+    const fragmento: DocumentFragment = document.createDocumentFragment(); // Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
+    const params = new URLSearchParams(window.location.search); // Define el objeto para manejar los query params
+    let categoriasActivas = params.get('categorias') // Almacena una cadena que contiene las categorias activas
+
+    categorias.forEach((categoria: string ) => { // Recorre los productos
+
+        let agregarCategoria:HTMLElement = document.createElement('button'); // Crea un button para alojar la nueva categoria
+        agregarCategoria.textContent=categoria; // Le da el nombre de la categoria actual
+        agregarCategoria.classList.add('filtroBoton'); // Le da la clase correspondiente a su funcion
+        fragmento.appendChild(agregarCategoria); // Agrega el producto recien creado al fragmento
+
+        // Verificar si la categoria agregada esta activa
+        if(categoriasActivas){ // Si hay categorias activas:
+            let categoriaActiva = categoriasActivas.includes(categoria) // Verifica que la categoria actual este activa
+            if(categoriaActiva){ // Si la categoria esta activa
+                agregarCategoria.classList.add('botonActive'); // Le da el estilo de activo
+            }
+        }
+
+    })
+    contenedorCategorias.appendChild(fragmento); //Agrega el fragmento con todos los productos al catalogo
+
+    // Alterna el "active" de los botones del indice cuando son presionados
+    const botonesIndice: NodeListOf<Element> = document.querySelectorAll('.filtroBoton')
+    if(botonesIndice[0]){ // Si hay botones en el indice entonces los recorre
+        botonesIndice.forEach(botonIndice =>{
+            botonIndice.addEventListener('click',()=>{
+                botonIndice.classList.toggle(`botonActive`);
+                const categoriaPresionada = botonIndice.textContent! // Obtiene la categoria presionada
+
+                const params = new URLSearchParams(window.location.search); // Define el objeto para manejar los query params
+                let categoriasActivas = params.get('categorias') // Obtiene las categorias activas
+
+                if(categoriasActivas){// Si hay categorias activas
+                    const esActiva = categoriasActivas.includes(categoriaPresionada) // Evalua si la categoria presionada estaba activa
+                    if(esActiva){ // Si la categoria presionada estaba activa
+                        categoriasActivas = categoriasActivas.replace(categoriaPresionada+',','') // La elimina de las categorias activas
+                    }else{ // Si no estaba activa
+                        categoriasActivas = categoriasActivas+categoriaPresionada+',' // La agrega
+                    }
+                }else{ // Si no habia categorias activas entonces
+                    categoriasActivas = categoriaPresionada+',' // Define a la categoria presionada como la unica activa
+                }
+
+                // Establecer el nuevo valor del parámetro
+                urlObjeto.searchParams.set('categorias', categoriasActivas); // Si no existe, lo crea; si existe, lo actualiza
+                window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
+                
+                // Llamar a la función para volver a cargar los productos o actualizar la interfaz
+                buscarProductos(); // Asumiendo que tienes una función para cargar los productos
+            })
+        })
+    }
 }
 
 
-
 //Alternar el active en los botones del indice
-document.addEventListener("DOMContentLoaded", function() {
-
-    // Define el url dependiendo si se esta en produccion o en desarrollo
-    let urlProductos:string = '/api/productos'
-    let url:string
+document.addEventListener("DOMContentLoaded", async() => {
 
     if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
         url = 'http://localhost:8080';
         urlProductos = url + urlProductos;
+        urlCategorias = url + urlCategorias;
     }else{ // Si no tiene localhost define el url en la pagina web para la peticion
         url= 'https://embike-223a165b4ff6.herokuapp.com';
         urlProductos=url + urlProductos;
+        urlCategorias=url + urlCategorias;
     }
 
-
-    // Alterna el "active" de los botones del indice cuando son presionados
-    const botonesIndice: NodeListOf<Element> = document.querySelectorAll('.filtroBoton') 
-    botonesIndice.forEach(botonIndice =>{
-        botonIndice.addEventListener('click',()=>{
-            botonIndice.classList.toggle(`botonActive`);
-        })
-    })
-
-    //Agrega los productos al catalogo desde la base de datos
-
-    let desde: number = 0; // Define el producto inicial que carga
-    let hasta: number = 20; // Hasta que producto quiere cargar
-
-    fetch(urlProductos+`?desde=${desde}&hasta=${hasta}`, { // Realiza la peticion GET para obtener los productos
+    // Carga las categorias validas en el DOM
+    fetch(
+        urlCategorias+`?nombres=true`, { // Realiza la peticion GET para obtener un string[] con los nombres de las categorias validas
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     })
@@ -103,12 +183,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.log(error);
             })
         }else{ // Si el servidor no devuelve errores:
-            agregarProductosDOM(data.productos)
+            console.log(data.categorias)
+            agregarCategoriasDOM(data.categorias)
         }
     })
     .catch(error => { // Si hay un error se manejan 
         console.error(error);
     })
+
+    buscarProductos();
 
 })
 
