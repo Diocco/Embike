@@ -10,14 +10,17 @@ else { // Si no tiene localhost define el url en la pagina web para la peticion
 }
 // Se definen los botones de "cuenta" o de "iniciar sesion" segun si el usuario esta o no con la sesion activa
 const botonIniciarSesion = document.getElementById('botonIniciarSesion');
+const botonIniciarSesionResponsive = document.getElementById('header-responsive__a-iniciarSesion');
 const botonUsuario = document.getElementById('botonUsuario');
-const botonIniciarSesionResponsive = document.getElementById('header-resposive__div__buttom-inicioSesion');
+const botonUsuarioResponsive = document.getElementById('header-responsive__div-cuenta');
 const tokenAcceso = localStorage.getItem('tokenAcceso'); // Recupera el token de acceso desde el localStorage
 if (tokenAcceso) { // Si el token de acceso existe entonces lo verifica
     // Verificacion
-    // Si el token es valido entonces modifica la parte visual del boton para reflejar que la sesion esta activa
-    botonIniciarSesion.classList.add('header__botones-noActive');
-    botonUsuario.classList.remove('header__botones-noActive');
+    // Si el token es valido entonces modifica la parte visual para reflejar que la sesion esta activa
+    botonIniciarSesion.classList.add('noActive');
+    botonIniciarSesionResponsive.classList.add('noActive');
+    botonUsuario.classList.remove('noActive');
+    botonUsuarioResponsive.classList.remove('noActive');
 }
 else { // Si no existe un token de acceso entonces no hace nada
 }
@@ -26,4 +29,47 @@ const botonCerrarSesion = document.getElementById('botonUsuario__lista__salir');
 botonCerrarSesion.addEventListener('click', () => {
     localStorage.removeItem('tokenAcceso'); // Elimina el token de acceso
     window.location.assign(url); // Redirije al usuario al inicio de la pagina
+});
+// Barra de busqueda
+// Verifica que refleja busqueda actual
+const inputBusqueda = document.getElementById('header__form-barraBusqueda__input');
+const inputBusquedaResponsive = document.getElementById('header-responsive__form-barraBusqueda__input');
+document.addEventListener("DOMContentLoaded", () => {
+    const urlObjeto = new URL(window.location.href); // Crea un objeto para definir, o ver, los query elements mas facilmente
+    const palabraBuscada = urlObjeto.searchParams.get('palabraBuscada'); // Almacena la palabra buscada previamente si existe
+    if (palabraBuscada) { // Si la palabra buscada existe
+        inputBusqueda.value = palabraBuscada; // La define como valor en el input de la barra de busqueda
+        inputBusquedaResponsive.value = palabraBuscada; // La define como valor en el input de la barra de busqueda
+    }
+});
+// Escucha una nueva busqueda
+const formularioBusqueda = document.getElementById('header__form-barraBusqueda');
+const formularioBusquedaResponsive = document.getElementById('header-responsive__form-barraBusqueda');
+formularioBusqueda.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const esCatalogo = window.location.pathname.includes('/catalogo'); // Verifica si se esta en el catalogo
+    if (esCatalogo) {
+        // Define los query element 
+        const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
+        urlObjeto.searchParams.set('palabraBuscada', inputBusqueda.value); // Si no existe, lo crea; si existe, lo actualiza
+        window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
+        buscarProductos(); // Realiza la busqueda de los productos con el nuevo filtro
+    }
+    else {
+        location.assign(`/catalogo?palabraBuscada=${inputBusqueda.value}`); // Redirije al usuario a la pagina del catalogo con la plabra buscada como parametro de busqueda
+    }
+});
+formularioBusquedaResponsive.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const esCatalogo = window.location.pathname.includes('/catalogo'); // Verifica si se esta en el catalogo
+    if (esCatalogo) {
+        // Define los query element 
+        const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
+        urlObjeto.searchParams.set('palabraBuscada', inputBusquedaResponsive.value); // Si no existe, lo crea; si existe, lo actualiza
+        window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
+        buscarProductos(); // Realiza la busqueda de los productos con el nuevo filtro
+    }
+    else {
+        location.assign(`/catalogo?palabraBuscada=${inputBusquedaResponsive.value}`); // Redirije al usuario a la pagina del catalogo con la plabra buscada como parametro de busqueda
+    }
 });

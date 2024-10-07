@@ -2,7 +2,7 @@
 let urlProductos:string = '/api/productos'
 let urlCategorias:string = '/api/categorias'
 
-const urlObjeto = new URL(window.location.href);
+
 
 //Se agrega el comportamiento de cuando se hace click sobre cualquier producto
 const ventanaEmergenteProductos = () =>{
@@ -102,29 +102,19 @@ const buscarProductos = ()=>{
 const agregarCategoriasDOM = (categorias: string[]) => {
     const contenedorCategorias: HTMLElement = document.getElementById('catalogo__indice__categorias')!; // Selecciona el contenedor de los filtros de categorias
     const fragmento: DocumentFragment = document.createDocumentFragment(); // Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
-    const params = new URLSearchParams(window.location.search); // Define el objeto para manejar los query params
-    let categoriasActivas = params.get('categorias') // Almacena una cadena que contiene las categorias activas
 
     categorias.forEach((categoria: string ) => { // Recorre los productos
 
         let agregarCategoria:HTMLElement = document.createElement('button'); // Crea un button para alojar la nueva categoria
         agregarCategoria.textContent=categoria; // Le da el nombre de la categoria actual
-        agregarCategoria.classList.add('filtroBoton'); // Le da la clase correspondiente a su funcion
+        agregarCategoria.classList.add('filtroBoton','filtroBotonCategoria'); // Le da la clase correspondiente a su funcion
         fragmento.appendChild(agregarCategoria); // Agrega el producto recien creado al fragmento
-
-        // Verificar si la categoria agregada esta activa
-        if(categoriasActivas){ // Si hay categorias activas:
-            let categoriaActiva = categoriasActivas.includes(categoria) // Verifica que la categoria actual este activa
-            if(categoriaActiva){ // Si la categoria esta activa
-                agregarCategoria.classList.add('botonActive'); // Le da el estilo de activo
-            }
-        }
 
     })
     contenedorCategorias.appendChild(fragmento); //Agrega el fragmento con todos los productos al catalogo
 
-    // Alterna el "active" de los botones del indice cuando son presionados
-    const botonesIndice: NodeListOf<Element> = document.querySelectorAll('.filtroBoton')
+    // Le da la funcionalidad a los botones de categorias
+    const botonesIndice: NodeListOf<Element> = document.querySelectorAll('.filtroBotonCategoria')
     if(botonesIndice[0]){ // Si hay botones en el indice entonces los recorre
         botonesIndice.forEach(botonIndice =>{
             botonIndice.addEventListener('click',()=>{
@@ -146,12 +136,58 @@ const agregarCategoriasDOM = (categorias: string[]) => {
                 }
 
                 // Establecer el nuevo valor del parámetro
+                const urlObjeto = new URL(window.location.href);
                 urlObjeto.searchParams.set('categorias', categoriasActivas); // Si no existe, lo crea; si existe, lo actualiza
                 window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
                 
-                // Llamar a la función para volver a cargar los productos o actualizar la interfaz
-                buscarProductos(); // Asumiendo que tienes una función para cargar los productos
+                buscarProductos(); // Busca nuevamente los productos en base a los nuevos parametros de busqueda
             })
+        })
+    }
+}
+
+const precioMinMax = () =>{
+    const inputMax = document.getElementById('inputPrecioMax') as HTMLInputElement // Selecciona el input donde se coloca el precio maximo de los productos que se quieren ver
+    const inputMin = document.getElementById('inputPrecioMin') as HTMLInputElement // Selecciona el input donde se coloca el precio minimo de los productos que se quieren ver
+    const formularioMinMax = document.getElementById(`formularioMinMax`)! as HTMLFormElement // Selecciona el formulario donde estan los input
+
+    formularioMinMax.addEventListener('submit',(event)=>{ // Escucha cuando de envia el formulario
+        event.preventDefault() // Previe que se recargue la pagina
+
+        // Define los query element 
+        const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
+        urlObjeto.searchParams.set('precioMin', inputMin.value); // Si no existe, lo crea; si existe, lo actualiza
+        urlObjeto.searchParams.set('precioMax', inputMax.value); // Si no existe, lo crea; si existe, lo actualiza
+        
+        window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
+        buscarProductos() // Realiza la busqueda de los productos con el nuevo filtro
+    })
+
+
+
+}
+
+const verificarActive =()=>{ // Verifica que elementos se encuentran activos en el filtrado de productos
+    const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
+
+    // Rango de precios
+    const inputMax = document.getElementById('inputPrecioMax') as HTMLInputElement // Selecciona el input donde se coloca el precio maximo de los productos que se quieren ver
+    const inputMin = document.getElementById('inputPrecioMin') as HTMLInputElement // Selecciona el input donde se coloca el precio minimo de los productos que se quieren ver
+    const precioMin = urlObjeto.searchParams.get('precioMin', ); // Lee si hay un precio minimo buscado
+    const precioMax = urlObjeto.searchParams.get('precioMax', ); // Lee si hay un precio maximo buscado
+
+    precioMax?inputMax.value = precioMax:''; // Si previamente se busco un precio maximo, entonces lo refleja en el input correspondiente
+    precioMin?inputMin.value = precioMin:''; // Si previamente se busco un precio minimo, entonces lo refleja en el input correspondiente
+
+
+    // Categorias
+    const botonesCategorias:NodeListOf<HTMLButtonElement> = document.querySelectorAll('.filtroBotonCategoria')
+    let categoriasActivas = urlObjeto.searchParams.get('categorias') // Almacena una cadena que contiene las categorias activas
+
+    if(categoriasActivas){ // Si hay categorias activas:
+        botonesCategorias.forEach(boton=>{ // Recorre cada boton para filtrar las categorias
+            const esActivo = categoriasActivas.includes(boton.textContent!); // Verifica si la categoria del boton se encuentra activa
+            esActivo?boton.classList.add('botonActive'):''; // Si el boton tiene una categoria activa entonces le da la clase de boton activo
         })
     }
 }
@@ -183,7 +219,6 @@ document.addEventListener("DOMContentLoaded", async() => {
                 console.log(error);
             })
         }else{ // Si el servidor no devuelve errores:
-            console.log(data.categorias)
             agregarCategoriasDOM(data.categorias)
         }
     })
@@ -191,7 +226,9 @@ document.addEventListener("DOMContentLoaded", async() => {
         console.error(error);
     })
 
-    buscarProductos();
-
+    buscarProductos(); // Busca los productos filtrandolos segun los query params
+    precioMinMax(); // Le da la funcionalidad a los input de precio maximo y minimo
+    
+    verificarActive(); // Verifica los estados de los input y los botones para reflejar los pararametros de filtrado
 })
 
