@@ -18,19 +18,23 @@ const categoria_1 = __importDefault(require("../models/categoria"));
 const verCategorias = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const desde = Math.abs(Number(req.query.desde)) || 0; // Valor por defecto 0 si no se pasa el parámetro o es invalido
     const cantidad = Math.abs(Number(req.query.cantidad)) || 10; // Valor por defecto 10 si no se pasa el parámetro o es invalido
+    const nombres = req.query.nombres || null;
     const condicion = { estado: true }; // Condicion/es que debe cumplir la busqueda
     // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
-    const [usuarios, usuariosCantidad] = yield Promise.all([
-        categoria_1.default.find(condicion).populate('usuario') // Busca a todos los usuarios en la base de datos que cumplen la condicion
+    let [categorias, categoriasCantidad] = yield Promise.all([
+        categoria_1.default.find(condicion).populate('usuario') // Busca a todos los categorias en la base de datos que cumplen la condicion
             .skip(desde).limit(cantidad),
         categoria_1.default.countDocuments(condicion) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
     ]);
     // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
-    const paginasCantidad = Math.ceil(usuariosCantidad / cantidad);
+    const paginasCantidad = Math.ceil(categoriasCantidad / cantidad);
+    if (nombres) { // Si nombres es "true" entonces devuelve la solicitud solo un array con los nombres de las categorias
+        categorias = categorias.map(categoria => categoria.nombre);
+    }
     res.status(200).json({
-        usuariosCantidad,
+        categoriasCantidad,
         paginasCantidad,
-        usuarios
+        categorias
     });
 });
 exports.verCategorias = verCategorias;

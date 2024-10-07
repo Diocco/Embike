@@ -14,20 +14,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.eliminarProducto = exports.actualizarProducto = exports.crearProducto = exports.verProductoID = exports.verProductos = void 0;
 const productos_1 = __importDefault(require("../models/productos"));
+const categoria_1 = __importDefault(require("../models/categoria"));
 // Devuelve todas las productos
 const verProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const desde = Math.abs(Number(req.query.desde)) || 0; // Valor por defecto 0 si no se pasa el parámetro o es invalido
     const cantidad = Math.abs(Number(req.query.cantidad)) || 10; // Valor por defecto 10 si no se pasa el parámetro o es invalido
-    const condicion = { estado: true }; // Condicion/es que debe cumplir la busqueda
+    const precioMin = Math.abs(Number(req.query.precioMin)) || 0; // Precio minimo del producto
+    const precioMax = Math.abs(Number(req.query.precioMax)) || 1000000000; // Precio maximo del producto
+    const palabraBuscada = req.query.palabraBuscada || ''; // Palabra buscada por el usuario
+    const categoriasNombresCadena = req.query.categorias || ''; // Categorias especificadas por el usuario en formato de cadena con separador por coma Ej:(categ1,categ2,categ3,)
+    const categoriasNombreArreglo = categoriasNombresCadena.split(',').filter(Boolean); // Convierte la cadena en un arreglo
+    // Busca las categorías por sus nombres
+    let categoriasEncontradas;
+    if (categoriasNombreArreglo[0]) { // Si se pasa como argumento las categorias especificas:
+        categoriasEncontradas = yield categoria_1.default.find({ nombre: { $in: categoriasNombreArreglo } });
+    }
+    else { // Si no se busco ninguna categoria en particular entonces busca todas las categorias validas
+        categoriasEncontradas = yield categoria_1.default.find();
+    }
+    // Extrae los ObjectId de las categorías encontradas
+    const categoriasIds = categoriasEncontradas.map(categoria => categoria._id);
+    // Definir la expresión regular para buscar productos cuyo nombre, descripción, etc., contenga la palabra buscada
+    const palabraBuscadaRegExp = new RegExp(palabraBuscada, 'i');
+    const filtros = {
+        // Los filtros opcionales donde el valor buscado puede estar en varias propiedades
+        $or: [
+            { nombre: palabraBuscadaRegExp },
+            { descripcion: palabraBuscadaRegExp },
+            { tags: { $in: [palabraBuscadaRegExp] } } // Aquí el uso de $in, pero asegurándonos que tags es un array
+        ],
+        $and: [
+            { estado: true }, // El producto debe estar disponible
+            { precio: { $gte: precioMin, $lte: precioMax } }, // Rango de precios
+            { categoria: { $in: categoriasIds } } // Las categorías deben ser parte de las seleccionadas
+        ]
+    };
     // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
     const [productos, productosCantidad] = yield Promise.all([
-        productos_1.default.find(condicion) // Busca a todos los productos en la base de datos que cumplen la condicion
+        productos_1.default.find(filtros) // Busca a todos los productos en la base de datos que cumplen la condicion
             .skip(desde).limit(cantidad),
-        productos_1.default.countDocuments(condicion) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
+        productos_1.default.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
     ]);
     // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
     const paginasCantidad = Math.ceil(productosCantidad / cantidad);
     res.status(200).json({
+        categoriasIds,
         productosCantidad,
         paginasCantidad,
         productos

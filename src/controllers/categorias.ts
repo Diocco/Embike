@@ -7,23 +7,28 @@ import Categoria from '../models/categoria';
 const verCategorias = async(req: Request, res: Response)=>{
     const desde:number = Math.abs(Number(req.query.desde)) || 0;  // Valor por defecto 0 si no se pasa el parámetro o es invalido
     const cantidad:number = Math.abs(Number(req.query.cantidad)) || 10;  // Valor por defecto 10 si no se pasa el parámetro o es invalido
+    const nombres = req.query.nombres || null;
 
     const condicion = {estado:true}; // Condicion/es que debe cumplir la busqueda
 
     // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
-    const [usuarios, usuariosCantidad] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
-        Categoria.find(condicion).populate('usuario')  // Busca a todos los usuarios en la base de datos que cumplen la condicion
+    let [categorias, categoriasCantidad] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
+        Categoria.find(condicion).populate('usuario')  // Busca a todos los categorias en la base de datos que cumplen la condicion
             .skip(desde).limit(cantidad),
         Categoria.countDocuments(condicion) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
     ])
 
     // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
-    const paginasCantidad = Math.ceil(usuariosCantidad/cantidad); 
+    const paginasCantidad = Math.ceil(categoriasCantidad/cantidad); 
+
+    if(nombres){ // Si nombres es "true" entonces devuelve la solicitud solo un array con los nombres de las categorias
+        categorias = categorias.map(categoria => categoria.nombre as any)
+    }
 
     res.status(200).json({
-        usuariosCantidad,
+        categoriasCantidad,
         paginasCantidad,
-        usuarios
+        categorias
     })
 }
 

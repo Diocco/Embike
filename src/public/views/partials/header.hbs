@@ -1,34 +1,36 @@
 
-<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<link rel="stylesheet" type="text/css" href="../../css/header.css">
+<link rel="stylesheet" type="text/css" href="../../css/normalize.css">
 
-<div class="header-resposive__div">
-    <button class="header-resposive__div__buttom-menu"></button>
-    <a href="/index">
-        <img src="../img/logo.ico"  class="grid__div-logo__img">
-    </a>
-    <a class="header-resposive__div__buttom-inicioSesion" href="inicioSesion"></a>
-    <form class="header-resposive__div__form-busqueda">
-        <input type="text" name="busqueda" class="header-resposive__div__form-busqueda__input" placeholder="Busca un producto"></form>
-        <button class="header-resposive__div__buttom-summit" type="summit"></button>
+<div class="header-responsive phone">
+    <div id='header-responsive__div-menu' class="phone header-responsive__botones"></div>
+
+    <a href="index" id="header-responsive__a-logo" class=" header-responsive__botones"></a>
+
+    <a href="inicioSesion" id='header-responsive__a-iniciarSesion' class="phone header-responsive__botones"></a>
+    <div id='header-responsive__div-cuenta' class="noActive header-responsive__botones"></div>
+
+    <form id="header-responsive__form-barraBusqueda" class="phone header-responsive__botones">
+        <input type="text" id="header-responsive__form-barraBusqueda__input" placeholder="Busca un producto">
+        <button type="submin" id="header-responsive__form-barraBusqueda__button" placeholder="Busca un producto"></button>
+    </form>
 </div>
 
-<div class="contenedorHeader">
-    <div class="grid__div-logo">
-        <a href="index">
-            <img src="../img/indexImagenes/logo_extendido.png"  class="grid__div-logo__img">
-        </a>
-    </div>
-    <div class="grid__div-busqueda">
-        <form class="grid__form-busqueda">
-            <input type="text" name="busqueda" class="grid__form-busqueda__input" placeholder="Busca un producto">
-        </form>
-    </div>
 
-    <a class="header__botones" href="catalogo">Catalogo</a>
-    <a class="header__botones" href="pedidos">Mis pedidos</a>
-    <a class="header__botones" href="carrito">Carrito</a>
-    <a id='botonIniciarSesion' class="header__botones" href="inicioSesion">Iniciar sesion</a>
-    <div id='botonUsuario' class="header__botones header__botones-noActive">Cuenta 
+<div class="header desktop">
+    <a href="index" class="header__a-logo desktop">
+        <img src="../img/indexImagenes/logo_extendido.png"  class="header__a-logo__img">
+    </a>
+
+    <form id="header__form-barraBusqueda" class="desktop">
+        <input type="text" id="header__form-barraBusqueda__input" placeholder="Busca un producto">
+    </form>
+
+    <a class="header__botones desktop" href="catalogo">Catalogo</a>
+    <a class="header__botones desktop" href="pedidos">Mis pedidos</a>
+    <a class="header__botones desktop" href="carrito">Carrito</a>
+    <a id='botonIniciarSesion' class="header__botones desktop" href="inicioSesion">Iniciar sesion</a>
+    <div id='botonUsuario' class="header__botones noActive desktop">Cuenta 
         <li id="botonUsuario__lista">
             <a id="botonUsuario__lista__perfil" class="botonUsuario__lista__a" href="miPerfil">Mi perfil</a>
             <a id="botonUsuario__lista__contactos" class="botonUsuario__lista__a">Contacto</a>
