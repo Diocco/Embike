@@ -1,0 +1,238 @@
+:root {
+--fondo: white;
+--crema-logo: #DFC5B4; 
+--azul-logo: #033452;
+}/*Variables*/
+
+
+.phone{
+	display: none;
+}
+.noActive{
+	display: none !important;
+}
+
+
+/*Contenedor de la barra principal*/
+.header{
+	display: flex;
+    justify-content: center;
+	
+	background-color: var(var(--fondo));
+
+	align-items: center;
+	justify-items: center;
+
+	position: relative;
+	z-index: 1000;	
+}
+
+
+/*Imagen*/
+.header__a-logo__img{
+    border-radius: 30px;
+    height: 90px;
+}
+.header__a-logo{
+	margin: 10px;
+}
+
+
+/* Barra de busqueda */
+#header__form-barraBusqueda, #header-responsive__form-barraBusqueda{
+	justify-items: center;
+    align-items: center;
+	margin: 0px 10px;
+}
+#header__form-barraBusqueda__input{
+	padding: 10px;
+	border: 0px;
+    border-bottom: 2px;
+    border-style: solid;
+	border-radius: 0px;
+	border-color: var(--azul-logo);
+	outline: 2px;
+	width: 400px;
+	height: 45px;
+}
+
+/*Estilos de los botones*/
+.header__botones{
+	display: flex;
+	text-decoration: none;
+	font-size: 20px;
+	padding: 10px;
+	color: var(--azul-logo);
+    background: white;
+    justify-items: center;
+    align-items: center;
+	border-radius:0px;
+	border: 0px;
+	border-bottom: 2px;
+	border-color: var(--azul-logo);
+	border-style: solid;
+	margin: 0px 10px;
+	transition: 0.1s ease-out;
+} 
+/*///////////////////////////*/
+
+/* Seleccion */
+.header__botones:hover{
+	background: var(--azul-logo) ;
+	transform: scale(1.1);
+	border: 0px;
+	border-radius:10px;
+	color: white;
+}
+#botonUsuario:hover{
+	border-radius: 0px;
+}
+
+
+
+/* Barra deslisadorado de cuenta */
+#botonUsuario__lista{
+	display: none;
+	flex-direction: column;
+	justify-items: center;
+	position: absolute;
+	width: 150px;
+	height: min-content;
+	background-color: var(--azul-logo);
+    transform: translate(-60px, 84px);
+	color: white;
+	margin:50px
+}
+#botonUsuario:hover>#botonUsuario__lista,#botonUsuario__lista:hover{
+	display: flex;
+}
+
+.botonUsuario__lista__a{
+	margin: 10px;
+	color: white;
+}
+/*///////////////////////////*/
+
+
+
+
+
+
+@media screen and (max-width:1200px){
+
+	.phone{
+		display: block;
+	}
+	.desktop{
+		display: none !important;
+	}
+
+
+.header{
+	display: none;
+}
+
+
+
+
+/* Barra principal */
+.header-responsive{
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-items: center;
+	font-size: 50px;
+	background-color: var(--fondo);
+	width: 100vw;
+	padding-top: 10px;
+}
+
+
+
+/*Barra de busqueda*/
+#header-responsive__form-barraBusqueda {
+	display: flex;
+	justify-content: space-between;
+	width: 100vw;
+	margin-top: 10px;
+}
+
+
+
+#header-responsive__form-barraBusqueda__input{
+	width: 100%;
+	height: 70px;
+	font-size: 35px;
+	padding: 10px;
+	border: 0px;
+	border-bottom: 2px;
+	border-style: solid;
+	border-color: var(--azul-logo);
+}
+
+#header-responsive__form-barraBusqueda__input:focus{
+	border: 0px;
+	outline-color: var(--azul-logo);
+}
+
+#header-responsive__form-barraBusqueda__button{
+	width: 85px;
+	height: 70px;
+	background-image: url(../img/indexImagenes/lupa-icono.png);
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: white;
+	background-size: 75%;
+	border: 0px;
+	border-bottom: 2px;
+	border-style: solid;
+	border-color: var(--azul-logo);
+}
+
+
+
+
+
+/*Logo*/
+#header-responsive__a-logo{
+	background-image: url(../img/logo.ico);
+}
+
+/*Estilos de los botones*/
+#header-responsive__a-iniciarSesion, #header-responsive__div-cuenta{
+	background-image: url(../img/indexImagenes/logo-sesion.png);
+	background-size: 75%;
+}
+#header-responsive__div-menu{
+	background-image: url(../img/indexImagenes/menu-icono.png);
+	background-size: 90%;
+}
+
+.header-responsive__botones{
+    display: flex;
+	height: 80px;
+    margin-top: 10px;
+    text-align: center;
+	width: 100px;
+	height: 100px;
+	border-radius: 50px;
+	border: 0px;
+	margin: 10px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: white;
+	border-color: var(--azul-logo);
+} 
+
+
+
+
+
+}
+
+
+
+
+
+
