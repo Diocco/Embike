@@ -13,6 +13,10 @@
   padding: 0;
   margin: 0;
 }
+li{
+  list-style: none; /* Elimina los markers */
+  padding-left: 0; /* Opcional: elimina el espaciado por defecto */
+}
 a {
   text-decoration: none;
   cursor: pointer;  /* El cursor cambia a una mano cuando se pasa por encima */

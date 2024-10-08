@@ -24,9 +24,26 @@ if (tokenAcceso) { // Si el token de acceso existe entonces lo verifica
 }
 else { // Si no existe un token de acceso entonces no hace nada
 }
+// Alternar "mi cuenta" del boton de cuenta responsive
+const cuentaVentanaResponsive = document.getElementById('div-cuenta__div-ventana');
+botonUsuarioResponsive.addEventListener('click', () => {
+    cuentaVentanaResponsive.classList.add('div-cuenta__div-ventana-active');
+    console.log('Clase agregada');
+});
+const botonVolver = document.getElementById('div-ventana__div-volver');
+botonVolver.addEventListener('click', (event) => {
+    cuentaVentanaResponsive.classList.remove('div-cuenta__div-ventana-active');
+    console.log('Clase eliminada');
+    event.stopPropagation();
+});
 // Cerrar sesion
 const botonCerrarSesion = document.getElementById('botonUsuario__lista__salir');
+const botonCerrarSesionResponsive = document.getElementById('ul-opciones__li-cerrarSesion');
 botonCerrarSesion.addEventListener('click', () => {
+    localStorage.removeItem('tokenAcceso'); // Elimina el token de acceso
+    window.location.assign(url); // Redirije al usuario al inicio de la pagina
+});
+botonCerrarSesionResponsive.addEventListener('click', () => {
     localStorage.removeItem('tokenAcceso'); // Elimina el token de acceso
     window.location.assign(url); // Redirije al usuario al inicio de la pagina
 });

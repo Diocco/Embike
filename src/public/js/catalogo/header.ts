@@ -32,13 +32,27 @@ if(tokenAcceso){ // Si el token de acceso existe entonces lo verifica
 
 }
 
-
+// Alternar "mi cuenta" del boton de cuenta responsive
+const cuentaVentanaResponsive = document.getElementById('div-cuenta__div-ventana')! as HTMLDivElement;
+botonUsuarioResponsive.addEventListener('click',()=>{
+    cuentaVentanaResponsive.classList.add('div-cuenta__div-ventana-active')
+})
+const botonVolver = document.getElementById('div-ventana__div-volver')! as HTMLDivElement
+botonVolver.addEventListener('click',(event)=>{
+    cuentaVentanaResponsive.classList.remove('div-cuenta__div-ventana-active')
+    event.stopPropagation() // Evita que el evento ejecute el evento del elemento padre, es decir, el evento de "botonUsuarioResponsive"
+})
 
 
 // Cerrar sesion
 const botonCerrarSesion:HTMLElement = document.getElementById('botonUsuario__lista__salir')!
+const botonCerrarSesionResponsive:HTMLElement = document.getElementById('ul-opciones__li-cerrarSesion')!
 
 botonCerrarSesion.addEventListener('click',()=>{ // Escucha cuando se hace click en cerrar sesion
+    localStorage.removeItem('tokenAcceso') // Elimina el token de acceso
+    window.location.assign(url) // Redirije al usuario al inicio de la pagina
+})
+botonCerrarSesionResponsive.addEventListener('click',()=>{ // Escucha cuando se hace click en cerrar sesion
     localStorage.removeItem('tokenAcceso') // Elimina el token de acceso
     window.location.assign(url) // Redirije al usuario al inicio de la pagina
 })

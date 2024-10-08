@@ -43,6 +43,7 @@
 	justify-items: center;
     align-items: center;
 	margin: 0px 10px;
+	z-index: 1000;
 }
 #header__form-barraBusqueda__input{
 	padding: 10px;
@@ -117,15 +118,15 @@
 
 
 
-
+/*Version de telefono*/
 @media screen and (max-width:1200px){
 
-	.phone{
-		display: block;
-	}
-	.desktop{
-		display: none !important;
-	}
+.phone{
+	display: block;
+}
+.desktop{
+	display: none !important;
+}
 
 
 .header{
@@ -159,7 +160,7 @@
 }
 
 
-
+/*Barra de busqueda*/
 #header-responsive__form-barraBusqueda__input{
 	width: 100%;
 	height: 70px;
@@ -176,6 +177,7 @@
 	outline-color: var(--azul-logo);
 }
 
+/*Lupa de la barra busqueda*/
 #header-responsive__form-barraBusqueda__button{
 	width: 85px;
 	height: 70px;
@@ -199,7 +201,7 @@
 	background-image: url(../img/logo.ico);
 }
 
-/*Estilos de los botones*/
+/*Imagenes de los botones*/
 #header-responsive__a-iniciarSesion, #header-responsive__div-cuenta{
 	background-image: url(../img/indexImagenes/logo-sesion.png);
 	background-size: 75%;
@@ -209,8 +211,10 @@
 	background-size: 90%;
 }
 
+/*Estilos de los botones*/
 .header-responsive__botones{
     display: flex;
+	overflow: hidden;
 	height: 80px;
     margin-top: 10px;
     text-align: center;
@@ -223,12 +227,100 @@
 	background-repeat: no-repeat;
 	background-color: white;
 	border-color: var(--azul-logo);
-} 
+}
+
+/*Desilazdor del boton de cuenta*/
+#div-cuenta__div-ventana{
+	display: flex;
+	justify-content: flex-start;
+	flex-direction: column;
+	position: fixed;
+	background-color: white;
+	min-width: 100vw;
+	min-height: 100vh;
+	transition: transform 0.25s;
+	transform: translateX(100vw);
+	z-index: 1500;
+}
+
+/*El deslizador se muestra cuando se hace click en el boton de "cuenta"*/
+.div-cuenta__div-ventana-active{
+	transform: translateX(-88vw) !important;
+}
+
+/*Opciones del deslizador*/
+
+/*Secciones del deslizador*/
+#div-ventana__div-volver{
+	width: 90px;
+	height: 90px;
+	align-self: start;
+	justify-self: start;
+	margin: 10px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: white;
+	border-color: var(--azul-logo);
+	background-image: url(../img/indexImagenes/volver.png);
+	background-size: 60%;
+}
+
+#div-ventana__div-informacion,#div-ventana__ul-opciones{
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	margin-top: 15px;
+}
+
+/*Opciones de la seccion de informacion de usuario*/
+#div-informacion__div-nombreFoto{
+	display: grid;
+	grid-template-columns:  34vw 66vw;
+	grid-template-rows: 10vh 10vh;
+	align-items: center;
+}
+#div-nombre__div-foto{
+	grid-row: 1 / 3;
+	width: 250px;
+	height: 250px;
+	padding: 60px;
+	font-size: 110px;
+	border: solid 1px black;
+	border-radius: 142px;
+	margin: 25px;
+	margin-left: 60px;
+	background: lightgray;
+}
+#div-nombre__div-nombre{
+	font-size: 70px;
+	justify-self: start;
+    align-self: end;
+}
+#div-informacion__div-correo{
+	justify-self: start;
+    align-self: start;
+	font-size: 40px;
+}
+#div-informacion__div-ID{
+	font-size: 30px;
+	color: lightslategray;
+	align-self: end;
+}
 
 
-
-
-
+/*Opciones de la seccion de opciones*/
+.ul-opciones__botones{
+	border: solid gray 1px;
+	border-right: 0px;
+	border-left: 0px;
+	padding: 25px;
+	font-size: 70px;
+    padding: 50px;
+	transition: background 0.5s ease;
+}
+.ul-opciones__botones:active{
+	background-color: lightgray;
+}
 }
 
 
