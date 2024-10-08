@@ -18,8 +18,13 @@ li{
   padding-left: 0; /* Opcional: elimina el espaciado por defecto */
 }
 a {
+  -webkit-tap-highlight-color: transparent; /* Elimina el recuadro azul */
+  outline: none; /* Asegúrate de que el contorno no aparezca */
   text-decoration: none;
   cursor: pointer;  /* El cursor cambia a una mano cuando se pasa por encima */
+}
+a:focus {
+  outline: none; /* Elimina el contorno azul */
 }
 
 

@@ -6,7 +6,7 @@ import { usuario } from "../../interfaces/usuario";
 // Verifica que el rol del usuario autenticado mediante JWT sea del rol o roles pasados como argumentos
 export const validarIDJWT = (req: Request, res: Response,next:NextFunction) => { 
 
-    const usuario:usuario = (req as any).usuario // Recupera el usuario del JWT
+    const usuario:usuario = req.body.usuario // Recupera el usuario del JWT
     const id = req.params.id
 
     if(!usuario){ // Si no se encontro ningun usuario entonces:

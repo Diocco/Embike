@@ -27,6 +27,8 @@ middlewares_1.validarCampos, // Devuelve un error al usuario si algun check fall
 usuarios_1.actualizarUsuario); // Agrega un nuevo usuario a la base de datos
 router.get('/', // Devuelve los usuarios
 usuarios_1.verUsuarios);
+router.get('/token/', // Obtener usuario por id
+middlewares_1.validarJWT, middlewares_1.validarCampos, usuarios_1.verUsuarioToken);
 router.delete('/:id', // Elimina el usuario con el id pasado como parametro
 middlewares_1.validarJWT, (0, middlewares_1.validarRolJWT)('admin'), (0, express_validator_1.check)('id').custom(usuariosVerificaciones_1.usuarioExiste), // Verifica existencia y validez del id
 middlewares_1.validarCampos, // Devuelve un error al usuario si algun check fallo

@@ -46,7 +46,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.eliminarUsuario = exports.verUsuarios = exports.actualizarUsuario = exports.agregarUsuario = void 0;
+exports.verUsuarioToken = exports.eliminarUsuario = exports.verUsuarios = exports.actualizarUsuario = exports.agregarUsuario = void 0;
 const bcryptjs_1 = __importStar(require("bcryptjs")); // Encriptar contraseña
 const usuario_1 = __importDefault(require("../models/usuario"));
 const generarJWT_1 = require("../../helpers/generarJWT");
@@ -103,6 +103,13 @@ const verUsuarios = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     });
 });
 exports.verUsuarios = verUsuarios;
+const verUsuarioToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const usuarioVerificado = req.body.usuario;
+    res.status(200).json({
+        usuarioVerificado
+    });
+});
+exports.verUsuarioToken = verUsuarioToken;
 const eliminarUsuario = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params; // Desestructura el id
     // Busca el usuario con ese id y cambia su estado de actividad

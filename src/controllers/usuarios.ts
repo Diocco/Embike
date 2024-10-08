@@ -73,6 +73,15 @@ const verUsuarios = async(req: Request, res: Response) =>{
     })
 }
 
+const verUsuarioToken = async(req: Request, res: Response) =>{
+
+    const usuarioVerificado = req.body.usuario!
+
+    res.status(200).json({
+        usuarioVerificado
+    })
+}
+
 const eliminarUsuario = async(req: Request, res: Response) =>{
 
     const {id} = req.params; // Desestructura el id
@@ -92,5 +101,6 @@ export {
     agregarUsuario,
     actualizarUsuario,
     verUsuarios,
-    eliminarUsuario
+    eliminarUsuario,
+    verUsuarioToken
 }

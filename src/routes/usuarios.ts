@@ -6,7 +6,9 @@ import {
     actualizarUsuario,
     agregarUsuario, 
     eliminarUsuario, 
-    verUsuarios } from '../controllers/usuarios';
+    verUsuarios,
+    verUsuarioToken
+    } from '../controllers/usuarios';
 
 // Middlewares
 import { 
@@ -48,6 +50,11 @@ router.put('/:id', //Actualiza un usuario
 
 router.get('/', // Devuelve los usuarios
     verUsuarios) 
+
+router.get('/token/', // Obtener usuario por id
+    validarJWT,
+    validarCampos,
+    verUsuarioToken) 
 
 router.delete('/:id', // Elimina el usuario con el id pasado como parametro
     validarJWT,
