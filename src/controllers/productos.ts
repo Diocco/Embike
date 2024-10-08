@@ -13,6 +13,18 @@ const verProductos = async(req: Request, res: Response)=>{
     const precioMax:number = Math.abs(Number(req.query.precioMax)) || 1000000000 // Precio maximo del producto
     const palabraBuscada:string = req.query.palabraBuscada as string || ''; // Palabra buscada por el usuario
     const categoriasNombresCadena:string = req.query.categorias as string || ''; // Categorias especificadas por el usuario en formato de cadena con separador por coma Ej:(categ1,categ2,categ3,)
+    
+    // Se obtiene la forma de ordenar los resultados
+    let ordenar: { [key: string]: number } = {}; // Inicia la variable vacia
+    if(req.query.ordenar){ // Verifica si se envio la variable
+        if (req.query.ordenar === 'precioMax') { 
+            ordenar = { precio: -1 }; // Ordena por precio descendente
+        } else if (req.query.ordenar === 'precioMin') {
+            ordenar = { precio: 1 }; // Ordena por precio ascendente
+        }
+    }
+
+
 
     const categoriasNombreArreglo:string[] = categoriasNombresCadena.split(',').filter(Boolean) // Convierte la cadena en un arreglo
 
@@ -46,22 +58,11 @@ const verProductos = async(req: Request, res: Response)=>{
     };
 
 
-
-
-
-
-
-
-
-
-
-
-
     
     // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
     const [productos, productosCantidad] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
         Producto.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condicion
-            .skip(desde).limit(cantidad),
+            .skip(desde).sort(ordenar as any).limit(cantidad),
         Producto.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
     ])
 

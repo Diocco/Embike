@@ -23,6 +23,16 @@ const verProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const precioMax = Math.abs(Number(req.query.precioMax)) || 1000000000; // Precio maximo del producto
     const palabraBuscada = req.query.palabraBuscada || ''; // Palabra buscada por el usuario
     const categoriasNombresCadena = req.query.categorias || ''; // Categorias especificadas por el usuario en formato de cadena con separador por coma Ej:(categ1,categ2,categ3,)
+    // Se obtiene la forma de ordenar los resultados
+    let ordenar = {}; // Inicia la variable vacia
+    if (req.query.ordenar) { // Verifica si se envio la variable
+        if (req.query.ordenar === 'precioMax') {
+            ordenar = { precio: -1 }; // Ordena por precio descendente
+        }
+        else if (req.query.ordenar === 'precioMin') {
+            ordenar = { precio: 1 }; // Ordena por precio ascendente
+        }
+    }
     const categoriasNombreArreglo = categoriasNombresCadena.split(',').filter(Boolean); // Convierte la cadena en un arreglo
     // Busca las categorías por sus nombres
     let categoriasEncontradas;
@@ -52,7 +62,7 @@ const verProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
     const [productos, productosCantidad] = yield Promise.all([
         productos_1.default.find(filtros) // Busca a todos los productos en la base de datos que cumplen la condicion
-            .skip(desde).limit(cantidad),
+            .skip(desde).sort(ordenar).limit(cantidad),
         productos_1.default.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
     ]);
     // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados

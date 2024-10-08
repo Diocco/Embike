@@ -47,32 +47,48 @@
 			</div>
 		</div>
 
-	<div id="contenedorCatalogo">
+	<div id="contenedorCatalogo" >
+		<div id="catalogoResponsive__div-contenedorFiltros" class="phone">
+			<div id="div-contenedorFiltros__div-filtros">
+				<div class="div-contenedorFiltros__div-icono" id="div-contenedorFiltros__div-iconoFiltrar"></div>
+				<div class="div-contenedorFiltros__ul-titulo">Filtros</div>
+			</div>
+			<div id="div-contenedorFiltros__div-ordenar">
+				<div class="div-contenedorFiltros__div-titulo">Ordenar</div>
+				<div class="div-contenedorFiltros__div-icono" id="div-contenedorFiltros__div-iconoOrdenar"></div>
+				<li id="div-ordenar__li-opciones">
+					<ul id="li-opciones__ul-relevante" class="li-opciones__ul">Mas relevantes</ul>
+					<ul id="li-opciones__ul-precioMax" class="li-opciones__ul">Mayor precio</ul>
+					<ul id="li-opciones__ul-precioMin" class="li-opciones__ul">Menor precio</ul>
+				</li>
+			</div>
+		</div>
 
 		<div class="catalogo__indice">
-			<h3 class="tituloIndice" >Categorias</h3>
-			<div id="catalogo__indice__categorias">
+			<div class="catalogo__indice__filtro" id="catalogo__indice__categorias">
+				<h3 class="tituloIndice" >Categorias</h3>
 				
 			</div>
-			<h3 class="tituloIndice" >Rodado</h3>
-			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton1">
-				16
-			</button>
-			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton2">
-				20
-			</button>
-			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton3">
-				26
-			</button>
-			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton4">
-				28
-			</button>
-			<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton5">
-				29
-			</button>
-			<h3 class="tituloIndice">Precio</h3>
-			
-			<form id="formularioMinMax">
+			<div class="catalogo__indice__filtro" id="catalogo__indice__rodados">
+			    <h3 class="tituloIndice" >Rodado</h3>
+				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton1">
+					16
+				</button>
+				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton2">
+					20
+				</button>
+				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton3">
+					26
+				</button>
+				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton4">
+					28
+				</button>
+				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton5">
+					29
+				</button>
+			</div>
+			<form class="catalogo__indice__filtro" id="formularioMinMax">
+				<h3 class="tituloIndice">Precio</h3>
 				<input type="text" placeholder="Minimo" class="casillaPrecio" id="inputPrecioMin">
 				<input type="text" placeholder="Maximo" class="casillaPrecio" id="inputPrecioMax">
 				<button type="submit" >Ir</button>

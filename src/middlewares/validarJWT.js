@@ -20,7 +20,10 @@ const validarJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     const token = req.header('tokenAcceso'); // Obtiene el JWT de los headers de la solicitud
     if (!token) { // Si no se envia un token en la request:
         return res.status(401).json({
-            msg: 'No se encontro el token de acceso'
+            errors: [{
+                    msg: 'No se encontro el token',
+                    path: "accesoToken"
+                }]
         });
     }
     try {
@@ -29,12 +32,18 @@ const validarJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         const usuario = yield usuario_1.default.findById(uid); // Busca el usuario que posee con el id del token
         if (!usuario) { // Si no se encontro el usuario:
             return res.status(401).json({
-                msg: 'Token no valido - El usuario no existe'
+                errors: [{
+                        msg: 'Token no valido - El usuario no existe',
+                        path: "accesoToken"
+                    }]
             });
         }
         if (!usuario.activo) { // Si el usuario no esta activo:
             return res.status(401).json({
-                msg: 'Token no valido - El usuario no esta activo'
+                errors: [{
+                        msg: 'Token no valido - El usuario no esta activo',
+                        path: "accesoToken"
+                    }]
             });
         }
         req.body.usuario = usuario; // Define el uid del usuario que esta realizando la solitud, en la request, para ser usado en los siguientes middlewares
@@ -42,7 +51,10 @@ const validarJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
     catch (error) { // Si el token no es valido "verify" lanzara un error y se atrapa aqui
         return res.status(401).json({
-            msg: 'Token no valido'
+            errors: [{
+                    msg: 'Token no valido',
+                    path: "accesoToken"
+                }]
         });
     }
 });

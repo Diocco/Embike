@@ -4,6 +4,10 @@
 --azul-logo: #033452;
 }/*Variables*/
 
+.phone{
+	display: none;
+}
+
 #contenedorCatalogo{
 	display: flex;
 	justify-content: center;
@@ -141,6 +145,8 @@ display: none;
 	grid-column: 1/2;
 }
 .catalogo__indice{
+	display: flex;
+	flex-direction: column;
 	margin: 0px 40px 0px 40px;
 }
 
@@ -159,9 +165,11 @@ display: none;
 	}
 }
 .catalogo__div{
-	display: grid;
+	display: flex;
 	justify-items: center;
 	align-items: center;
+	flex-direction: column;
+	max-width: 450px;
 	filter: opacity(0);
 	transition: border 0.25s, box-shadow 0.25s ,filter 0.5s;
 	animation: catalogo__div-aparecer 1s forwards 0.5s;
@@ -478,3 +486,86 @@ display: none;
 	border: 3px #033452 solid;
 }
 
+
+
+
+@media screen and (max-width:1200px){
+	.phone{
+		display: block;
+	}
+
+	/*Contenedor del catalogo con los filtros y productos*/
+	#contenedorCatalogo{
+		flex-direction: column;
+		align-items: center;
+		font-size: 40px;
+	}
+
+	/*Desactiva los filtros de la version de computadora*/
+	.catalogo__indice{
+		display: none;
+	}
+	/*Activa y personaliza la barra de filtros de la version de telefono*/
+
+
+	
+	/*Aumenta el tamaño de los productos*/
+	.catalogo__div__imagen {
+		width: 450px;
+		height: 450px;
+	}
+
+	#catalogoResponsive__div-contenedorFiltros{
+		display: flex;
+		flex-direction: row;
+		width: 100%;
+        justify-content: space-between;
+	}
+
+	#div-contenedorFiltros__div-filtros,#div-contenedorFiltros__div-ordenar{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		width: min-content;
+		margin: 10px;
+		height: 100px;
+	}
+
+	.div-contenedorFiltros__div-icono{
+		height: 100px;
+		width: 100px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: white;
+		background-size: 75%;
+	}
+	#div-contenedorFiltros__div-iconoFiltrar{
+		background-image: url(../img/catalogoImagenes/icono-filtrar.png);
+	}
+	#div-contenedorFiltros__div-iconoOrdenar{
+		background-image: url(../img/catalogoImagenes/icono-ordenar.png);
+	}
+	
+	/* Barra deslisadorado de filtro ordenar */
+	#div-ordenar__li-opciones{
+		display: none;
+		z-index: 60;
+		flex-direction: column;
+		justify-items: center;
+		position: absolute;
+		width: max-content;
+		height: min-content;
+		transform: translate(-60px, 200px);
+		background-color: var(--azul-logo);
+		color: white;
+	}
+	#div-contenedorFiltros__div-ordenar:hover>#div-ordenar__li-opciones{
+		display: flex;
+		transform: translate(-60px, 170px);
+	}
+	
+	.li-opciones__ul{
+		margin: 20px;
+		color: white;
+	}
+}

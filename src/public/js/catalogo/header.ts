@@ -35,8 +35,6 @@ if(tokenAcceso){ // Si el token de acceso existe entonces lo verifica
                     localStorage.removeItem('tokenAcceso') // Elimina el token de acceso
                     window.location.assign(url) // Redirije al usuario al inicio de la pagina
             }else{ // Si no hay errores:
-                console.log("La informacion devuelta es")
-                console.log(data)
                 // Si el token es valido entonces modifica la parte visual para reflejar que la sesion esta activa
                 // Intercambia los botones de "iniciar sesion" por el de "Mi cuenta" 
                 botonIniciarSesion.classList.add('noActive')
@@ -79,7 +77,7 @@ if(tokenAcceso){ // Si el token de acceso existe entonces lo verifica
 
 }
 
-// Alternar menu del boton de "munu" responsive
+// Alternar menu del boton de "menu" responsive
 const menuVentanaResponsive = document.getElementById('div-menu__ul-opciones')! as HTMLUListElement;
 const botonMenuResposive = document.getElementById('header-responsive__div-menu')! as HTMLDivElement;
 botonMenuResposive.addEventListener('click',()=>{

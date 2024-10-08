@@ -75,9 +75,10 @@ const buscarProductos = ()=>{
         const precioMax = params.get('precioMax') || '';
         const palabraBuscada = params.get('palabraBuscada') || '';
         const categorias = params.get('categorias') || '';
+        const ordenar = params.get('ordenar') || '';
         
         // Realiza la peticion GET para obtener los productos
-        fetch(urlProductos+`?desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}`, { 
+        fetch(urlProductos+`?desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}`, { 
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
         })
@@ -88,6 +89,7 @@ const buscarProductos = ()=>{
                     console.log(error);
                 })
             }else{ // Si el servidor no devuelve errores:
+                console.log(data.productos)
                 agregarProductosDOM(data.productos)
             }
         })
@@ -173,12 +175,11 @@ const verificarActive =()=>{ // Verifica que elementos se encuentran activos en 
     // Rango de precios
     const inputMax = document.getElementById('inputPrecioMax') as HTMLInputElement // Selecciona el input donde se coloca el precio maximo de los productos que se quieren ver
     const inputMin = document.getElementById('inputPrecioMin') as HTMLInputElement // Selecciona el input donde se coloca el precio minimo de los productos que se quieren ver
-    const precioMin = urlObjeto.searchParams.get('precioMin', ); // Lee si hay un precio minimo buscado
-    const precioMax = urlObjeto.searchParams.get('precioMax', ); // Lee si hay un precio maximo buscado
+    const precioMin = urlObjeto.searchParams.get('precioMin'); // Lee si hay un precio minimo buscado
+    const precioMax = urlObjeto.searchParams.get('precioMax'); // Lee si hay un precio maximo buscado
 
     precioMax?inputMax.value = precioMax:''; // Si previamente se busco un precio maximo, entonces lo refleja en el input correspondiente
     precioMin?inputMin.value = precioMin:''; // Si previamente se busco un precio minimo, entonces lo refleja en el input correspondiente
-
 
     // Categorias
     const botonesCategorias:NodeListOf<HTMLButtonElement> = document.querySelectorAll('.filtroBotonCategoria')
@@ -190,6 +191,35 @@ const verificarActive =()=>{ // Verifica que elementos se encuentran activos en 
             esActivo?boton.classList.add('botonActive'):''; // Si el boton tiene una categoria activa entonces le da la clase de boton activo
         })
     }
+}
+
+// Define la funcion de los botones para ordenar los precios segun el metodo elegido
+const ordenarPrecios =()=>{
+    const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
+    
+    // Obtiene los botones del DOM
+    const botonOrdenarPrecioMax = document.getElementById('li-opciones__ul-precioMax')!
+    const botonOrdenarPrecioMin = document.getElementById('li-opciones__ul-precioMin')!
+    const botonOrdenarRelevante = document.getElementById('li-opciones__ul-relevante')!
+
+    // Escucha cuando se hace click en ellos y se modifica el query param correspondiente
+    botonOrdenarPrecioMax.addEventListener('click',()=>{
+        console.log("Se apreto en precio max")
+        urlObjeto.searchParams.set('ordenar', 'precioMax'); // Si no existe, lo crea; si existe, lo actualiza
+        window.history.pushState({}, '', urlObjeto) // Carga los cambios en el URL
+        buscarProductos(); // Vuelve a cargar los productos con el nuevo parametro de busqueda
+    })
+    botonOrdenarPrecioMin.addEventListener('click',()=>{
+        console.log("Se apreto en precio min")
+        urlObjeto.searchParams.set('ordenar', 'precioMin'); // Si no existe, lo crea; si existe, lo actualiza
+        window.history.pushState({}, '', urlObjeto) // Carga los cambios en el URL
+        buscarProductos(); // Vuelve a cargar los productos con el nuevo parametro de busqueda
+    })
+    botonOrdenarRelevante.addEventListener('click',()=>{
+        urlObjeto.searchParams.set('ordenar', ''); // Si no existe, lo crea; si existe, lo actualiza
+        window.history.pushState({}, '', urlObjeto) // Carga los cambios en el URL
+        buscarProductos(); // Vuelve a cargar los productos con el nuevo parametro de busqueda
+    })
 }
 
 
@@ -230,5 +260,6 @@ document.addEventListener("DOMContentLoaded", async() => {
     precioMinMax(); // Le da la funcionalidad a los input de precio maximo y minimo
     
     verificarActive(); // Verifica los estados de los input y los botones para reflejar los pararametros de filtrado
+    ordenarPrecios();
 })
 

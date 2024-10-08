@@ -10,7 +10,10 @@ export const validarJWT = async(req: Request, res: Response,next:NextFunction)=>
 
     if(!token){ // Si no se envia un token en la request:
         return res.status(401).json({
-            msg:'No se encontro el token de acceso'
+            errors:[{
+                msg: 'No se encontro el token',
+                path: "accesoToken"
+            }]
         })
     }
 
@@ -22,12 +25,18 @@ export const validarJWT = async(req: Request, res: Response,next:NextFunction)=>
 
         if(!usuario){ // Si no se encontro el usuario:
             return res.status(401).json({
-                msg:'Token no valido - El usuario no existe'
+                errors:[{
+                    msg: 'Token no valido - El usuario no existe',
+                    path: "accesoToken"
+                }]
             })
         }
         if(!usuario.activo){ // Si el usuario no esta activo:
             return res.status(401).json({
-                msg:'Token no valido - El usuario no esta activo'
+                errors:[{
+                    msg: 'Token no valido - El usuario no esta activo',
+                    path: "accesoToken"
+                }]
             })
         }
         req.body.usuario = usuario // Define el uid del usuario que esta realizando la solitud, en la request, para ser usado en los siguientes middlewares
@@ -35,7 +44,10 @@ export const validarJWT = async(req: Request, res: Response,next:NextFunction)=>
         next() // Continúa con el siguiente middleware o controlador
     } catch (error) { // Si el token no es valido "verify" lanzara un error y se atrapa aqui
         return res.status(401).json({
-            msg:'Token no valido'
+            errors:[{
+                msg: 'Token no valido',
+                path: "accesoToken"
+            }]
         })
     }
 }
