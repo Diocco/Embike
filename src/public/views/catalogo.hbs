@@ -15,39 +15,82 @@
 
 <body>
     <header>{{>  header }}</header>
+	{{!-- Ventana de visualizacion de productos --}}
+	<div id="catalogo__fondo"></div>
+	<div id="catalogoProducto">
+		<div id="catalogoProducto__imagen"></div>
+		<button id="catalogoProducto__salir">X</button>
+		<div id="catalogoProducto__titulo"></div>
+		<div id="catalogoProducto__precio"></div>
+		<div id="catalogoProducto__colores-titulo">Colores</div>
+		<div id="catalogoProducto__talles-titulo">Talles</div>
+		<div id="catalogoProducto__colores">
+			<div id="catalogoProducto__color1"></div>
+			<div id="catalogoProducto__color2"></div>
+			<div id="catalogoProducto__color3"></div>
+			<div id="catalogoProducto__color4"></div>
+		</div>
+		<div id="catalogoProducto__talles">
+			<div id="catalogoProducto__talle1" >XS</div>
+			<div id="catalogoProducto__talle2" >M</div>
+			<div id="catalogoProducto__talle3" >L</div>
+			<div id="catalogoProducto__talle4" >XL</div>
+		</div>
+		<div id="catalogoProducto__agregar">
+			<div id="catalogoProducto__agregar-restar">-</div>
+			<div id="catalogoProducto__agregar-cantidad">1</div>
+			<div id="catalogoProducto__agregar-sumar">+</div>
+		</div>
+		<div id="catalogoProducto__comprar">
+			<div id="catalogoProducto__comprarAhora">COMPRAR AHORA</div>
+			<div id="catalogoProducto__comprarAgregar">AGREGAR AL CARRO</div>
+		</div>
+	</div>
 
-		<div id="catalogo__fondo"></div>
-		<div id="catalogoProducto">
-			<div id="catalogoProducto__imagen"></div>
-			<button id="catalogoProducto__salir">X</button>
-			<div id="catalogoProducto__titulo"></div>
-			<div id="catalogoProducto__precio"></div>
-			<div id="catalogoProducto__colores-titulo">Colores</div>
-			<div id="catalogoProducto__talles-titulo">Talles</div>
-			<div id="catalogoProducto__colores">
-				<div id="catalogoProducto__color1"></div>
-				<div id="catalogoProducto__color2"></div>
-				<div id="catalogoProducto__color3"></div>
-				<div id="catalogoProducto__color4"></div>
+	{{!-- Barra lateral de filtrado de productos (Responsive)--}}
+	<div id="ventanaLateral-Filtros" class="phone">
+		<div id='ventanaLateral-Filtros__div-volver'></div>
+		<div id='ventanaLateral-Filtros__div-titulo'>Filtros</div>
+		<div id="ventanaLateral-Filtros__div-filtros">
+			<div class="div-filtros__div-filtro">
+				<h3 class="tituloIndice" >Categorias</h3>
+				<div class="contenedorCategorias contenedorFiltro"></div>
 			</div>
-			<div id="catalogoProducto__talles">
-				<div id="catalogoProducto__talle1" >XS</div>
-				<div id="catalogoProducto__talle2" >M</div>
-				<div id="catalogoProducto__talle3" >L</div>
-				<div id="catalogoProducto__talle4" >XL</div>
+			<div class="div-filtros__div-filtro">
+			    <h3 class="tituloIndice" >Rodado</h3>
+				<div class="contenedorRodado contenedorFiltro">
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton1">
+						16
+					</button>
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton2">
+						20
+					</button>
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton3">
+						26
+					</button>
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton4">
+						28
+					</button>
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton5">
+						29
+					</button>
+				</div>
 			</div>
-			<div id="catalogoProducto__agregar">
-				<div id="catalogoProducto__agregar-restar">-</div>
-				<div id="catalogoProducto__agregar-cantidad">1</div>
-				<div id="catalogoProducto__agregar-sumar">+</div>
-			</div>
-			<div id="catalogoProducto__comprar">
-				<div id="catalogoProducto__comprarAhora">COMPRAR AHORA</div>
-				<div id="catalogoProducto__comprarAgregar">AGREGAR AL CARRO</div>
+			<div class="div-filtros__div-filtro">
+				<h3 class="tituloIndice">Precio</h3>
+				<form class="formularioMinMax">
+					<input type="text" placeholder="Minimo" class="inputPrecioMin casillaPrecio">
+					<input type="text" placeholder="Maximo" class="inputPrecioMax casillaPrecio">
+					<button type="submit" class="formularioMinMax__flechaIr"></button>
+				</form>
 			</div>
 		</div>
+	</div>
 
+	
+	{{!-- Contenedor de productos y filtrado de productos --}}
 	<div id="contenedorCatalogo" >
+		{{!-- Botones para filtrar y ordenar productos (Responsive)--}}
 		<div id="catalogoResponsive__div-contenedorFiltros" class="phone">
 			<div id="div-contenedorFiltros__div-filtros">
 				<div class="div-contenedorFiltros__div-icono" id="div-contenedorFiltros__div-iconoFiltrar"></div>
@@ -64,38 +107,44 @@
 			</div>
 		</div>
 
+		{{!-- Filtro de productos --}}
 		<div class="catalogo__indice">
-			<div class="catalogo__indice__filtro" id="catalogo__indice__categorias">
-				<h3 class="tituloIndice" >Categorias</h3>
-				
-			</div>
-			<div class="catalogo__indice__filtro" id="catalogo__indice__rodados">
+			<div class="catalogo__indice__categorias" >
+				<h3 class="tituloIndice" >Categorias</h3>		
+				<div class="contenedorCategorias contenedorFiltro"></div>
+			</div>	
+			<div class="catalogo__indice__rodados">
 			    <h3 class="tituloIndice" >Rodado</h3>
-				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton1">
-					16
-				</button>
-				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton2">
-					20
-				</button>
-				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton3">
-					26
-				</button>
-				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton4">
-					28
-				</button>
-				<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton5">
-					29
-				</button>
+				<div class="contenedorRodado contenedorFiltro">
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton1">
+						16
+					</button>
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton2">
+						20
+					</button>
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton3">
+						26
+					</button>
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton4">
+						28
+					</button>
+					<button class="filtroBoton filtroRodadoBoton" id="filtroRodadoBoton5">
+						29
+					</button>
+				</div>
 			</div>
-			<form class="catalogo__indice__filtro" id="formularioMinMax">
+			<div>
 				<h3 class="tituloIndice">Precio</h3>
-				<input type="text" placeholder="Minimo" class="casillaPrecio" id="inputPrecioMin">
-				<input type="text" placeholder="Maximo" class="casillaPrecio" id="inputPrecioMax">
-				<button type="submit" >Ir</button>
-			</form>
+				<form class="formularioMinMax">
+					<input type="text" placeholder="Minimo" class="inputPrecioMin casillaPrecio">
+					<input type="text" placeholder="Maximo" class="inputPrecioMax casillaPrecio">
+					<button type="submit" class="formularioMinMax__flechaIr"></button>
+				</form>
+			</div>
 
 		</div>
 
+		{{!-- Contenedor de productos --}}
 		<div id="catalogo">
 			<div id="catalogo__fondo"></div>
 			<div id="catalogoProducto">
@@ -130,7 +179,7 @@
 			</div>
 		</div>
 
-		</div>
+	</div>
 	<script src="../js/catalogo/catalogo.js"></script>
 </body>
 

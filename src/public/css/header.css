@@ -248,7 +248,7 @@
 
 /*Los deslizadores se activan cuando se hacen click en sus respectivos botones*/
 .div-cuenta__div-ventana-active{
-	transform: translateX(-89vw) !important;
+	transform: translate(-89vw, -2vw) !important;
 }
 .div-menu__ul-opciones-active{
 	transform: translateX(0) !important;
@@ -293,6 +293,7 @@
 	grid-template-rows: 10vh 10vh;
 	align-items: center;
 }
+/*Estilos de la foto (o iniciales) del usuario*/
 #div-nombre__div-foto{
 	display: flex;
 	justify-content: center;
@@ -307,16 +308,19 @@
 	margin-left: 60px;
 	background: lightgray;
 }
+/*Nombre de usuario*/
 #div-nombre__div-nombre{
 	font-size: 70px;
 	justify-self: start;
     align-self: end;
 }
+/*Correo del usuario*/
 #div-informacion__div-correo{
 	justify-self: start;
     align-self: start;
 	font-size: 40px;
 }
+/*ID del usuario*/
 #div-informacion__div-ID{
 	font-size: 30px;
 	color: lightslategray;

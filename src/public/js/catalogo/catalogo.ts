@@ -102,18 +102,21 @@ const buscarProductos = ()=>{
 }
 
 const agregarCategoriasDOM = (categorias: string[]) => {
-    const contenedorCategorias: HTMLElement = document.getElementById('catalogo__indice__categorias')!; // Selecciona el contenedor de los filtros de categorias
-    const fragmento: DocumentFragment = document.createDocumentFragment(); // Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
-
-    categorias.forEach((categoria: string ) => { // Recorre los productos
-
-        let agregarCategoria:HTMLElement = document.createElement('button'); // Crea un button para alojar la nueva categoria
-        agregarCategoria.textContent=categoria; // Le da el nombre de la categoria actual
-        agregarCategoria.classList.add('filtroBoton','filtroBotonCategoria'); // Le da la clase correspondiente a su funcion
-        fragmento.appendChild(agregarCategoria); // Agrega el producto recien creado al fragmento
-
+    const contenedoresCategorias: NodeListOf<Element> = document.querySelectorAll('.contenedorCategorias')!; // Selecciona los contenedores de los filtros de categorias
+    // Recorre los contenedores y agrega las categorias
+    contenedoresCategorias.forEach(contenedorCategorias=>{
+        const fragmento: DocumentFragment = document.createDocumentFragment(); // Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
+    
+        categorias.forEach((categoria: string ) => { // Recorre los productos
+    
+            let agregarCategoria:HTMLElement = document.createElement('button'); // Crea un button para alojar la nueva categoria
+            agregarCategoria.textContent=categoria; // Le da el nombre de la categoria actual
+            agregarCategoria.classList.add('filtroBoton','filtroBotonCategoria'); // Le da la clase correspondiente a su funcion
+            fragmento.appendChild(agregarCategoria); // Agrega el producto recien creado al fragmento
+    
+        })
+        contenedorCategorias.appendChild(fragmento); //Agrega el fragmento con todos los productos al catalogo
     })
-    contenedorCategorias.appendChild(fragmento); //Agrega el fragmento con todos los productos al catalogo
 
     // Le da la funcionalidad a los botones de categorias
     const botonesIndice: NodeListOf<Element> = document.querySelectorAll('.filtroBotonCategoria')
@@ -149,20 +152,24 @@ const agregarCategoriasDOM = (categorias: string[]) => {
 }
 
 const precioMinMax = () =>{
-    const inputMax = document.getElementById('inputPrecioMax') as HTMLInputElement // Selecciona el input donde se coloca el precio maximo de los productos que se quieren ver
-    const inputMin = document.getElementById('inputPrecioMin') as HTMLInputElement // Selecciona el input donde se coloca el precio minimo de los productos que se quieren ver
-    const formularioMinMax = document.getElementById(`formularioMinMax`)! as HTMLFormElement // Selecciona el formulario donde estan los input
+    const formulariosMinMax:NodeListOf<HTMLFormElement> = document.querySelectorAll(`.formularioMinMax`)! // Selecciona los formularios donde estan los input
+    
+    // Recorre los formularios y le da las funciones a los input que contiene
+    formulariosMinMax.forEach(formularioMinMax =>{
+        formularioMinMax.addEventListener('submit',(event)=>{ // Escucha cuando de envia el formulario
+            event.preventDefault() // Previe que se recargue la pagina
+            
+            const inputMax = formularioMinMax.querySelector(".inputPrecioMax")! as HTMLInputElement
+            const inputMin = formularioMinMax.querySelector(".inputPrecioMin")! as HTMLInputElement
 
-    formularioMinMax.addEventListener('submit',(event)=>{ // Escucha cuando de envia el formulario
-        event.preventDefault() // Previe que se recargue la pagina
-
-        // Define los query element 
-        const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
-        urlObjeto.searchParams.set('precioMin', inputMin.value); // Si no existe, lo crea; si existe, lo actualiza
-        urlObjeto.searchParams.set('precioMax', inputMax.value); // Si no existe, lo crea; si existe, lo actualiza
-        
-        window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
-        buscarProductos() // Realiza la busqueda de los productos con el nuevo filtro
+            // Define los query element 
+            const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
+            urlObjeto.searchParams.set('precioMin', inputMin.value); // Si no existe, lo crea; si existe, lo actualiza
+            urlObjeto.searchParams.set('precioMax', inputMax.value); // Si no existe, lo crea; si existe, lo actualiza
+            
+            window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
+            buscarProductos() // Realiza la busqueda de los productos con el nuevo filtro
+        })
     })
 
 
@@ -173,18 +180,19 @@ const verificarActive =()=>{ // Verifica que elementos se encuentran activos en 
     const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
 
     // Rango de precios
-    const inputMax = document.getElementById('inputPrecioMax') as HTMLInputElement // Selecciona el input donde se coloca el precio maximo de los productos que se quieren ver
-    const inputMin = document.getElementById('inputPrecioMin') as HTMLInputElement // Selecciona el input donde se coloca el precio minimo de los productos que se quieren ver
+    const inputMax:NodeListOf<HTMLInputElement> = document.querySelectorAll('.inputPrecioMax')  // Selecciona los input donde se coloca el precio maximo de los productos que se quieren ver
+    const inputMin:NodeListOf<HTMLInputElement> = document.querySelectorAll('.inputPrecioMin') // Selecciona los input donde se coloca el precio minimo de los productos que se quieren ver
     const precioMin = urlObjeto.searchParams.get('precioMin'); // Lee si hay un precio minimo buscado
     const precioMax = urlObjeto.searchParams.get('precioMax'); // Lee si hay un precio maximo buscado
 
-    precioMax?inputMax.value = precioMax:''; // Si previamente se busco un precio maximo, entonces lo refleja en el input correspondiente
-    precioMin?inputMin.value = precioMin:''; // Si previamente se busco un precio minimo, entonces lo refleja en el input correspondiente
+    precioMax?inputMax[0].value = precioMax:''; // Si previamente se busco un precio maximo, entonces lo refleja en el input correspondiente
+    precioMin?inputMin[0].value = precioMin:''; // Si previamente se busco un precio minimo, entonces lo refleja en el input correspondiente
+    precioMax?inputMax[1].value = precioMax:''; // Si previamente se busco un precio maximo, entonces lo refleja en el input correspondiente
+    precioMin?inputMin[1].value = precioMin:''; // Si previamente se busco un precio minimo, entonces lo refleja en el input correspondiente
 
     // Categorias
     const botonesCategorias:NodeListOf<HTMLButtonElement> = document.querySelectorAll('.filtroBotonCategoria')
     let categoriasActivas = urlObjeto.searchParams.get('categorias') // Almacena una cadena que contiene las categorias activas
-
     if(categoriasActivas){ // Si hay categorias activas:
         botonesCategorias.forEach(boton=>{ // Recorre cada boton para filtrar las categorias
             const esActivo = categoriasActivas.includes(boton.textContent!); // Verifica si la categoria del boton se encuentra activa
@@ -204,13 +212,11 @@ const ordenarPrecios =()=>{
 
     // Escucha cuando se hace click en ellos y se modifica el query param correspondiente
     botonOrdenarPrecioMax.addEventListener('click',()=>{
-        console.log("Se apreto en precio max")
         urlObjeto.searchParams.set('ordenar', 'precioMax'); // Si no existe, lo crea; si existe, lo actualiza
         window.history.pushState({}, '', urlObjeto) // Carga los cambios en el URL
         buscarProductos(); // Vuelve a cargar los productos con el nuevo parametro de busqueda
     })
     botonOrdenarPrecioMin.addEventListener('click',()=>{
-        console.log("Se apreto en precio min")
         urlObjeto.searchParams.set('ordenar', 'precioMin'); // Si no existe, lo crea; si existe, lo actualiza
         window.history.pushState({}, '', urlObjeto) // Carga los cambios en el URL
         buscarProductos(); // Vuelve a cargar los productos con el nuevo parametro de busqueda
@@ -222,6 +228,23 @@ const ordenarPrecios =()=>{
     })
 }
 
+const filtrosResponsive=()=>{
+    const barraLateralResponsive:HTMLElement = document.getElementById('ventanaLateral-Filtros')!
+    const botonFiltrosResponsive:HTMLElement = document.getElementById("div-contenedorFiltros__div-filtros")!
+
+    botonFiltrosResponsive.addEventListener('click',(event)=>{
+        barraLateralResponsive.classList.add('ventanaLateral-Filtros-active')
+        //event.stopPropagation()
+        console.log("se muestra")
+    })
+
+    const botonVolverBarraLateral:HTMLElement = document.getElementById("ventanaLateral-Filtros__div-volver")!
+    botonVolverBarraLateral.addEventListener('click',()=>{
+        barraLateralResponsive.classList.remove('ventanaLateral-Filtros-active')
+
+        console.log("se esconde")
+    })
+}
 
 //Alternar el active en los botones del indice
 document.addEventListener("DOMContentLoaded", async() => {
@@ -243,7 +266,7 @@ document.addEventListener("DOMContentLoaded", async() => {
         headers: { 'Content-Type': 'application/json' },
     })
     .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
+    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor, maneja errores o agrega elementos al DOM
         if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
             (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
                 console.log(error);
@@ -252,14 +275,17 @@ document.addEventListener("DOMContentLoaded", async() => {
             agregarCategoriasDOM(data.categorias)
         }
     })
+    .then(()=>{ // Una vez que se agregaron los elementos al DOM o se manejaron los errores, verifica los estados activos de los parametros de busqueda, para reflejarlos visualmente
+        verificarActive(); // Verifica los estados de los input y los botones para reflejar los pararametros de filtrado
+
+    })
     .catch(error => { // Si hay un error se manejan 
         console.error(error);
     })
 
     buscarProductos(); // Busca los productos filtrandolos segun los query params
     precioMinMax(); // Le da la funcionalidad a los input de precio maximo y minimo
-    
-    verificarActive(); // Verifica los estados de los input y los botones para reflejar los pararametros de filtrado
-    ordenarPrecios();
+    ordenarPrecios(); // Define el comportacion de el boton de ordenar productos por precio
+    filtrosResponsive(); // Define el comportamiento de la barra lateral de los filtros
 })
 

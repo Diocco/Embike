@@ -4,6 +4,7 @@
 --azul-logo: #033452;
 }/*Variables*/
 
+/*Desactiva los elementos que son para telefono*/
 .phone{
 	display: none;
 }
@@ -13,157 +14,25 @@
 	justify-content: center;
 }
 
-/* Barra principal */
-.header{
-	box-sizing: border-box;
-	display: block;
-	height: 110px;
-} /* Barra superior */
-
-.header-a{
-	text-decoration: none;
-	display: inline-block;
-	font-size: 20px;
-	padding: 10px;
-	color: var(--azul-logo);
-} /* Letra de los botones de la barra superior*/
-
-.grid{
-	display: grid;
-    justify-content: center;
-
-	grid-template-rows: 110px;
-	grid-template-columns: 300px min-content repeat(4, max-content);
-	
-	background-color: var(var(--fondo));
-
-	align-items: center;
-	justify-items: center;
-
-}/*Contenedor de la barra principal*/
-.header-resposive__div{
-display: none;
-}
-
-/*Imagen*/
-.grid__div-logo__img{
-    border-radius: 30px;
-    height: 90px;
-    
-}
-.grid__div-logo{
-	margin: 10px;
-}
-/*///////////////////////////*/
-
-/* Barra de busqueda */
-.grid__form-busqueda__input{
-	padding: 10px;
-	border: 0px;
-    border-bottom: 2px;
-    border-style: solid;
-	border-radius: 0px;
-	border-color: var(--azul-logo);
-	justify-items: center;
-    align-items: center;
-	width: 400px;
-	margin: 0px 10px;
-}
-.grid__form-busqueda__input:focus{
-	border: 0px;
-	border-radius: 10px;
-}
-/*///////////////////////////*/
-
-/*Botones*/
-.grid__header-a{
-	text-decoration: none;
-	display: inline-block;
-	font-size: 20px;
-	padding: 10px;
-	color: var(--azul-logo);
-
-} /* Letra de los botones de la barra superior*/
-.grid__header__div-carrito,.grid__header__div-pedidos,.grid__header__div-contacto,.grid__header__div-catalogo{
-    background: white;
-    justify-items: center;
-    align-items: center;
-	border-radius:0px;
-	border: 0px;
-	border-bottom: 2px;
-	border-color: var(--azul-logo);
-	border-style: solid;
-	margin: 0px 10px;
-	transition: 0.5s ease-out;
-	
-} /*Estilos de los botones*/
-/*///////////////////////////*/
-
-/* Seleccion */
-.grid__header__div-carrito:hover,.grid__header__div-pedidos:hover,.grid__header__div-contacto:hover,.grid__header__div-catalogo:hover{
-	
-	background: var(--azul-logo) ;
-	transform: scale(1.1);
-	border: 0px;
-	border-radius:10px;
-} 
-.grid__header__div-carrito:hover>.grid__header-a,.grid__header__div-pedidos:hover>.grid__header-a,.grid__header__div-contacto:hover>.grid__header-a,.grid__header__div-catalogo:hover>.grid__header-a{
-	color: white;
-}
-/*///////////////////////////*/
-/*///////////////////////////*/
-
-
 #catalogo {
     display: flex;
-	width: 950px;
+	width: 900px;
 	flex-wrap: wrap;
 }
 
-#catalogo__modificar{
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	order:100;
-	height: 100%
-}
 
-.catalogo__div-modificar__button{
-	transform: translateY(100vw);
-
-	width: 100px;
-	margin: 5px;
-	height: 100px;
-
-	font-size: 50px;
-    border-radius:100px;
-}
-
-
-.catalogo__margenIzquierdo{
-	grid-row:1/10;
-	grid-column: 1/2;
-}
 .catalogo__indice{
 	display: flex;
-	flex-direction: column;
-	margin: 0px 40px 0px 40px;
+    width: 270px;
+    height: 100vh;
+    border-right: 1px solid lightgray;
+    flex-direction: column;
+    margin-top: 40px;
+    padding-right: 40px;
 }
 
-.catalogo__margenDerecho{
-	grid-row:1/10;
-	grid-column: 5/6;
-}
 
-@media screen and (min-width:1500px){
-	#catalogo{
-		grid-template-columns: 1fr 200px repeat(3,300px) 1fr;
-	}
-	.catalogo__margenDerecho{
-		grid-row:1/10;
-		grid-column: 6/7;
-	}
-}
+/*Productos*/
 .catalogo__div{
 	display: flex;
 	justify-items: center;
@@ -174,7 +43,13 @@ display: none;
 	transition: border 0.25s, box-shadow 0.25s ,filter 0.5s;
 	animation: catalogo__div-aparecer 1s forwards 0.5s;
 }
+.catalogo__div:hover{
+	border-color: var(--azul-logo);
+	border: 2px transparent;
+	box-shadow: 0px 0px 10px 0px #033452;
+}
 
+/*Animacion cuando aparece un producto*/
 @keyframes catalogo__div-aparecer{
 	from{
 		filter: opacity(0);
@@ -183,18 +58,8 @@ display: none;
 	}
 }
 
-.catalogo__div__imagen-noDisponible{
-	filter: brightness(0.5);
-}
 
-
-.catalogo__div:hover{
-	border-color: var(--azul-logo);
-	border: 2px transparent;
-	box-shadow: 0px 0px 10px 0px #033452;
-}
-
-
+/*Imagen del producto*/
 .catalogo__div__imagen {
 	width: 300px;
 	height: 300px;
@@ -202,17 +67,23 @@ display: none;
 	background-position: center;
 	background-size: contain;
 }
+/*Imagen de un producto no disponible*/
+.catalogo__div__imagen-noDisponible{
+	filter: brightness(0.5);
+}
 
-
+/*Boton de comprar un producto*/
 .catalogo__div__comprar{
 	padding:10px;
 	margin:10px;
 	border-radius: 10px;
 }
+/*Boton de comprar un producto no disponible*/
 .catalogo__div__comprar-noDisponible {
 	filter: brightness(0.8);
 }
 
+/*Ventana emergente para visualizar un producto */
 #catalogoProducto{
 	display: grid;
 	grid-template-columns: 40vw 15vw 15vw;
@@ -230,8 +101,12 @@ display: none;
 	box-shadow: 0px 0px 15px 5px gray;
 	transform: translateX(-150vw);
 }
+/*Ventana emergente activa*/
+.catalogoProducto-active{
+	transform: translateX(5vw) !important;
+}
 
-
+/*Imagen en la ventana emergente de un producto */
 #catalogoProducto__imagen{
 	background-color: white;
 	margin: 5vh 5vh;
@@ -244,12 +119,7 @@ display: none;
 	background-size: contain;
 }
 
-
-
-.catalogoProducto-active{
-	transform: translateX(5vw) !important;
-}
-
+/*Boton de salir de la ventana emergente*/
 #catalogoProducto__salir{
 
 	font-size: 1.7vw;
@@ -261,6 +131,7 @@ display: none;
 	grid-column: 2/4;
 }
 
+/*Titulo de la ventana emergente*/
 #catalogoProducto__titulo{
 	height: max-content;
 	width: max-content;
@@ -270,6 +141,7 @@ display: none;
 	font-size: 2vw;
 }
 
+/*Precio de la ventana emergente*/
 #catalogoProducto__precio{
 	height: max-content;
 	width: max-content;
@@ -279,6 +151,7 @@ display: none;
 	font-family: tahoma;
 }
 
+/*Colores y talles de la ventana emergente*/
 #catalogoProducto__colores,#catalogoProducto__talles{
 	display: flex;
 	flex-direction: row;
@@ -286,12 +159,13 @@ display: none;
 	height: 100%;
 	width: 100%;
 }
-
+/*Titulo de colores y talles de la ventana emergente*/
 #catalogoProducto__colores-titulo,#catalogoProducto__talles-titulo{
 	align-self: start;
 	font-size: 1.1vw;
 }
 
+/*Colores individuales de la ventana emergente*/
 #catalogoProducto__color1,#catalogoProducto__color2,#catalogoProducto__color3,#catalogoProducto__color4{
 	border: solid black 1px;
 	border-radius: 2px;
@@ -301,60 +175,6 @@ display: none;
 	z-index: 50;
 	transform: translate(0, 0.7vw);
 }
-
-#catalogoProducto__talle1,#catalogoProducto__talle2,#catalogoProducto__talle3,#catalogoProducto__talle4{
-	text-align: center;
-	padding-top: 0.7vw;
-	border: solid black 1px;
-	border-radius: 2px;
-	font-size: 1vw;
-	font-family: tahoma;
-	width: 2.5vw;
-	height: 2.5vw;
-	margin: 0.5vw;
-	z-index: 50;
-	transform: translate(0, 0.7vw);
-}
-
-#catalogoProducto__talle1:hover,#catalogoProducto__talle2:hover,#catalogoProducto__talle3:hover,#catalogoProducto__talle4:hover{
-	background-color: gray;
-}
-
-#catalogoProducto__talle1{
-	background-color: rgb(185, 185, 185);
-}
-
-#catalogoProducto__comprar{
-	grid-column: 2/4;
-	display:flex;
-	justify-items: center;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-}
-
-#catalogoProducto__comprarAhora,#catalogoProducto__comprarAgregar{
-	width: 15vw;
-	height: 2.5vw;
-	border: black solid 2px;
-	font-size: 0.8vw;
-	text-align: center;
-	padding-top: 0.8vw;
-	font-family: tahoma;
-}
-#catalogoProducto__comprarAhora{
-	width: 20vw;
-	background-color: rgb(32, 158, 32);
-	color: white;
-}
-#catalogoProducto__comprarAgregar{
-	background-color: rgb(222, 252, 222);
-}
-
-
-
-
-
 #catalogoProducto__color1{background: linear-gradient(135deg, blue 50% ,black 50%);}
 #catalogoProducto__color1:hover{background: linear-gradient(135deg, blue 100% ,black 0%)}
 
@@ -370,13 +190,58 @@ display: none;
 #catalogoProducto__color4:hover{background: linear-gradient(135deg, gray 100% ,black 0%)}
 #catalogoProducto__color4:active{background: linear-gradient(135deg, gray 100% ,black 0%)}
 
-#catalogoProducto__agregar{
-	display: flex;
-	justify-content: center;
-    align-items: flex-end;
-	margin-bottom: 1.5vw;
-	grid-column: 2/4;
+/*Talles individuales de la ventana emergente*/
+#catalogoProducto__talle1,#catalogoProducto__talle2,#catalogoProducto__talle3,#catalogoProducto__talle4{
+	text-align: center;
+	padding-top: 0.7vw;
+	border: solid black 1px;
+	border-radius: 2px;
+	font-size: 1vw;
+	font-family: tahoma;
+	width: 2.5vw;
+	height: 2.5vw;
+	margin: 0.5vw;
+	z-index: 50;
+	transform: translate(0, 0.7vw);
 }
+#catalogoProducto__talle1:hover,#catalogoProducto__talle2:hover,#catalogoProducto__talle3:hover,#catalogoProducto__talle4:hover{
+	background-color: gray;
+}
+#catalogoProducto__talle1{
+	background-color: rgb(185, 185, 185);
+}
+
+/*Contenedor de botones de comprar de la ventana emergente*/
+#catalogoProducto__comprar{
+	grid-column: 2/4;
+	display:flex;
+	justify-items: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+/*Botones de comprar o agregar de la ventana emergente*/
+#catalogoProducto__comprarAhora,#catalogoProducto__comprarAgregar{
+	width: 15vw;
+	height: 2.5vw;
+	border: black solid 2px;
+	font-size: 0.8vw;
+	text-align: center;
+	padding-top: 0.8vw;
+	font-family: tahoma;
+}
+/*Boton de comprar de la ventana emergente*/
+#catalogoProducto__comprarAhora{
+	width: 20vw;
+	background-color: rgb(32, 158, 32);
+	color: white;
+}
+/*Boton de agregar de la ventana emergente*/
+#catalogoProducto__comprarAgregar{
+	background-color: rgb(222, 252, 222);
+}
+
+/*Botones de cantidad de productos*/
 #catalogoProducto__agregar-restar,#catalogoProducto__agregar-cantidad,#catalogoProducto__agregar-sumar{
 	text-align: center;
 	padding-top: 0.35vw;
@@ -387,10 +252,19 @@ display: none;
 	height: 2.5vw;
 	margin: 0.5vw;
 }
+/*Boton de sumar cantidad del mismo producto*/
+#catalogoProducto__agregar{
+	display: flex;
+	justify-content: center;
+    align-items: flex-end;
+	margin-bottom: 1.5vw;
+	grid-column: 2/4;
+}
+/*Ventana para ver la cantidad del mismo producto*/
 #catalogoProducto__agregar-cantidad{
 	width: 3.5vw;
 }
-
+/*Boton de restar cantidad del mismo producto*/
 #catalogoProducto__agregar-restar{
 	transform: translateX(1.1vw);
 	color: red;
@@ -403,12 +277,13 @@ display: none;
 	transform: translateX(-1.1vw);
 	color: green;
 }
+
 #catalogoProducto__agregar-sumar:hover{
 	background-color: rgb(169, 247, 169);
 }
 
 
-
+/*Fondo de la ventana emergente*/
 #catalogo__fondo{
 	position: fixed;
 	width: 100vw;
@@ -419,7 +294,6 @@ display: none;
 	transition: opacity 0.5s;
 	opacity: 0;
 }
-
 .catalogo__fondo-active{
 	transform: translateX(0vw) !important;
 	transform: translateY(-111px) !important;
@@ -433,78 +307,119 @@ display: none;
 
 
 
-
-
+/*Filtrado de producto*/
+/*Titulo de los filtros*/
 .tituloIndice{
-	margin-top: 50px;
-	margin-bottom: 15px;
-	font-family: Arial, Helvetica, sans-serif;
+	margin: 15px 0 15px 0;
 }
 
+/*Contenedor de botones de categorias*/
+.contenedorFiltro{
+	display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 200px;
+}
+
+/*Botones de filtros*/
 .filtroBoton{
 	display: block;
-	margin:10px;
+	margin:5px;
 	padding:5px;
 	border-radius: 10px;
 	transition: box-shadow 0.2s, background-color 0.2s, color 0.2s;
 }
-
-.filtroRodadoBoton {
-	display:inline;
-	margin:2px;
-}
-
 .filtroBoton:hover{
 	background-color: #033452;
 	box-shadow: 0px 0px 10px 0px #033452;
 	color: white;
 }
-
 .botonActive{
 	background-color: #033452;
 	color: white;
 }
 
-.casillaPrecio{
-	display:inline;
-	margin-left: 5px;
-	padding: 2px;
-	padding-left: 10px;
-	width: 90px;
-	border-radius: 5px;
-}
 
+/*Contenedor de los input de precio maximo y minimo*/
+.formularioMinMax{
+	display: flex;
+    align-items: center;
+}
+/*Inputs de precio maximo y precio minimo*/
+.casillaPrecio{
+    padding: 3px;
+    padding-left: 8px;
+    width: 90px;
+    border-radius: 11px;
+    margin-right: 10px;
+}
 .casillaPrecio:hover{
 	box-shadow: 0px 0px 10px 0px #033452;
 	outline: 0px;
 	border: 2px #033452 solid;
-
 }
-
 .casillaPrecio:focus{
 	outline: 0px;
 	border: 3px #033452 solid;
+}
+
+/*Boton de enviar del formulario de precios maximo y minimo*/
+.formularioMinMax__flechaIr{
+	height: 30px;
+	width: 30px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: white;
+	background-size: 75%;
+	border-radius: 30px;
+}
+
+.formularioMinMax__flechaIr{
+	background-image: url(../img/catalogoImagenes/flechaDerecha.webp);
 }
 
 
 
 
 @media screen and (max-width:1200px){
+	/*Activa todos los contenedores de la version de telefono*/
 	.phone{
 		display: block;
 	}
-
+    
+	/*Filtros*/
+	/*Desactiva los filtros de la version de computadora*/
+	.catalogo__indice{
+		display: none;
+	}
 	/*Contenedor del catalogo con los filtros y productos*/
 	#contenedorCatalogo{
 		flex-direction: column;
 		align-items: center;
 		font-size: 40px;
 	}
-
-	/*Desactiva los filtros de la version de computadora*/
-	.catalogo__indice{
-		display: none;
+	/*Titulo de los contenedores de los botones de filtro*/
+	.tituloIndice{
+		margin: 10px;
+		font-size: 45px;
 	}
+	/*Contenedores de los botones de filtro*/
+	.contenedorFiltro{
+		width: 100%;
+	}
+	/*Botones de los filtros*/
+	.filtroBoton{
+		margin: 15px;
+        padding: 15px;
+		border-radius: 45px;
+	}
+
+	/*Inputs de precios maximo y minimos*/
+	.casillaPrecio{
+		width: 360px;
+        border-radius: 20px;
+	}
+
 	/*Activa y personaliza la barra de filtros de la version de telefono*/
 
 
@@ -515,6 +430,7 @@ display: none;
 		height: 450px;
 	}
 
+	/*Contenedor de botones de filtros*/
 	#catalogoResponsive__div-contenedorFiltros{
 		display: flex;
 		flex-direction: row;
@@ -522,6 +438,7 @@ display: none;
         justify-content: space-between;
 	}
 
+	/*Botones de filtros*/
 	#div-contenedorFiltros__div-filtros,#div-contenedorFiltros__div-ordenar{
 		display: flex;
 		flex-direction: row;
@@ -531,14 +448,17 @@ display: none;
 		height: 100px;
 	}
 
-	.div-contenedorFiltros__div-icono{
+	/*Iconos de botones de filtros*/
+	.div-contenedorFiltros__div-icono,.formularioMinMax__flechaIr{
 		height: 100px;
 		width: 100px;
 		background-position: center;
 		background-repeat: no-repeat;
 		background-color: white;
 		background-size: 75%;
+		border-radius: 30px;
 	}
+
 	#div-contenedorFiltros__div-iconoFiltrar{
 		background-image: url(../img/catalogoImagenes/icono-filtrar.png);
 	}
@@ -559,13 +479,81 @@ display: none;
 		background-color: var(--azul-logo);
 		color: white;
 	}
+	/*Cuando se apreta en el boton de filtros activa la barra deslizadora*/
 	#div-contenedorFiltros__div-ordenar:hover>#div-ordenar__li-opciones{
 		display: flex;
 		transform: translate(-60px, 170px);
 	}
 	
+	/*Letra de la barra deslizadora del filtro ordenar*/
 	.li-opciones__ul{
 		margin: 20px;
 		color: white;
 	}
+
+	/*Barra lateral de filtrado de productos*/
+	#ventanaLateral-Filtros{
+		display: flex;
+		justify-content: flex-start;
+		flex-direction: column;
+		position: fixed;
+		background-color: white;
+		min-width: 100vw;
+		min-height: 100vh;
+		transition: transform 0.25s;
+		transform: translate(-100%,-23vw);
+		z-index: 1500;
+	}
+
+	/*Los deslizadores se activan cuando se hacen click en sus respectivos botones*/
+	.ventanaLateral-Filtros-active{
+		transform: translate(0,-23vw) !important;
+	}
+
+	/*Boton volver*/
+	#ventanaLateral-Filtros__div-volver{
+		width: 90px;
+		height: 90px;
+		position: absolute;
+		align-self: start;
+		justify-self: start;
+		margin: 10px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: white;
+		border-color: var(--azul-logo);
+		background-image: url(../img/indexImagenes/volver.png);
+		background-size: 60%;
+	}
+
+	/*Titulo de la seccion*/
+	#ventanaLateral-Filtros__div-titulo{
+		margin-top: 40px;
+		margin-bottom: 40px;
+		text-align: center;
+        font-size: 50px;
+	}
+
+	/*Secciones del deslizador*/
+	#ventanaLateral-Filtros__div-filtros{
+		display: flex;
+		flex-direction: column;
+		position: relative;
+		margin-top: 15px;
+	}
+
+
+	/*Opciones de la seccion de opciones*/
+	.div-filtros__div-filtro{
+		border: solid gray 1px;
+		border-right: 0px;
+		border-left: 0px;
+		padding: 25px;
+		font-size: 70px;
+		padding: 50px;
+		transition: background 0.5s ease;
+		color: black;
+	}
+
+
 }
