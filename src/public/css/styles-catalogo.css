@@ -14,12 +14,62 @@
 	justify-content: center;
 }
 
+/*Contenedor de productos*/
 #catalogo {
     display: flex;
 	width: 900px;
+	height: 80vh;
 	flex-wrap: wrap;
+	justify-content: center;
 }
 
+/*Icono de carga de productos*/
+#cargandoProductos{
+	height: 100px;
+	width: 100px;
+	margin-top: 250px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 75%;
+	border-radius: 30px;
+	background-image: url(../img/catalogoImagenes/icono-carga.png);
+	animation: girar 2s linear 0s infinite normal;
+}
+@keyframes girar {
+	0%{
+		transform: rotate(0);
+	}
+	50%{
+		transform: rotate(180deg);
+	}
+	100%{
+		transform: rotate(360deg);
+	}
+}
+
+/*Cartel de advertencia cuando no hay productos para mostrar*/
+#mensajeSinProductos{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 200px;
+	font-size: 20px;
+}
+
+#mensajeSinProductos__logo{
+	height: 100px;
+	width: 100px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: white;
+	background-size: 75%;
+	border-radius: 30px;
+	background-image: url(../img/catalogoImagenes/icono-advertencia.webp);
+}
+#mensajeSinProductos__mensaje{
+	width: 200px;
+	text-align: center;
+}
 
 .catalogo__indice{
 	display: flex;
@@ -335,8 +385,8 @@
 	color: white;
 }
 .botonActive{
-	background-color: #033452;
-	color: white;
+	background-color: #033452 !important;
+	color: white !important;
 }
 
 
@@ -413,17 +463,40 @@
         padding: 15px;
 		border-radius: 45px;
 	}
+	.filtroBoton:hover{
+		background-color: initial;
+		box-shadow: 0;
+		color: initial;
+	}
 
 	/*Inputs de precios maximo y minimos*/
 	.casillaPrecio{
-		width: 360px;
+		font-size: 55px;
+        padding: 15px;
+        padding-left: 26px;
+        width: 360px;
+        margin-right: 25px;
         border-radius: 20px;
 	}
 
-	/*Activa y personaliza la barra de filtros de la version de telefono*/
 
 
+
+	/*Productos*/
 	
+	/*Cartel de advertencia cuando no hay productos para mostrar*/
+	#mensajeSinProductos{
+		font-size: 50px;
+		flex-direction: column;
+	}
+	#mensajeSinProductos__logo{
+		height: 200px;
+		width: 200px;
+	}
+	#mensajeSinProductos__mensaje{
+		width: 400px;
+	}
+
 	/*Aumenta el tamaño de los productos*/
 	.catalogo__div__imagen {
 		width: 450px;

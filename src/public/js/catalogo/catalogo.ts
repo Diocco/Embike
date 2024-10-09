@@ -45,7 +45,7 @@ const ventanaEmergenteProductos = () =>{
 // Agrega los productos recibidos como parametros al DOM
 const agregarProductosDOM = (productos: any[]) => {
     const contenedorProductos: HTMLElement = document.getElementById('catalogo')!; //Toma el catalogo como el contenedor de los productos a agregar
-    contenedorProductos.innerHTML='' // Vacia el contenedor para agregar nuevos productos
+    contenedorProductos.innerHTML='';
     const fragmento: DocumentFragment = document.createDocumentFragment(); //Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
 
 
@@ -67,8 +67,12 @@ const agregarProductosDOM = (productos: any[]) => {
 }
 
 const buscarProductos = ()=>{
-        // Aquí iría el código para hacer fetch y actualizar el contenedor de productos
-        const params = new URLSearchParams(window.location.search); // Define el objeto para manejar los query params
+        // Vacia el contenedor de productos y coloca una barra de carga
+        const contenedorProductos: HTMLElement = document.getElementById('catalogo')!; //Toma el catalogo como el contenedor de los productos a agregar
+        contenedorProductos.innerHTML=`<div id="cargandoProductos"></div>`
+        
+        // Define los query params para enviarlos en el fetch y asi filtrar los productos
+        const params = new URLSearchParams(window.location.search);
         const desde = params.get('desde') || 0;
         const hasta = params.get('hasta') || 20;
         const precioMin = params.get('precioMin') || '';
@@ -76,7 +80,7 @@ const buscarProductos = ()=>{
         const palabraBuscada = params.get('palabraBuscada') || '';
         const categorias = params.get('categorias') || '';
         const ordenar = params.get('ordenar') || '';
-        
+    
         // Realiza la peticion GET para obtener los productos
         fetch(urlProductos+`?desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}`, { 
             method: 'GET',
@@ -89,8 +93,18 @@ const buscarProductos = ()=>{
                     console.log(error);
                 })
             }else{ // Si el servidor no devuelve errores:
-                console.log(data.productos)
-                agregarProductosDOM(data.productos)
+
+                if(data.productos[0]){ // Si se encuentran productos para los parametros de busqueda entonces los agrega
+                    agregarProductosDOM(data.productos)
+                }else{ // Si no se encontraron productos da aviso al usuario
+                     // Vacia el contenedor y muestra un mensaje de error
+                    contenedorProductos.innerHTML=`
+                    <div id="mensajeSinProductos">
+                        <div id="mensajeSinProductos__logo"></div>
+                        <div id="mensajeSinProductos__mensaje">No se encontraron productos para los parametros de busqueda</div>
+                    </div>
+                    `
+                }
             }
         })
         .catch(error => { // Si hay un error se manejan 

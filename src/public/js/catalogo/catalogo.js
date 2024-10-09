@@ -46,7 +46,7 @@ const ventanaEmergenteProductos = () => {
 // Agrega los productos recibidos como parametros al DOM
 const agregarProductosDOM = (productos) => {
     const contenedorProductos = document.getElementById('catalogo'); //Toma el catalogo como el contenedor de los productos a agregar
-    contenedorProductos.innerHTML = ''; // Vacia el contenedor para agregar nuevos productos
+    contenedorProductos.innerHTML = '';
     const fragmento = document.createDocumentFragment(); //Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
     productos.forEach((producto) => {
         let agregarElemento = document.createElement('div'); // Crea un div para alojar el nuevo producto
@@ -63,8 +63,11 @@ const agregarProductosDOM = (productos) => {
     contenedorProductos.appendChild(fragmento); //Agrega el fragmento con todos los productos al catalogo
 };
 const buscarProductos = () => {
-    // Aquí iría el código para hacer fetch y actualizar el contenedor de productos
-    const params = new URLSearchParams(window.location.search); // Define el objeto para manejar los query params
+    // Vacia el contenedor de productos y coloca una barra de carga
+    const contenedorProductos = document.getElementById('catalogo'); //Toma el catalogo como el contenedor de los productos a agregar
+    contenedorProductos.innerHTML = `<div id="cargandoProductos"></div>`;
+    // Define los query params para enviarlos en el fetch y asi filtrar los productos
+    const params = new URLSearchParams(window.location.search);
     const desde = params.get('desde') || 0;
     const hasta = params.get('hasta') || 20;
     const precioMin = params.get('precioMin') || '';
@@ -85,8 +88,18 @@ const buscarProductos = () => {
             });
         }
         else { // Si el servidor no devuelve errores:
-            console.log(data.productos);
-            agregarProductosDOM(data.productos);
+            if (data.productos[0]) { // Si se encuentran productos para los parametros de busqueda entonces los agrega
+                agregarProductosDOM(data.productos);
+            }
+            else { // Si no se encontraron productos da aviso al usuario
+                // Vacia el contenedor y muestra un mensaje de error
+                contenedorProductos.innerHTML = `
+                    <div id="mensajeSinProductos">
+                        <div id="mensajeSinProductos__logo"></div>
+                        <div id="mensajeSinProductos__mensaje">No se encontraron productos para los parametros de busqueda</div>
+                    </div>
+                    `;
+            }
         }
     })
         .catch(error => {
