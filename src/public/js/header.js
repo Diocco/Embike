@@ -105,7 +105,6 @@ botonCerrarSesionResponsive.addEventListener('click', () => {
     localStorage.removeItem('tokenAcceso'); // Elimina el token de acceso
     window.location.assign(url); // Redirije al usuario al inicio de la pagina
 });
-// Barra de busqueda
 // Verifica que refleja busqueda actual
 const inputBusqueda = document.getElementById('header__form-barraBusqueda__input');
 const inputBusquedaResponsive = document.getElementById('header-responsive__form-barraBusqueda__input');
@@ -115,6 +114,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (palabraBuscada) { // Si la palabra buscada existe
         inputBusqueda.value = palabraBuscada; // La define como valor en el input de la barra de busqueda
         inputBusquedaResponsive.value = palabraBuscada; // La define como valor en el input de la barra de busqueda
+        inputBusqueda.classList.add('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
+        inputBusquedaResponsive.classList.add('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
     }
 });
 // Escucha una nueva busqueda
@@ -126,9 +127,20 @@ formularioBusqueda.addEventListener('submit', (event) => {
     if (esCatalogo) {
         // Define los query element 
         const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
-        urlObjeto.searchParams.set('palabraBuscada', inputBusqueda.value); // Si no existe, lo crea; si existe, lo actualiza
+        const palabraBuscada = inputBusqueda.value;
+        urlObjeto.searchParams.set('palabraBuscada', palabraBuscada); // Si no existe, lo crea; si existe, lo actualiza
         window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
         buscarProductos(); // Realiza la busqueda de los productos con el nuevo filtro
+        if (palabraBuscada) { // Si la palabra buscada existe
+            inputBusqueda.value = palabraBuscada; // La define como valor en el input de la barra de busqueda
+            inputBusquedaResponsive.value = palabraBuscada; // La define como valor en el input de la barra de busqueda
+            inputBusqueda.classList.add('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
+            inputBusquedaResponsive.classList.add('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
+        }
+        else {
+            inputBusqueda.classList.remove('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
+            inputBusquedaResponsive.classList.remove('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
+        }
     }
     else {
         location.assign(`/catalogo?palabraBuscada=${inputBusqueda.value}`); // Redirije al usuario a la pagina del catalogo con la plabra buscada como parametro de busqueda

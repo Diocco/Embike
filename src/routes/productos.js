@@ -20,7 +20,11 @@ router.get('/:id', // Obtener producto por id
 router.post('/', // Crear producto - Admin
 middlewares_1.validarJWT, // Valida que el usuario que realiza la accion sea valido
 (0, middlewares_1.validarRolJWT)('admin'), // Valida que el usuario tenga permisos de administrador
-(0, express_validator_1.check)('nombre', 'El nombre es obligatorio').notEmpty(), (0, express_validator_1.check)('categoria', 'La categoria es obligatoria').notEmpty(), (0, express_validator_1.check)('categoria').custom(categoriasVerificaciones_1.categoriaValida), (0, express_validator_1.check)('SKU', "El SKU debe tener formato 'string'").isString(), (0, express_validator_1.check)('SKU').optional().custom(productosVerificaciones_1.SKUUnico), middlewares_1.validarCampos, productos_1.crearProducto);
+(0, express_validator_1.check)('nombre', 'El nombre es obligatorio').notEmpty(), (0, express_validator_1.check)('marca', 'La marca es obligatoria check').notEmpty(), (0, express_validator_1.check)('modelo', 'El modelo es obligatorio check').notEmpty(), (0, express_validator_1.check)('categoria', 'La categoria es obligatoria').notEmpty(), (0, express_validator_1.check)('categoria').custom(categoriasVerificaciones_1.categoriaValida), (0, express_validator_1.check)('variantes', 'Las variantes son obligatorias').notEmpty(), (0, express_validator_1.check)('variantes').custom(productosVerificaciones_1.variantesValidas), middlewares_1.validarCampos, productos_1.crearProducto);
+router.put('/variante/:id', // Agrega o actuliza una variante de un producto - Admin
+middlewares_1.validarJWT, // Valida que el usuario que realiza la accion sea valido
+(0, middlewares_1.validarRolJWT)('admin'), // Valida que el usuario tenga permisos de administrador
+(0, express_validator_1.check)('id').custom(productosVerificaciones_1.productoExiste), (0, express_validator_1.check)('talle', 'El talle es obligatorio').notEmpty(), (0, express_validator_1.check)('color', 'El color es obligatorio').notEmpty(), (0, express_validator_1.check)('SKU', "El SKU debe tener formato 'string'").optional().isString(), (0, express_validator_1.check)('SKU').optional().custom(productosVerificaciones_1.SKUUnico), middlewares_1.validarCampos, productos_1.agregarVariante);
 router.put('/:id', // Actualizar producto - Admin
 middlewares_1.validarJWT, // Valida que el usuario que realiza la accion sea valido
 (0, middlewares_1.validarRolJWT)('admin'), // Valida que el usuario tenga permisos de administrador

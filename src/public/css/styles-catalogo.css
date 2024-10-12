@@ -55,7 +55,6 @@
 	margin-bottom: 200px;
 	font-size: 20px;
 }
-
 #mensajeSinProductos__logo{
 	height: 100px;
 	width: 100px;
@@ -70,6 +69,7 @@
 	width: 200px;
 	text-align: center;
 }
+
 
 .catalogo__indice{
 	display: flex;
@@ -89,6 +89,7 @@
 	align-items: center;
 	flex-direction: column;
 	max-width: 450px;
+	margin-top: 5px;
 	filter: opacity(0);
 	transition: border 0.25s, box-shadow 0.25s ,filter 0.5s;
 	animation: catalogo__div-aparecer 1s forwards 0.5s;
@@ -111,8 +112,9 @@
 
 /*Imagen del producto*/
 .catalogo__div__imagen {
-	width: 300px;
-	height: 300px;
+	width: 290px;
+    height: 290px;
+    margin: 5px;
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: contain;
@@ -132,229 +134,6 @@
 .catalogo__div__comprar-noDisponible {
 	filter: brightness(0.8);
 }
-
-/*Ventana emergente para visualizar un producto */
-#catalogoProducto{
-	display: grid;
-	grid-template-columns: 40vw 15vw 15vw;
-	grid-template-rows: 5vh repeat(2,10vh) 3vh 7vh 25vh 15vh 5vh;
-
-	transition: transform 0.5s;
-	z-index: 100;
-	height: 80vh;
-	width: 70vw;
-	margin: 0vw 10vw 10vh 10vw;
-	position: fixed;
-	background-color: white;
-	border: solid 1px rgb(90, 90, 90);
-	border-radius: 15px;
-	box-shadow: 0px 0px 15px 5px gray;
-	transform: translateX(-150vw);
-}
-/*Ventana emergente activa*/
-.catalogoProducto-active{
-	transform: translateX(5vw) !important;
-}
-
-/*Imagen en la ventana emergente de un producto */
-#catalogoProducto__imagen{
-	background-color: white;
-	margin: 5vh 5vh;
-	grid-row: 1/9;
-	height: 70vh;
-	width: 35vw;
-	background-image:url("../img/catalogoImagenes/bici1.png");
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: contain;
-}
-
-/*Boton de salir de la ventana emergente*/
-#catalogoProducto__salir{
-
-	font-size: 1.7vw;
-	border-radius: 2vw;
-	width: 2vw;
-	height: 2vw;
-	margin: 1vw;
-	justify-self: end;
-	grid-column: 2/4;
-}
-
-/*Titulo de la ventana emergente*/
-#catalogoProducto__titulo{
-	height: max-content;
-	width: max-content;
-	align-self: center;
-	justify-self: center;
-	grid-column: 2/4;
-	font-size: 2vw;
-}
-
-/*Precio de la ventana emergente*/
-#catalogoProducto__precio{
-	height: max-content;
-	width: max-content;
-	justify-self: center;
-	grid-column: 2/4;
-	font-size: 2vw;
-	font-family: tahoma;
-}
-
-/*Colores y talles de la ventana emergente*/
-#catalogoProducto__colores,#catalogoProducto__talles{
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	height: 100%;
-	width: 100%;
-}
-/*Titulo de colores y talles de la ventana emergente*/
-#catalogoProducto__colores-titulo,#catalogoProducto__talles-titulo{
-	align-self: start;
-	font-size: 1.1vw;
-}
-
-/*Colores individuales de la ventana emergente*/
-#catalogoProducto__color1,#catalogoProducto__color2,#catalogoProducto__color3,#catalogoProducto__color4{
-	border: solid black 1px;
-	border-radius: 2px;
-	width: 2.5vw;
-	height: 2.5vw;
-	margin: 0.5vw;
-	z-index: 50;
-	transform: translate(0, 0.7vw);
-}
-#catalogoProducto__color1{background: linear-gradient(135deg, blue 50% ,black 50%);}
-#catalogoProducto__color1:hover{background: linear-gradient(135deg, blue 100% ,black 0%)}
-
-#catalogoProducto__color2{background: linear-gradient(135deg, red 50% ,black 50%);}
-#catalogoProducto__color2:hover{background: linear-gradient(135deg, red 100% ,black 0%)}
-#catalogoProducto__color2:active{background: linear-gradient(135deg, red 100% ,black 0%)}
-
-#catalogoProducto__color3{background: linear-gradient(135deg, green 50% ,black 50%);}
-#catalogoProducto__color3:hover{background: linear-gradient(135deg, green 100% ,black 0%)}
-#catalogoProducto__color3:active{background: linear-gradient(135deg, green 100% ,black 0%)}
-
-#catalogoProducto__color4{background: linear-gradient(135deg, gray 50% ,black 50%);}
-#catalogoProducto__color4:hover{background: linear-gradient(135deg, gray 100% ,black 0%)}
-#catalogoProducto__color4:active{background: linear-gradient(135deg, gray 100% ,black 0%)}
-
-/*Talles individuales de la ventana emergente*/
-#catalogoProducto__talle1,#catalogoProducto__talle2,#catalogoProducto__talle3,#catalogoProducto__talle4{
-	text-align: center;
-	padding-top: 0.7vw;
-	border: solid black 1px;
-	border-radius: 2px;
-	font-size: 1vw;
-	font-family: tahoma;
-	width: 2.5vw;
-	height: 2.5vw;
-	margin: 0.5vw;
-	z-index: 50;
-	transform: translate(0, 0.7vw);
-}
-#catalogoProducto__talle1:hover,#catalogoProducto__talle2:hover,#catalogoProducto__talle3:hover,#catalogoProducto__talle4:hover{
-	background-color: gray;
-}
-#catalogoProducto__talle1{
-	background-color: rgb(185, 185, 185);
-}
-
-/*Contenedor de botones de comprar de la ventana emergente*/
-#catalogoProducto__comprar{
-	grid-column: 2/4;
-	display:flex;
-	justify-items: center;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-}
-/*Botones de comprar o agregar de la ventana emergente*/
-#catalogoProducto__comprarAhora,#catalogoProducto__comprarAgregar{
-	width: 15vw;
-	height: 2.5vw;
-	border: black solid 2px;
-	font-size: 0.8vw;
-	text-align: center;
-	padding-top: 0.8vw;
-	font-family: tahoma;
-}
-/*Boton de comprar de la ventana emergente*/
-#catalogoProducto__comprarAhora{
-	width: 20vw;
-	background-color: rgb(32, 158, 32);
-	color: white;
-}
-/*Boton de agregar de la ventana emergente*/
-#catalogoProducto__comprarAgregar{
-	background-color: rgb(222, 252, 222);
-}
-
-/*Botones de cantidad de productos*/
-#catalogoProducto__agregar-restar,#catalogoProducto__agregar-cantidad,#catalogoProducto__agregar-sumar{
-	text-align: center;
-	padding-top: 0.35vw;
-	border: solid black 2px;
-	border-radius: 2px;
-	font-size: 1.5vw;
-	width: 2.5vw;
-	height: 2.5vw;
-	margin: 0.5vw;
-}
-/*Boton de sumar cantidad del mismo producto*/
-#catalogoProducto__agregar{
-	display: flex;
-	justify-content: center;
-    align-items: flex-end;
-	margin-bottom: 1.5vw;
-	grid-column: 2/4;
-}
-/*Ventana para ver la cantidad del mismo producto*/
-#catalogoProducto__agregar-cantidad{
-	width: 3.5vw;
-}
-/*Boton de restar cantidad del mismo producto*/
-#catalogoProducto__agregar-restar{
-	transform: translateX(1.1vw);
-	color: red;
-}
-#catalogoProducto__agregar-restar:hover{
-	background-color: rgb(250, 176, 176);
-}
-
-#catalogoProducto__agregar-sumar{
-	transform: translateX(-1.1vw);
-	color: green;
-}
-
-#catalogoProducto__agregar-sumar:hover{
-	background-color: rgb(169, 247, 169);
-}
-
-
-/*Fondo de la ventana emergente*/
-#catalogo__fondo{
-	position: fixed;
-	width: 100vw;
-	height: 100vw;
-	z-index: 90;
-	transform: translateX(-150vw);
-	background-color: black;
-	transition: opacity 0.5s;
-	opacity: 0;
-}
-.catalogo__fondo-active{
-	transform: translateX(0vw) !important;
-	transform: translateY(-111px) !important;
-	opacity: 0.3 !important;
-	filter: blur(0.5);
-}
-
-
-
-
-
 
 
 /*Filtrado de producto*/
@@ -397,11 +176,16 @@
 }
 /*Inputs de precio maximo y precio minimo*/
 .casillaPrecio{
-    padding: 3px;
-    padding-left: 8px;
-    width: 90px;
-    border-radius: 11px;
-    margin-right: 10px;
+	padding: 3px;
+	padding-left: 8px;
+	width: 90px;
+	border-radius: 11px;
+	margin-right: 10px;
+}
+/*Inputs de precio maximo y precio minimo cuando tienen un valor de busqueda activo*/
+.casillaPrecio-active{
+	background-color: var(--azul-logo);
+	color: white;
 }
 .casillaPrecio:hover{
 	box-shadow: 0px 0px 10px 0px #033452;

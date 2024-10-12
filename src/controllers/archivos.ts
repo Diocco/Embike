@@ -17,11 +17,17 @@ const cargarNotFound = (req: Request, res: Response) => {
     res.render("notFound.hbs");
 };
 
+const cargarProducto = (req: Request, res: Response) => {
+    res.render("producto.hbs");
+};
+
+
 
 
 export{
     cargarCatalogo,
     cargarIndex,
     cargarNotFound,
-    cargarInicioSesion
+    cargarInicioSesion,
+    cargarProducto
 }

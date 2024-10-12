@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.eliminarProducto = exports.actualizarProducto = exports.crearProducto = exports.verProductoID = exports.verProductos = void 0;
+exports.agregarVariante = exports.eliminarProducto = exports.actualizarProducto = exports.crearProducto = exports.verProductoID = exports.verProductos = void 0;
 const productos_1 = __importDefault(require("../models/productos"));
 const categoria_1 = __importDefault(require("../models/categoria"));
 // Devuelve todas las productos
@@ -50,6 +50,8 @@ const verProductos = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // Los filtros opcionales donde el valor buscado puede estar en varias propiedades
         $or: [
             { nombre: palabraBuscadaRegExp },
+            { marca: palabraBuscadaRegExp },
+            { modelo: palabraBuscadaRegExp },
             { descripcion: palabraBuscadaRegExp },
             { tags: { $in: [palabraBuscadaRegExp] } } // Aquí el uso de $in, pero asegurándonos que tags es un array
         ],
@@ -84,20 +86,20 @@ const verProductoID = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.verProductoID = verProductoID;
 // Crea una nueva producto
 const crearProducto = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { nombre, categoria, descripcion, SKU, precio, caracteristicas, color, stock, disponible, imagenes, tags } = req.body;
+    const { nombre, // Desestructura la informacion del body para utilizar solo la informacion requerida
+    marca, modelo, categoria, variantes, descripcion, precio, especificaciones, disponible, tags } = req.body;
     const usuario = req.body.usuario;
     const data = {
         nombre,
+        marca,
+        modelo,
         usuario,
         categoria,
+        variantes,
         descripcion,
-        SKU,
         precio,
-        caracteristicas,
-        color,
-        stock,
+        especificaciones,
         disponible,
-        imagenes,
         tags
     };
     const producto = new productos_1.default(data); // Crea una nueva producto
@@ -105,12 +107,110 @@ const crearProducto = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     res.json(`Se creo la producto ${nombre}`);
 });
 exports.crearProducto = crearProducto;
+// Agrega variantes de un producto
+const agregarVariante = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Busca el producto al cual hay que agregarle la variante
+    const { id } = req.params;
+    const producto = yield productos_1.default.findById(id);
+    const variantes = producto.variantes; // Recupera las variantes actual del producto
+    let respuesta; // Variable que almacena la respuesta del servidor segun como se resuelva la solicitud
+    const { // Desestructura la informacion del body para utilizar solo la informacion requerida
+    color, talle, SKU, stock, imagenes, } = req.body;
+    // Verifica si existe una variante con el mismo color que el que se obtuvo como valor de entrada
+    variantes.forEach(variante => {
+        if (variante.color === color) {
+            // Si el producto ya tiene una variante con el mismo color que el color recibido de entrada entonces verifica si el talle tambien existe o es nuevo
+            let varianteActualizada = false; // Valor que indica si se actualizo la variante o no
+            variante.caracteristicas.forEach(caracteristicas => {
+                if (caracteristicas.talle === talle) {
+                    // Si el producto ya tiene el color y el talle recibido como valores de entrada entonces actualiza los valores
+                    // Solo cambia el valor de la variante si el valor de entrada no es nulo
+                    caracteristicas.SKU = SKU ? SKU : caracteristicas.SKU;
+                    caracteristicas.stock = stock ? stock : caracteristicas.stock;
+                    caracteristicas.imagenes = imagenes ? imagenes : caracteristicas.imagenes;
+                    varianteActualizada = true; // Se especifica que se actualizo la variante
+                    respuesta = "Se actualizo la variante";
+                }
+            });
+            if (!varianteActualizada) { // Si no se actualizo ninguna variante entonces es porque el talle recibido como argumento no forma parte de las variantes actuales del producto
+                // Agrega la talle recibida como argumento como una variante nueva
+                if (!SKU) { // Si el SKU es nulo entonces devuelve un mensaje de error
+                    return res.status(400).json({
+                        errors: [{
+                                msg: "El SKU es obligatorio para crear una nueva variante",
+                                path: "SKU"
+                            }]
+                    });
+                }
+                const nuevaVariante = {
+                    talle,
+                    SKU,
+                    stock,
+                    imagenes
+                };
+                variante.caracteristicas.push(nuevaVariante);
+                respuesta = "Se agrego la variante con un nuevo talle";
+            }
+        }
+        else {
+            // Si el producto no cuenta con la variante con el mismo color que el recibido como argumento entonces crea una nueva variante
+            if (!SKU) { // Si el SKU es nulo entonces devuelve un mensaje de error
+                return res.status(400).json({
+                    errors: [{
+                            msg: "El SKU es obligatorio para crear una nueva variante",
+                            path: "SKU"
+                        }]
+                });
+            }
+            // Estructura la informacion para enviarla correctamente al servidor
+            const varianteNueva = {
+                color,
+                caracteristicas: {
+                    talle,
+                    SKU,
+                    stock,
+                    imagenes,
+                }
+            };
+            variantes.push(varianteNueva);
+            respuesta = "Se creo la nueva variante";
+        }
+    });
+    yield productos_1.default.findOneAndUpdate({ _id: id }, { variantes });
+    res.json(respuesta);
+});
+exports.agregarVariante = agregarVariante;
 // Actualiza una producto con el id pasado como parametro
 const actualizarProducto = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const { nombre, categoria, descripcion, SKU, precio, caracteristicas, color, stock, disponible, imagenes, tags } = req.body; // Extrae el parametro que sea modificable
+    const { nombre, // Desestructura la informacion del body para utilizar solo la informacion requerida
+    marca, modelo, categoria, color, talle, SKU, stock, imagenes, descripcion, precio, especificaciones, disponible, tags } = req.body;
+    const usuario = req.body.usuario;
+    // Estructura la informacion para enviarla correctamente al servidor
+    const variantes = [{
+            color,
+            caracteristicas: {
+                talle,
+                SKU,
+                stock,
+                imagenes,
+            }
+        }];
+    const data = {
+        nombre,
+        marca,
+        modelo,
+        usuario,
+        categoria,
+        variantes,
+        descripcion,
+        precio,
+        especificaciones,
+        disponible,
+        tags
+    };
     // Busca por id en la base de datos que actualiza las propiedades que esten en el segundo parametro. { new: true } devuelve el documento actualizado
-    const productoActualizado = yield productos_1.default.findByIdAndUpdate(id, { nombre, categoria, descripcion, SKU, precio, caracteristicas, color, stock, disponible, imagenes, tags }, { new: true });
+    const productoActualizado = yield productos_1.default.findByIdAndUpdate(id, data, { new: true });
     res.status(200).json({
         msg: "Producto actualizado en la base de datos",
         productoActualizado

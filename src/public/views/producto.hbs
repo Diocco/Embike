@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+		<link rel="stylesheet" type="text/css" href="../css/producto.css">
+		<meta charset="utf-8">
+		<title>Embike</title>
+		<meta name="keywords" content="Bicicletas,MontainBike,Ñiños,Ruedas,Cubiertas,Frenos,Disco,Asientos">
+		<meta name="description" content="Embike, la esencia ciclista. Encontra bicicletas y accesorios en nuestra tienda virtual, ideales para recorrer las sierras o las rutas de Cordoba">
+		<meta name="author" content="Diego Nicolas Iocco">
+		<meta name="robots" content="index">
+		<link rel="icon" href="logo.ico">
+		<script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
+	</head>
+
+<body>
+    <header>{{>  header }}</header>
+	{{!-- Ventana de visualizacion de productos --}}
+    <div id="contenedorGeneral">
+        <div id="catalogoProducto">
+            <div id="catalogoProducto__imagen">
+                <button id="catalogoProducto__volver"></button>
+                <div id="botonAgregarDeseados">
+                    <i class="fas fa-heart"></i>
+                </div>
+            </div>
+            <div id="catalogoProducto__titulo"></div>
+            <div id="catalogoProducto__precio"></div>
+            <div id="catalogoProducto__colores">
+                <div id="catalogoProducto__colores-titulo">Colores</div>
+                <div id="catalogoProducto__colores-contenedor" class="catalogoProducto__opcionesProductos">
+                </div>
+            </div>
+            <div id="catalogoProducto__talles">
+                <div id="catalogoProducto__talles-titulo">Talles</div>
+                <div id="catalogoProducto__talles-contenedor" class="catalogoProducto__opcionesProductos">
+                </div>
+            </div>
+            <div id="catalogoProducto__agregar">
+                <div id="catalogoProducto__agregar-restar">-</div>
+                <div id="catalogoProducto__agregar-cantidad">1</div>
+                <div id="catalogoProducto__agregar-sumar">+</div>
+            </div>
+            <div id="catalogoProducto__comprar">
+                <div id="catalogoProducto__comprarAhora">COMPRAR AHORA</div>
+                <div id="catalogoProducto__comprarAgregar">AGREGAR AL CARRO</div>
+            </div>
+        </div>
+        <div id="informacionGeneralProducto">
+            <div id="informacionGeneralProducto__div-contenedorDescripcion">
+                <h3>Descripcion</h3>
+                <p id="contenedorDescripcion__p">
+            </div>
+            <div id="informacionGeneralProducto__div-especificaciones">
+                <h3 id="div-especificaciones__h3">Especificaciones tecnicas</h3>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/producto.js"></script>
+</body>
+
+</html>

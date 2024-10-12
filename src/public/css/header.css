@@ -56,6 +56,13 @@
 	width: 400px;
 	height: 45px;
 }
+/* Cambia el input cuando tiene un contenido que forma parte del filtro de busqueda actual */
+.header__form-barraBusqueda__input-active{
+	background-color: var(--azul-logo) !important;
+	color:white !important;
+	border: solid 1px !important;
+	border-radius: 10px !important;
+}
 
 /*Estilos de los botones*/
 .header__botones{
@@ -177,6 +184,7 @@
 	outline-color: var(--azul-logo);
 }
 
+
 /*Lupa de la barra busqueda*/
 #header-responsive__form-barraBusqueda__button{
 	width: 85px;
@@ -243,7 +251,7 @@
 	z-index: 1500;
 }
 #div-menu__ul-opciones{
-	transform: translateX(-100vw);
+	transform: translateX(-120vw);
 }
 
 /*Los deslizadores se activan cuando se hacen click en sus respectivos botones*/

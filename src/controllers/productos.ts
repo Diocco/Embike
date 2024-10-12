@@ -47,6 +47,8 @@ const verProductos = async(req: Request, res: Response)=>{
         // Los filtros opcionales donde el valor buscado puede estar en varias propiedades
         $or: [
             { nombre: palabraBuscadaRegExp },
+            { marca: palabraBuscadaRegExp },
+            { modelo: palabraBuscadaRegExp },
             { descripcion: palabraBuscadaRegExp },
             { tags: { $in: [palabraBuscadaRegExp] } }  // Aquí el uso de $in, pero asegurándonos que tags es un array
         ],
@@ -89,23 +91,33 @@ const verProductoID = async(req: Request, res: Response)=>{
 
 // Crea una nueva producto
 const crearProducto = async(req: Request, res: Response)=>{
-    const { nombre,categoria,descripcion,SKU,precio,caracteristicas,color,stock,disponible,imagenes,tags } = req.body
-    const usuario = req.body.usuario
+    const { nombre, // Desestructura la informacion del body para utilizar solo la informacion requerida
+        marca,
+        modelo,
+        categoria,
+        variantes,
+        descripcion,
+        precio,
+        especificaciones,
+        disponible,
+        tags
+    } = req.body
 
+    const usuario = req.body.usuario
+    
     const data={
         nombre,
+        marca,
+        modelo,
         usuario,
         categoria,
+        variantes,
         descripcion,
-        SKU,
         precio,
-        caracteristicas,
-        color,
-        stock,
+        especificaciones,
         disponible,
-        imagenes,
         tags
-        }
+    }
 
     const producto = new Producto( data ) // Crea una nueva producto
     await producto.save() // La guarda en la base de datos
@@ -113,13 +125,135 @@ const crearProducto = async(req: Request, res: Response)=>{
     res.json(`Se creo la producto ${nombre}`)
 }
 
+// Agrega variantes de un producto
+const agregarVariante = async(req: Request, res: Response)=>{
+    // Busca el producto al cual hay que agregarle la variante
+    const { id } = req.params
+    const producto = await Producto.findById(id)
+    const variantes = producto!.variantes // Recupera las variantes actual del producto
+    let respuesta // Variable que almacena la respuesta del servidor segun como se resuelva la solicitud
+    const { // Desestructura la informacion del body para utilizar solo la informacion requerida
+        color, 
+        talle,
+        SKU,
+        stock,
+        imagenes,
+    } = req.body
+    
+
+    // Verifica si existe una variante con el mismo color que el que se obtuvo como valor de entrada
+    variantes.forEach(variante =>{
+        if(variante.color === color){
+            // Si el producto ya tiene una variante con el mismo color que el color recibido de entrada entonces verifica si el talle tambien existe o es nuevo
+            let varianteActualizada:boolean = false // Valor que indica si se actualizo la variante o no
+            variante.caracteristicas!.forEach(caracteristicas => {
+                if(caracteristicas.talle === talle){
+                    // Si el producto ya tiene el color y el talle recibido como valores de entrada entonces actualiza los valores
+                    // Solo cambia el valor de la variante si el valor de entrada no es nulo
+                    caracteristicas.SKU = SKU?SKU:caracteristicas.SKU
+                    caracteristicas.stock = stock?stock:caracteristicas.stock
+                    caracteristicas.imagenes=imagenes?imagenes:caracteristicas.imagenes
+                    varianteActualizada=true; // Se especifica que se actualizo la variante
+                    respuesta="Se actualizo la variante"
+                }
+            });
+            if(!varianteActualizada){ // Si no se actualizo ninguna variante entonces es porque el talle recibido como argumento no forma parte de las variantes actuales del producto
+                // Agrega la talle recibida como argumento como una variante nueva
+                if(!SKU){ // Si el SKU es nulo entonces devuelve un mensaje de error
+                    return res.status(400).json({
+                        errors:[{
+                            msg: "El SKU es obligatorio para crear una nueva variante",
+                            path: "SKU"
+                        }]
+                    })
+                }
+                const nuevaVariante = {
+                    talle,
+                    SKU,
+                    stock,
+                    imagenes
+                }
+                variante.caracteristicas.push(nuevaVariante)
+                respuesta="Se agrego la variante con un nuevo talle"
+            }
+        }else{
+            // Si el producto no cuenta con la variante con el mismo color que el recibido como argumento entonces crea una nueva variante
+            if(!SKU){ // Si el SKU es nulo entonces devuelve un mensaje de error
+                return res.status(400).json({
+                    errors:[{
+                        msg: "El SKU es obligatorio para crear una nueva variante",
+                        path: "SKU"
+                    }]
+                })
+            }
+            // Estructura la informacion para enviarla correctamente al servidor
+            const varianteNueva={
+                color,
+                caracteristicas:{
+                    talle,
+                    SKU,
+                    stock,
+                    imagenes,
+                }
+            }
+            variantes.push(varianteNueva)
+            respuesta="Se creo la nueva variante"
+        }
+    })
+
+    await Producto.findOneAndUpdate({_id: id},{variantes})
+    
+    res.json(respuesta)
+}
+
 // Actualiza una producto con el id pasado como parametro
 const actualizarProducto = async(req: Request, res: Response)=>{
     const { id } = req.params; 
-    const { nombre,categoria,descripcion,SKU,precio,caracteristicas,color,stock,disponible,imagenes,tags } = req.body // Extrae el parametro que sea modificable
+    const { nombre, // Desestructura la informacion del body para utilizar solo la informacion requerida
+            marca,
+            modelo,
+            categoria,
+            color,
+            talle,
+            SKU,
+            stock,
+            imagenes,
+            descripcion,
+            precio,
+            especificaciones,
+            disponible,
+            tags
+        } = req.body
+
+    const usuario = req.body.usuario
+
+    // Estructura la informacion para enviarla correctamente al servidor
+    const variantes=[{
+        color,
+        caracteristicas:{
+            talle,
+            SKU,
+            stock,
+            imagenes,
+        }
+    }]
+
+    const data={
+        nombre,
+        marca,
+        modelo,
+        usuario,
+        categoria,
+        variantes,
+        descripcion,
+        precio,
+        especificaciones,
+        disponible,
+        tags
+    }
 
     // Busca por id en la base de datos que actualiza las propiedades que esten en el segundo parametro. { new: true } devuelve el documento actualizado
-    const productoActualizado = await Producto.findByIdAndUpdate( id,{ nombre,categoria,descripcion,SKU,precio,caracteristicas,color,stock,disponible,imagenes,tags }, { new: true }); 
+    const productoActualizado = await Producto.findByIdAndUpdate( id,data, { new: true }); 
 
     res.status(200).json({ //Devuelve un mensaje y el producto agregado a la base de datos
         msg: "Producto actualizado en la base de datos",
@@ -148,5 +282,6 @@ export {
     verProductoID,
     crearProducto,
     actualizarProducto,
-    eliminarProducto
+    eliminarProducto,
+    agregarVariante
 }

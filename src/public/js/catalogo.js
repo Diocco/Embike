@@ -12,37 +12,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 let urlProductos = '/api/productos';
 let urlCategorias = '/api/categorias';
 //Se agrega el comportamiento de cuando se hace click sobre cualquier producto
-const ventanaEmergenteProductos = () => {
-    //Se configura el comportamiento de la ventana
-    const productosCargados = document.querySelectorAll('.catalogo__div'); // Crea un array con los nodos de los productos existentes en el DOM
-    const ventanaEmergenteProducto = document.getElementById("catalogoProducto"); // Ventana emergente donde aparece toda la informacion del producto seleccionado
-    const catalogo__fondo = document.getElementById("catalogo__fondo"); // Fondo de la ventana emergente
-    const catalogoProducto__imagen = document.getElementById("catalogoProducto__imagen"); // Imagen del producto seleccionado dentro de la ventana emergente
-    const titulo = document.getElementById("catalogoProducto__titulo"); // Nombre del producto seleccionado dentro de la ventana emergente
-    const precio = document.getElementById("catalogoProducto__precio"); // Precio del producto seleccionado dentro de la ventana emergente
-    const catalogoProducto__salir = document.getElementById("catalogoProducto__salir"); // Boton de salir dentro de la ventana emergente
-    //Recorre los productos cargados en el catalogo para darle funcionalidad
-    productosCargados.forEach(producto => {
-        producto.addEventListener("click", () => {
-            titulo.textContent = producto.dataset.nombre; // Define el nombre del producto seleccionado dentro de la ventana emergente
-            precio.textContent = producto.dataset.precio; // Define el precio del producto seleccionado dentro de la ventana emergente
-            catalogoProducto__imagen.style.backgroundImage = `url("${producto.dataset.imagen1}")`; // Define la imagen del producto seleccionado dentro de la ventana emergente
-            ventanaEmergenteProducto.classList.toggle("catalogoProducto-active"); // Muestra la ventana emergente
-            catalogo__fondo.classList.toggle("catalogo__fondo-active"); // Oscurece el fondo de la ventana emergente
-        });
-    });
-    // Funciones para cerrar la ventana emergente
-    //Comportamiento de el boton de salir
-    catalogoProducto__salir.addEventListener("click", () => {
-        catalogo__fondo.classList.toggle("catalogo__fondo-active"); // Esconde la ventana emergente
-        ventanaEmergenteProducto.classList.toggle("catalogoProducto-active"); // Vuelve el color del fondo de la ventana emergente a la normalidad
-    });
-    //Comportamiento del fondo
-    catalogo__fondo.addEventListener("click", () => {
-        catalogo__fondo.classList.toggle("catalogo__fondo-active"); // Esconde la ventana emergente
-        ventanaEmergenteProducto.classList.toggle("catalogoProducto-active"); // Vuelve el color del fondo de la ventana emergente a la normalidad
-    });
-};
 // Agrega los productos recibidos como parametros al DOM
 const agregarProductosDOM = (productos) => {
     const contenedorProductos = document.getElementById('catalogo'); //Toma el catalogo como el contenedor de los productos a agregar
@@ -50,11 +19,13 @@ const agregarProductosDOM = (productos) => {
     const fragmento = document.createDocumentFragment(); //Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
     productos.forEach((producto) => {
         let agregarElemento = document.createElement('div'); // Crea un div para alojar el nuevo producto
+        // Verifica que exista una imagen, sino muestra un icono de error
+        const imagenProducto = producto.variantes[0].caracteristicas[0].imagenes[0] ? producto.variantes[0].caracteristicas[0].imagenes[0] : '../img/catalogoImagenes/icono-sinFoto.avif';
         agregarElemento.innerHTML = `
-        <div class="catalogo__div" id="${producto._id}" data-imagen1="${producto.imagenes[0]}" data-nombre="${producto.nombre}" data-precio="$ ${producto.precio}">
-        <div class="catalogo__div__imagen" style='background-image: url("${producto.imagenes[0]}');"></div>
+        <div class="catalogo__div" id="${producto._id}" data-imagen1="${imagenProducto}" data-nombre="${producto.nombre}" data-precio="$ ${producto.precio}">
+        <div class="catalogo__div__imagen" style='background-image: url("${imagenProducto}');"></div>
         <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
-        <h3 class="catalogo__div__precio">$ ${producto.precio}</h3>
+        <h3 class="catalogo__div__precio">$ ${(Number(producto.precio)).toLocaleString('es-AR')}</h3>
         <button class="catalogo__div__comprar">Agregar al carro</button>
         </div>
         `;
@@ -106,7 +77,16 @@ const buscarProductos = () => {
         console.error(error);
     })
         .finally(() => {
-        ventanaEmergenteProductos();
+        verProductos(); // Funcion para que cuando se aprete en un producto te reedirija a su pagina con informacion
+    });
+};
+const verProductos = () => {
+    const productos = document.querySelectorAll(".catalogo__div");
+    console.log(productos);
+    productos.forEach(producto => {
+        producto.addEventListener("click", () => {
+            location.assign(`/producto/${producto.id}`);
+        });
     });
 };
 const agregarCategoriasDOM = (categorias) => {
@@ -166,6 +146,19 @@ const precioMinMax = () => {
             urlObjeto.searchParams.set('precioMax', inputMax.value); // Si no existe, lo crea; si existe, lo actualiza
             window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
             buscarProductos(); // Realiza la busqueda de los productos con el nuevo filtro
+            // Si el parametro de busqueda existe entonces refleja el estado activo en los input correspondientes
+            if (inputMax.value) {
+                inputMax.classList.add('casillaPrecio-active');
+            }
+            else {
+                inputMax.classList.remove('casillaPrecio-active');
+            }
+            if (inputMin.value) {
+                inputMin.classList.add('casillaPrecio-active');
+            }
+            else {
+                inputMin.classList.remove('casillaPrecio-active');
+            }
         });
     });
 };
@@ -176,10 +169,20 @@ const verificarActive = () => {
     const inputMin = document.querySelectorAll('.inputPrecioMin'); // Selecciona los input donde se coloca el precio minimo de los productos que se quieren ver
     const precioMin = urlObjeto.searchParams.get('precioMin'); // Lee si hay un precio minimo buscado
     const precioMax = urlObjeto.searchParams.get('precioMax'); // Lee si hay un precio maximo buscado
-    precioMax ? inputMax[0].value = precioMax : ''; // Si previamente se busco un precio maximo, entonces lo refleja en el input correspondiente
-    precioMin ? inputMin[0].value = precioMin : ''; // Si previamente se busco un precio minimo, entonces lo refleja en el input correspondiente
-    precioMax ? inputMax[1].value = precioMax : ''; // Si previamente se busco un precio maximo, entonces lo refleja en el input correspondiente
-    precioMin ? inputMin[1].value = precioMin : ''; // Si previamente se busco un precio minimo, entonces lo refleja en el input correspondiente
+    // Si previamente se busco un precio maximo, entonces lo refleja en el input correspondiente
+    // Refleja visualmente el estadoa activo del input segun corresponda
+    if (precioMax) {
+        inputMax[0].value = precioMax;
+        inputMax[1].value = precioMax;
+        inputMax[0].classList.add('casillaPrecio-active');
+        inputMax[1].classList.add('casillaPrecio-active');
+    }
+    if (precioMin) {
+        inputMin[0].value = precioMin;
+        inputMin[1].value = precioMin;
+        inputMin[0].classList.add('casillaPrecio-active');
+        inputMin[1].classList.add('casillaPrecio-active');
+    }
     // Categorias
     const botonesCategorias = document.querySelectorAll('.filtroBotonCategoria');
     let categoriasActivas = urlObjeto.searchParams.get('categorias'); // Almacena una cadena que contiene las categorias activas
@@ -192,23 +195,25 @@ const verificarActive = () => {
 };
 // Define la funcion de los botones para ordenar los precios segun el metodo elegido
 const ordenarPrecios = () => {
-    const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
     // Obtiene los botones del DOM
     const botonOrdenarPrecioMax = document.getElementById('li-opciones__ul-precioMax');
     const botonOrdenarPrecioMin = document.getElementById('li-opciones__ul-precioMin');
     const botonOrdenarRelevante = document.getElementById('li-opciones__ul-relevante');
     // Escucha cuando se hace click en ellos y se modifica el query param correspondiente
     botonOrdenarPrecioMax.addEventListener('click', () => {
+        const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
         urlObjeto.searchParams.set('ordenar', 'precioMax'); // Si no existe, lo crea; si existe, lo actualiza
         window.history.pushState({}, '', urlObjeto); // Carga los cambios en el URL
         buscarProductos(); // Vuelve a cargar los productos con el nuevo parametro de busqueda
     });
     botonOrdenarPrecioMin.addEventListener('click', () => {
+        const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
         urlObjeto.searchParams.set('ordenar', 'precioMin'); // Si no existe, lo crea; si existe, lo actualiza
         window.history.pushState({}, '', urlObjeto); // Carga los cambios en el URL
         buscarProductos(); // Vuelve a cargar los productos con el nuevo parametro de busqueda
     });
     botonOrdenarRelevante.addEventListener('click', () => {
+        const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
         urlObjeto.searchParams.set('ordenar', ''); // Si no existe, lo crea; si existe, lo actualiza
         window.history.pushState({}, '', urlObjeto); // Carga los cambios en el URL
         buscarProductos(); // Vuelve a cargar los productos con el nuevo parametro de busqueda

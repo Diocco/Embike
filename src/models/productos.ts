@@ -1,60 +1,80 @@
 import mongoose from 'mongoose';
 
-const productoSchema = new mongoose.Schema({ // Crea el esquema para el producto
+const productoSchema = new mongoose.Schema({
     nombre:{ 
         type: String,
-        required: [true, "El nombre es obligatorio"] //Mensaje de error personalizado
+        required: [true, "El nombre es obligatorio"]
+    },
+    marca: {
+        type: String,
+        required: [true, "La marca es obligatoria"]
+    },
+    modelo: {
+        type: String,
+        required: [true, "El modelo es obligatorio"]
     },
     estado:{ 
         type: Boolean,
-        default:true,
+        default: true,
         required: true 
     },
-    usuario:{ // Se almacena el usuario que lo creo
-        type: mongoose.Schema.Types.ObjectId, // Se especifica que se va a usar un schema como tipo
-        ref: 'Usuario' // Se especifica el Schema particular que se va a almacenar
+    usuario:{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Usuario' 
     },
     categoria:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Categoria'
     },
+    variantes: [
+        {
+            color: {
+                type: String,
+                default: '#000000',
+                required: true // Color es obligatorio
+            },
+            caracteristicas: [
+                {
+                    talle: {
+                        type: String,
+                        required: true // Talle es obligatorio
+                    },
+                    SKU: { 
+                        type: String,
+                        default: "0"
+                    },
+                    stock: {
+                        type: Number,
+                        default: 0,
+                        required: true
+                    },
+                    imagenes: {
+                        type: [String],
+                        default:'../img/catalogoImagenes/icono-sinFoto.avif' ,
+                        required: true
+                    }
+                }]
+        }
+    ],
     descripcion:{
         type: String
-    },
-    SKU:{ // Codigo de barra
-        type: String,
-        default: "0"
     },
     precio:{
         type: Number,
         default: 0
     },
-    caracteristicas:{
-        type: [mongoose.Schema.Types.Mixed],
-    },
-    color:{
-        type: String,
-        default: "#000000",
-        require: true
-    },
-    stock:{
-        type: Number,
-        default: 0,
-        require: true
+    especificaciones: {
+        type: mongoose.Schema.Types.Mixed // Permite características dinámicas
     },
     disponible:{
         type: Boolean,
-        default: false,
-        require: true
-    },
-    imagenes:{
-        type: [String],
-        require: true
+        default: true,
+        required: true
     },
     tags:{
         type: [String]
     }
-})
+});
 
 const Producto = mongoose.model('Producto', productoSchema);
 

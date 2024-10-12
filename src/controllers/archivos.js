@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cargarInicioSesion = exports.cargarNotFound = exports.cargarIndex = exports.cargarCatalogo = void 0;
+exports.cargarProducto = exports.cargarInicioSesion = exports.cargarNotFound = exports.cargarIndex = exports.cargarCatalogo = void 0;
 const cargarCatalogo = (req, res) => {
     res.render("catalogo.hbs");
 };
@@ -17,3 +17,7 @@ const cargarNotFound = (req, res) => {
     res.render("notFound.hbs");
 };
 exports.cargarNotFound = cargarNotFound;
+const cargarProducto = (req, res) => {
+    res.render("producto.hbs");
+};
+exports.cargarProducto = cargarProducto;

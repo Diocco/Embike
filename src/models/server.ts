@@ -12,7 +12,9 @@ import {
     cargarCatalogo, 
     cargarIndex, 
     cargarInicioSesion, 
-    cargarNotFound } from '../controllers/archivos';
+    cargarNotFound,
+    cargarProducto
+    } from '../controllers/archivos';
 
 // Rutas
 import usuariosRoutes from '../routes/usuarios';
@@ -87,9 +89,8 @@ class Server {
         this.app.get('/index', cargarIndex); // Configura la ruta
         this.app.get('/catalogo', cargarCatalogo); // Configura la ruta
         this.app.get('/inicioSesion', cargarInicioSesion); // Configura la ruta
+        this.app.get('/producto/*', cargarProducto); // Configura la ruta
         this.app.get('/*', cargarNotFound); // Configura la ruta
-
-
     }
 
     // Inicia el servidor
