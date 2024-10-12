@@ -271,6 +271,7 @@ p{
     #catalogoProducto__imagen{
         align-self: center;
         width: 90%;
+        height: 1200px;
     }
     /*Descripcion y caracterisitcas del producto*/
     #informacionGeneralProducto{
