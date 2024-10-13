@@ -9,7 +9,7 @@
 		<meta name="description" content="Embike, la esencia ciclista. Encontra bicicletas y accesorios en nuestra tienda virtual, ideales para recorrer las sierras o las rutas de Cordoba">
 		<meta name="author" content="Diego Nicolas Iocco">
 		<meta name="robots" content="index">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=0.35, user-scalable=no">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=0.4, user-scalable=no">
 		<link rel="icon" href="logo.ico">
 		<script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
 	</head>
@@ -66,13 +66,13 @@
 				<div class="div-contenedorFiltros__div-icono" id="div-contenedorFiltros__div-iconoFiltrar"></div>
 				<div class="div-contenedorFiltros__ul-titulo">Filtros</div>
 			</div>
-			<div id="div-contenedorFiltros__div-ordenar">
+			<div class="div-contenedorFiltros__div-ordenar">
 				<div class="div-contenedorFiltros__div-titulo">Ordenar</div>
 				<div class="div-contenedorFiltros__div-icono" id="div-contenedorFiltros__div-iconoOrdenar"></div>
-				<li id="div-ordenar__li-opciones">
-					<ul id="li-opciones__ul-relevante" class="li-opciones__ul">Mas relevantes</ul>
-					<ul id="li-opciones__ul-precioMax" class="li-opciones__ul">Mayor precio</ul>
-					<ul id="li-opciones__ul-precioMin" class="li-opciones__ul">Menor precio</ul>
+				<li class="div-ordenar__li-opciones">
+					<ul class="li-opciones__ul-relevante li-opciones__ul">Mas relevantes</ul>
+					<ul class="li-opciones__ul-precioMax li-opciones__ul">Mayor precio</ul>
+					<ul class="li-opciones__ul-precioMin li-opciones__ul">Menor precio</ul>
 				</li>
 			</div>
 		</div>
@@ -116,6 +116,17 @@
 
 		{{!-- Contenedor de productos --}}
 		<div id="catalogo">
+		</div>
+
+		{{!-- Contenedor de opcion de ordenar productos --}}
+		<div class="div-contenedorFiltros__div-ordenar desktop">
+			<div class="div-contenedorFiltros__div-titulo">Ordenar</div>
+			<div class="div-contenedorFiltros__div-icono" id="div-contenedorFiltros__div-iconoOrdenar"></div>
+			<li class="div-ordenar__li-opciones">
+				<ul class="li-opciones__ul-relevante li-opciones__ul">Mas relevantes</ul>
+				<ul class="li-opciones__ul-precioMax li-opciones__ul">Mayor precio</ul>
+				<ul class="li-opciones__ul-precioMin li-opciones__ul">Menor precio</ul>
+			</li>
 		</div>
 
 	</div>

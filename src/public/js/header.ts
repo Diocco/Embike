@@ -131,6 +131,9 @@ document.addEventListener("DOMContentLoaded", () => { // Si se realizo una busqu
         inputBusquedaResponsive.value = palabraBuscada // La define como valor en el input de la barra de busqueda
         inputBusqueda.classList.add('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
         inputBusquedaResponsive.classList.add('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
+    }else{
+        inputBusqueda.classList.remove('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
+        inputBusquedaResponsive.classList.remove('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
     }
 })
 
@@ -139,17 +142,15 @@ document.addEventListener("DOMContentLoaded", () => { // Si se realizo una busqu
 const formularioBusqueda = document.getElementById('header__form-barraBusqueda')! as HTMLFormElement
 const formularioBusquedaResponsive = document.getElementById('header-responsive__form-barraBusqueda')! as HTMLFormElement
 
-
-formularioBusqueda.addEventListener('submit', (event)=>{ // Escucha cuando se envia el formulario, es decir, cuando se realiza una busqueda
-    event.preventDefault()
-    const esCatalogo:Boolean = window.location.pathname.includes('/catalogo') // Verifica si se esta en el catalogo
+const buscarPalabra =(palabraBuscada:string)=>{
+    // Verifica si se esta en el catalogo
+    const esCatalogo:Boolean = window.location.pathname.includes('/catalogo')
     if(esCatalogo){
+        // Si el usuario esta en el catalogo:
+
         // Define los query element 
         const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
-        const palabraBuscada = inputBusqueda.value
-
         urlObjeto.searchParams.set('palabraBuscada', palabraBuscada ); // Si no existe, lo crea; si existe, lo actualiza
-        
         window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
         buscarProductos() // Realiza la busqueda de los productos con el nuevo filtro
 
@@ -163,21 +164,17 @@ formularioBusqueda.addEventListener('submit', (event)=>{ // Escucha cuando se en
             inputBusquedaResponsive.classList.remove('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
         }
     }else{
-        location.assign(`/catalogo?palabraBuscada=${inputBusqueda.value}`) // Redirije al usuario a la pagina del catalogo con la plabra buscada como parametro de busqueda
+        // Si el usuario no esta en el catalogo entonces lo reedirige al catalogo con la palabra buscada definida en los query params
+        location.assign(`/catalogo?palabraBuscada=${palabraBuscada}`) // Redirije al usuario a la pagina del catalogo con la plabra buscada como parametro de busqueda
     }
-})
+}
 
+// Escucha si las barras de busqueda son ejecutadas
+formularioBusqueda.addEventListener('submit', (event)=>{ // Escucha cuando se envia el formulario, es decir, cuando se realiza una busqueda
+    event.preventDefault()
+    buscarPalabra(inputBusqueda.value)
+})
 formularioBusquedaResponsive.addEventListener('submit', (event)=>{ // Escucha cuando se envia el formulario, es decir, cuando se realiza una busqueda
     event.preventDefault()
-    const esCatalogo:Boolean = window.location.pathname.includes('/catalogo') // Verifica si se esta en el catalogo
-    if(esCatalogo){
-        // Define los query element 
-        const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
-        urlObjeto.searchParams.set('palabraBuscada', inputBusquedaResponsive.value); // Si no existe, lo crea; si existe, lo actualiza
-        
-        window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
-        buscarProductos() // Realiza la busqueda de los productos con el nuevo filtro
-    }else{
-        location.assign(`/catalogo?palabraBuscada=${inputBusquedaResponsive.value}`) // Redirije al usuario a la pagina del catalogo con la plabra buscada como parametro de busqueda
-    }
+    buscarPalabra(inputBusquedaResponsive.value)
 })

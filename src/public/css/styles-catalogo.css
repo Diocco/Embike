@@ -21,6 +21,7 @@
 	height: 80vh;
 	flex-wrap: wrap;
 	justify-content: center;
+	margin-top: 40px;
 }
 
 /*Icono de carga de productos*/
@@ -137,6 +138,73 @@
 
 
 /*Filtrado de producto*/
+/*Botones de filtros*/
+.div-contenedorFiltros__div-ordenar{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: min-content;
+	margin: 10px;
+	height: 100px;
+	position: absolute;
+    transform: translate(550px, -40px);
+	font-size: 20px;
+}
+
+
+/*Iconos de botones de filtros*/
+.div-contenedorFiltros__div-icono{
+	background-position: center;
+	background-repeat: no-repeat;
+	border-radius: 30px;
+	background-size: 100%;
+    height: 60px;
+    width: 60px;
+}
+
+#div-contenedorFiltros__div-iconoFiltrar{
+	background-image: url(../img/catalogoImagenes/icono-filtrar.png);
+}
+#div-contenedorFiltros__div-iconoOrdenar{
+	background-image: url(../img/catalogoImagenes/icono-ordenar.png);
+}
+
+/*Contenedor de filtros de ordenar*/
+.div-contenedorFiltros__div-ordenar{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: min-content;
+	margin: 10px;
+	height: 100px;
+}
+
+/* Barra deslisadorado de filtro ordenar */
+.div-ordenar__li-opciones{
+	display: none;
+	z-index: 60;
+	flex-direction: column;
+	justify-items: center;
+	position: absolute;
+	width: max-content;
+	height: min-content;
+	transform: translate(-60px, 200px);
+	background-color: var(--azul-logo);
+	color: white;
+}
+/*Cuando se apreta en el boton de filtros activa la barra deslizadora*/
+.div-contenedorFiltros__div-ordenar:hover>.div-ordenar__li-opciones{
+	display: flex;
+	transform: translate(-40px, 120px);
+}
+
+/*Letra de la barra deslizadora del filtro ordenar*/
+.li-opciones__ul{
+	margin: 20px;
+	color: white;
+}
+
+/*Barra lateral de filtros*/
 /*Titulo de los filtros*/
 .tituloIndice{
 	margin: 15px 0 15px 0;
@@ -220,6 +288,10 @@
 	.phone{
 		display: block;
 	}
+	/*Desactiva todos los contenedores de la version de escritorio*/
+	.desktop{
+		display: none !important;
+	}
     
 	/*Filtros*/
 	/*Desactiva los filtros de la version de computadora*/
@@ -231,6 +303,15 @@
 		flex-direction: column;
 		align-items: center;
 		font-size: 40px;
+	}
+	/*Contenedor de filtros*/
+	#div-contenedorFiltros__div-filtros{
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		width: min-content;
+		margin: 10px;
+		height: 100px;
 	}
 	/*Titulo de los contenedores de los botones de filtro*/
 	.tituloIndice{
@@ -262,9 +343,36 @@
         margin-right: 25px;
         border-radius: 20px;
 	}
-
-
-
+	/*Boton enviar de inputs de precios maximos y minimos*/
+	.formularioMinMax__flechaIr{
+		height: 100px;
+		width: 100px;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: 75%;
+		border-radius: 30px;
+	}
+	/*Contenedor de filtros de ordenar*/
+	.div-contenedorFiltros__div-ordenar{
+		position: initial;
+		transform: none;
+		font-size: inherit;
+	}
+	/*Icono de filtros de ordenar*/
+	.div-contenedorFiltros__div-icono{
+		height: 100px;
+		width: 100px;
+		background-size: 75%;
+	}
+	/* Barra deslisadorado de filtro ordenar */
+	.div-ordenar__li-opciones{
+		transform: translate(-60px, 250px);
+	}
+	/*Cuando se apreta en el boton de filtros activa la barra deslizadora*/
+	.div-contenedorFiltros__div-ordenar:hover>.div-ordenar__li-opciones{
+		display: flex;
+		transform: translate(-50px, 180px);
+	}
 
 	/*Productos*/
 	
@@ -295,58 +403,6 @@
         justify-content: space-between;
 	}
 
-	/*Botones de filtros*/
-	#div-contenedorFiltros__div-filtros,#div-contenedorFiltros__div-ordenar{
-		display: flex;
-		flex-direction: row;
-		align-items: center;
-		width: min-content;
-		margin: 10px;
-		height: 100px;
-	}
-
-	/*Iconos de botones de filtros*/
-	.div-contenedorFiltros__div-icono,.formularioMinMax__flechaIr{
-		height: 100px;
-		width: 100px;
-		background-position: center;
-		background-repeat: no-repeat;
-		background-color: white;
-		background-size: 75%;
-		border-radius: 30px;
-	}
-
-	#div-contenedorFiltros__div-iconoFiltrar{
-		background-image: url(../img/catalogoImagenes/icono-filtrar.png);
-	}
-	#div-contenedorFiltros__div-iconoOrdenar{
-		background-image: url(../img/catalogoImagenes/icono-ordenar.png);
-	}
-	
-	/* Barra deslisadorado de filtro ordenar */
-	#div-ordenar__li-opciones{
-		display: none;
-		z-index: 60;
-		flex-direction: column;
-		justify-items: center;
-		position: absolute;
-		width: max-content;
-		height: min-content;
-		transform: translate(-60px, 200px);
-		background-color: var(--azul-logo);
-		color: white;
-	}
-	/*Cuando se apreta en el boton de filtros activa la barra deslizadora*/
-	#div-contenedorFiltros__div-ordenar:hover>#div-ordenar__li-opciones{
-		display: flex;
-		transform: translate(-60px, 170px);
-	}
-	
-	/*Letra de la barra deslizadora del filtro ordenar*/
-	.li-opciones__ul{
-		margin: 20px;
-		color: white;
-	}
 
 	/*Barra lateral de filtrado de productos*/
 	#ventanaLateral-Filtros{
