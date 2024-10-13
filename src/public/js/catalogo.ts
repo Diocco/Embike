@@ -20,14 +20,55 @@ const agregarProductosDOM = (productos: any[]) => {
         let agregarElemento = document.createElement('div'); // Crea un div para alojar el nuevo producto
         // Verifica que exista una imagen, sino muestra un icono de error
         const imagenProducto = producto.variantes[0].caracteristicas[0].imagenes[0]?producto.variantes[0].caracteristicas[0].imagenes[0]:'../img/catalogoImagenes/icono-sinFoto.avif' 
-        agregarElemento.innerHTML=`
-        <div class="catalogo__div" id="${producto._id}" data-imagen1="${imagenProducto}" data-nombre="${producto.nombre}" data-precio="$ ${producto.precio}">
-        <div class="catalogo__div__imagen" style='background-image: url("${imagenProducto}');"></div>
-        <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
-        <h3 class="catalogo__div__precio">$ ${(Number(producto.precio)).toLocaleString('es-AR')}</h3>
-        <button class="catalogo__div__comprar">Agregar al carro</button>
-        </div>
-        `;
+        const tieneDescuento:boolean = producto.precioViejo?true:false
+        
+        // Busca la distintas variedades de colores
+        const coloresUnicos: Set<string> = new Set(); // Usamos un Set para almacenar colores únicos
+
+        producto.variantes.forEach((variante: { color: string; caracteristicas: any[]; }) => {
+            // Agregar el color al Set de colores únicos
+            coloresUnicos.add(variante.color);
+        });
+
+        // Convertir los Sets a arrays 
+        const coloresArray = Array.from(coloresUnicos);
+
+        // Prepara el HTML con los colores para luego cargarlo junto al producto
+        let coloresHTML:string=''
+        // Recorre el array de colores
+        coloresArray.forEach(color=>{
+            const colorHTML = `<div style="background-color: ${color};" class="catalogo__div__color"></div>`
+            coloresHTML=coloresHTML+colorHTML
+        })
+
+        
+
+        if(tieneDescuento){
+            const precio = (Number(producto.precio))
+            const precioViejo = (Number(producto.precioViejo))
+            const porcentajeDescuento = Math.floor((1-precio/precioViejo)*100)
+            agregarElemento.innerHTML=`
+            <div class="catalogo__div" id="${producto._id}" data-imagen1="${imagenProducto}" data-nombre="${producto.nombre}" data-precio="$ ${producto.precio}">
+            <div class="catalogo__div__imagen" style='background-image: url("${imagenProducto}');">
+                ${coloresHTML}
+            </div>
+            <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
+            <div class="catalogo__div__descuento">
+                <h3 class="descuento__precioViejo">$ ${(Number(producto.precioViejo)).toLocaleString('es-AR')}</h3>
+                <h3 class="descuento__porcentaje"> ${porcentajeDescuento}% OFF!</h3>
+            </div>
+            <h3 class="catalogo__div__precio">$ ${precio.toLocaleString('es-AR')}</h3>
+            `;
+        }else{
+            agregarElemento.innerHTML=`
+            <div class="catalogo__div" id="${producto._id}" data-imagen1="${imagenProducto}" data-nombre="${producto.nombre}" data-precio="$ ${producto.precio}">
+            <div class="catalogo__div__imagen" style='background-image: url("${imagenProducto}');">
+                ${coloresHTML}
+            </div>
+            <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
+            <h3 class="catalogo__div__precio">$ ${(Number(producto.precio)).toLocaleString('es-AR')}</h3>
+            `;
+        }
         fragmento.appendChild(agregarElemento); //Agrega el producto recien creado al fragmento
 
     })

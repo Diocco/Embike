@@ -102,8 +102,11 @@
 	font-size: 40px;
 }
 
-/*Precio del producto*/
-#catalogoProducto__precio{
+/*Precio del producto y descuento*/
+#catalogoProducto__preciosDescuento{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     height: max-content;
     width: max-content;
     justify-self: center;
@@ -112,6 +115,21 @@
     font-family: fantasy;
     color: var(--azul-logo);
     margin-top: 10px;
+}
+
+
+/*Precio anterior del producto*/
+.descuento__precioViejo{
+    color: darkgray;
+    text-decoration: line-through;
+    margin: 0;
+}
+/*Porcentaje de descuento*/
+.descuento__porcentaje{
+    position: absolute;
+    transform: translate(164px, 47px);
+    color: green;
+    font-size: 30px;
 }
 
 /*Colores y talles de la ventana emergente*/
@@ -302,6 +320,23 @@ p{
     #catalogoProducto__precio {
         font-size: 100px;
     }
+
+    /*Contenedor de precios y descuentos del producto*/
+    #catalogoProducto__preciosDescuento {
+        width: 600px;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    /*Porcentaje de descuento del producto*/
+    .descuento__porcentaje {
+        position: inherit; 
+        transform: none;
+        color: green;
+        font-size: 30px;
+        margin: 0 0 0 15px;
+    }
+
+
     /*Tamaño de los titulos*/
     #catalogoProducto__colores-titulo, #catalogoProducto__talles-titulo {
         align-self: start;
@@ -312,6 +347,7 @@ p{
         width: 80px;
         height: 80px;
         margin: 15px;
+        font-size: 40px;
     }
     /*Botones de cantidad*/
     #catalogoProducto__agregar-restar, #catalogoProducto__agregar-cantidad, #catalogoProducto__agregar-sumar {

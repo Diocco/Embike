@@ -13,6 +13,16 @@ const cargarInformacionProducto = (productoInformacion) => {
     productoImagen.style.backgroundImage = `url(${productoInformacion.variantes[0].caracteristicas[0].imagenes[0]})`;
     let productoNombre = document.getElementById('catalogoProducto__titulo');
     productoNombre.textContent = productoInformacion.nombre;
+    const tieneDescuento = productoInformacion.precioViejo ? true : false;
+    if (tieneDescuento) {
+        const precio = (Number(productoInformacion.precio));
+        const precioViejo = (Number(productoInformacion.precioViejo));
+        const porcentajeDescuento = Math.floor((1 - precio / precioViejo) * 100);
+        const contenedorPrecioViejo = document.querySelector(".descuento__precioViejo");
+        const contenedorPorcentaje = document.querySelector(".descuento__porcentaje");
+        contenedorPrecioViejo.textContent = `$ ${(Number(precioViejo)).toLocaleString('es-AR')}`;
+        contenedorPorcentaje.textContent = ` ${Math.abs(porcentajeDescuento)}% OFF!`;
+    }
     let productoPrecio = document.getElementById('catalogoProducto__precio');
     productoPrecio.textContent = `$ ${(Number(productoInformacion.precio)).toLocaleString('es-AR')}`; // Coloca el precio del producto con formato precio
     let descripcionProducto = document.getElementById('contenedorDescripcion__p');
@@ -28,15 +38,11 @@ const cargarInformacionProducto = (productoInformacion) => {
         variante.caracteristicas.forEach(caracteristica => {
             // Agregar el talle al Set de talles únicos
             tallesUnicos.add(caracteristica.talle);
-            console.log(caracteristica.talle);
         });
     });
-    // Convertir los Sets a arrays si necesitas arrays en lugar de Sets
+    // Convertir los Sets a arrays 
     const coloresArray = Array.from(coloresUnicos);
     const tallesArray = Array.from(tallesUnicos);
-    // Opcional: Imprimir los resultados
-    console.log("Colores únicos:", coloresArray);
-    console.log("Talles únicos:", tallesArray);
     // Agrega los colores al DOM
     const contenedorColores = document.getElementById('catalogoProducto__colores-contenedor');
     let fragmento = document.createDocumentFragment();

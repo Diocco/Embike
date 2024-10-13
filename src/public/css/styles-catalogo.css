@@ -86,15 +86,18 @@
 /*Productos*/
 .catalogo__div{
 	display: flex;
-	justify-items: center;
-	align-items: center;
-	flex-direction: column;
-	max-width: 450px;
-	margin-top: 5px;
-	filter: opacity(0);
-	transition: border 0.25s, box-shadow 0.25s ,filter 0.5s;
-	animation: catalogo__div-aparecer 1s forwards 0.5s;
+    justify-items: center;
+    align-items: center;
+    flex-direction: column;
+    max-width: 450px;
+    height: 400px;
+    margin-top: 5px;
+    filter: opacity(0);
+    transition: border 0.25s, box-shadow 0.25s, filter 0.5s;
+    animation: catalogo__div-aparecer 1s forwards 0.5s;
+    justify-content: space-evenly;
 }
+
 .catalogo__div:hover{
 	border-color: var(--azul-logo);
 	border: 2px transparent;
@@ -113,6 +116,11 @@
 
 /*Imagen del producto*/
 .catalogo__div__imagen {
+	display: flex;
+	align-items: flex-end;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+
 	width: 290px;
     height: 290px;
     margin: 5px;
@@ -124,6 +132,14 @@
 .catalogo__div__imagen-noDisponible{
 	filter: brightness(0.5);
 }
+/*Colores disponible del producto*/
+.catalogo__div__color{
+	margin-left: 10px;
+    border: 1px gray solid;
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+}
 
 /*Boton de comprar un producto*/
 .catalogo__div__comprar{
@@ -134,6 +150,30 @@
 /*Boton de comprar un producto no disponible*/
 .catalogo__div__comprar-noDisponible {
 	filter: brightness(0.8);
+}
+/*Nombre del producto*/
+.catalogo__div__nombre{
+	font-size: 20px;
+}
+/*Precio del producto*/
+.catalogo__div__precio{
+	font-size: 30px;
+}
+/*Contenedor de descuentos*/
+.catalogo__div__descuento{
+	display: flex;
+    align-items: center;
+}
+/*Precio anterior del producto*/
+.descuento__precioViejo{
+	color: darkgray;
+	text-decoration: line-through;
+}
+/*Porcentaje de descuento*/
+.descuento__porcentaje{
+	color: green;
+    font-size: 14px;
+    padding-left: 8px;
 }
 
 
@@ -291,6 +331,26 @@
 	/*Desactiva todos los contenedores de la version de escritorio*/
 	.desktop{
 		display: none !important;
+	}
+	/*Contenedor de productos*/
+	.catalogo__div{
+		height: 550px;
+	}
+	/*Titulo de productos*/
+	.catalogo__div__nombre {
+		font-size: 40px;
+	}
+	/*Precio del producto*/
+	.catalogo__div__precio {
+		font-size: 60px;
+	}
+	/*Precio viejo del producto*/
+	.descuento__precioViejo {
+		font-size: 25px;
+	}
+	/*Porcentaje de descuento*/
+	.descuento__porcentaje {
+		font-size: 28px;
 	}
     
 	/*Filtros*/
