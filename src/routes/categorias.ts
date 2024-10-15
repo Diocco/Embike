@@ -8,18 +8,18 @@ import {
     crearCategoria,
     actualizarCategoria,
     eliminarCategoria
-} from '../controllers/categorias';
+} from '../controllers/categorias.js';
 
 // Middlewares
 import { 
     validarCampos,
     validarJWT,
     validarRolJWT
-} from '../middlewares';
+} from '../middlewares/index.js';
 
 
 // Verificaciones con la base de datos
-import {categoriaExiste } from '../../database/categoriasVerificaciones';
+import {categoriaExiste } from '../../database/categoriasVerificaciones.js';
 
 
 const router = express.Router();

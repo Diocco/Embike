@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Categoria from '../models/categoria';
+import Categoria from '../models/categoria.js';
 
 
 

@@ -1,5 +1,6 @@
 :root {
 --fondo: white;
+--boton: rgb(228, 228, 228);
 --crema-logo: #DFC5B4; 
 --azul-logo: #033452;
 }/*Variables*/
@@ -17,11 +18,17 @@
 /*Contenedor de productos*/
 #catalogo {
     display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+    align-content: flex-start;
+
 	width: 900px;
 	height: 80vh;
-	flex-wrap: wrap;
-	justify-content: center;
 	margin-top: 40px;
+}
+.catalogo-conMensaje{
+	justify-content: center !important;
+    align-content: center !important;
 }
 
 /*Icono de carga de productos*/
@@ -32,8 +39,9 @@
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 75%;
+	justify-self: center;
 	border-radius: 30px;
-	background-image: url(../img/catalogoImagenes/icono-carga.png);
+	background-image: url(../img/icons/icono-carga.png);
 	animation: girar 2s linear 0s infinite normal;
 }
 @keyframes girar {
@@ -61,10 +69,10 @@
 	width: 100px;
 	background-position: center;
 	background-repeat: no-repeat;
-	background-color: white;
+	background-color: var(--fondo);
 	background-size: 75%;
 	border-radius: 30px;
-	background-image: url(../img/catalogoImagenes/icono-advertencia.webp);
+	background-image: url(../img/icons/icono-advertencia.webp);
 }
 #mensajeSinProductos__mensaje{
 	width: 200px;
@@ -141,16 +149,6 @@
     height: 30px;
 }
 
-/*Boton de comprar un producto*/
-.catalogo__div__comprar{
-	padding:10px;
-	margin:10px;
-	border-radius: 10px;
-}
-/*Boton de comprar un producto no disponible*/
-.catalogo__div__comprar-noDisponible {
-	filter: brightness(0.8);
-}
 /*Nombre del producto*/
 .catalogo__div__nombre{
 	font-size: 20px;
@@ -203,10 +201,10 @@
 }
 
 #div-contenedorFiltros__div-iconoFiltrar{
-	background-image: url(../img/catalogoImagenes/icono-filtrar.png);
+	background-image: url(../img/icons/icono-filtrar.png);
 }
 #div-contenedorFiltros__div-iconoOrdenar{
-	background-image: url(../img/catalogoImagenes/icono-ordenar.png);
+	background-image: url(../img/icons/icono-ordenar.png);
 }
 
 /*Contenedor de filtros de ordenar*/
@@ -228,9 +226,9 @@
 	position: absolute;
 	width: max-content;
 	height: min-content;
-	transform: translate(-60px, 200px);
+
 	background-color: var(--azul-logo);
-	color: white;
+	color: var(--fondo);
 }
 /*Cuando se apreta en el boton de filtros activa la barra deslizadora*/
 .div-contenedorFiltros__div-ordenar:hover>.div-ordenar__li-opciones{
@@ -241,7 +239,7 @@
 /*Letra de la barra deslizadora del filtro ordenar*/
 .li-opciones__ul{
 	margin: 20px;
-	color: white;
+	color: var(--fondo);
 }
 
 /*Barra lateral de filtros*/
@@ -269,11 +267,11 @@
 .filtroBoton:hover{
 	background-color: #033452;
 	box-shadow: 0px 0px 10px 0px #033452;
-	color: white;
+	color: var(--fondo);
 }
 .botonActive{
 	background-color: #033452 !important;
-	color: white !important;
+	color: var(--fondo) !important;
 }
 
 
@@ -293,7 +291,7 @@
 /*Inputs de precio maximo y precio minimo cuando tienen un valor de busqueda activo*/
 .casillaPrecio-active{
 	background-color: var(--azul-logo);
-	color: white;
+	color: var(--fondo);
 }
 .casillaPrecio:hover{
 	box-shadow: 0px 0px 10px 0px #033452;
@@ -311,7 +309,7 @@
 	width: 30px;
 	background-position: center;
 	background-repeat: no-repeat;
-	background-color: white;
+	background-color: var(--fondo);
 	background-size: 75%;
 	border-radius: 30px;
 }
@@ -424,14 +422,10 @@
 		width: 100px;
 		background-size: 75%;
 	}
-	/* Barra deslisadorado de filtro ordenar */
-	.div-ordenar__li-opciones{
-		transform: translate(-60px, 250px);
-	}
 	/*Cuando se apreta en el boton de filtros activa la barra deslizadora*/
 	.div-contenedorFiltros__div-ordenar:hover>.div-ordenar__li-opciones{
 		display: flex;
-		transform: translate(-50px, 180px);
+		transform: translate(-50px, 170px);
 	}
 
 	/*Productos*/
@@ -451,8 +445,8 @@
 
 	/*Aumenta el tamaño de los productos*/
 	.catalogo__div__imagen {
-		width: 450px;
-		height: 450px;
+		width: 440px;
+		height: 440px;
 	}
 
 	/*Contenedor de botones de filtros*/
@@ -460,7 +454,7 @@
 		display: flex;
 		flex-direction: row;
 		width: 100%;
-        justify-content: space-between;
+		justify-content: space-between;
 	}
 
 
@@ -470,7 +464,7 @@
 		justify-content: flex-start;
 		flex-direction: column;
 		position: fixed;
-		background-color: white;
+		background-color: var(--fondo);
 		min-width: 100vw;
 		min-height: 100vh;
 		transition: transform 0.25s;
@@ -493,9 +487,9 @@
 		margin: 10px;
 		background-position: center;
 		background-repeat: no-repeat;
-		background-color: white;
+		background-color: var(--fondo);
 		border-color: var(--azul-logo);
-		background-image: url(../img/indexImagenes/volver.png);
+		background-image: url(../img/icons/volver.png);
 		background-size: 60%;
 	}
 

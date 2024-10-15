@@ -50,7 +50,7 @@ const productoSchema = new mongoose.Schema({
                     },
                     imagenes: {
                         type: [String],
-                        default:'../img/catalogoImagenes/icono-sinFoto.avif' ,
+                        default:'../img/icons/icono-sinFoto.avif' ,
                         required: true
                     }
                 }]
@@ -60,6 +60,10 @@ const productoSchema = new mongoose.Schema({
         type: String
     },
     precio:{
+        type: Number,
+        default: 0
+    },
+    precioViejo:{
         type: Number,
         default: 0
     },

@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,31 +7,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const path_1 = __importDefault(require("path"));
-require("dotenv/config");
-const hbs_1 = __importDefault(require("hbs"));
-const cors_1 = __importDefault(require("cors"));
+import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import 'dotenv/config';
+import hbs from 'hbs';
+import cors from 'cors';
+// Directorio
+const __filename = fileURLToPath(import.meta.url); // Obtiene el nombre del archivo actual
+const __dirname = path.dirname(__filename); // Obtiene el directorio del archivo actual
 // Base de datos
-const config_1 = require("../../database/config");
+import { conexionDB } from '../../database/config.js';
 // Controladores
-const archivos_1 = require("../controllers/archivos");
+import { cargarCatalogo, cargarIndex, cargarInicioSesion, cargarNotFound, cargarProducto, cargarListaDeseados, } from '../controllers/archivos.js';
 // Rutas
-const usuarios_1 = __importDefault(require("../routes/usuarios"));
-const auth_1 = __importDefault(require("../routes/auth"));
-const categorias_1 = __importDefault(require("../routes/categorias"));
-const productos_1 = __importDefault(require("../routes/productos"));
+import usuariosRoutes from '../routes/usuarios.js';
+import authRoutes from '../routes/auth.js';
+import categoriasRoutes from '../routes/categorias.js';
+import productosRoutes from '../routes/productos.js';
 class Server {
     constructor() {
         this.usuariosPath = '/api/usuarios';
         this.authPath = '/api/auth';
         this.categoriasPath = '/api/categorias';
         this.productosPath = '/api/productos';
-        this.app = (0, express_1.default)(); // Instancia de Express
+        this.app = express(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
         this.conectarDB(); // Conecta la base de datos
         this.configureMiddleware();
@@ -40,38 +39,39 @@ class Server {
     }
     conectarDB() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield (0, config_1.conexionDB)(); // Conecta la base de datos
+            yield conexionDB(); // Conecta la base de datos
         });
     }
     // Configura middleware globalnpm
     configureMiddleware() {
         // Aplica las opciones de CORS a todas las rutas
-        this.app.use((0, cors_1.default)());
+        this.app.use(cors());
         // Servir archivos estáticos
-        this.app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../src/public')));
+        this.app.use(express.static(path.resolve(__dirname, '../../src/public')));
         // Configurar motor de vistas Handlebars
         this.app.set('view engine', 'hbs');
         // Configurar la carpeta de vistas
-        this.app.set('views', path_1.default.resolve(__dirname, '../public/views'));
+        this.app.set('views', path.resolve(__dirname, '../public/views'));
         // Registrar parciales de Handlebars
-        hbs_1.default.registerPartials(path_1.default.resolve(__dirname, '../public/views/partials'));
+        hbs.registerPartials(path.resolve(__dirname, '../public/views/partials'));
         // Parseo de JSON
-        this.app.use(express_1.default.json());
+        this.app.use(express.json());
     }
     // Configura las rutas
     routes() {
         // API
-        this.app.use(this.usuariosPath, usuarios_1.default);
-        this.app.use(this.authPath, auth_1.default);
-        this.app.use(this.categoriasPath, categorias_1.default);
-        this.app.use(this.productosPath, productos_1.default);
+        this.app.use(this.usuariosPath, usuariosRoutes);
+        this.app.use(this.authPath, authRoutes);
+        this.app.use(this.categoriasPath, categoriasRoutes);
+        this.app.use(this.productosPath, productosRoutes);
         // HTML
-        this.app.get('/', archivos_1.cargarIndex); // Configura la ruta
-        this.app.get('/index', archivos_1.cargarIndex); // Configura la ruta
-        this.app.get('/catalogo', archivos_1.cargarCatalogo); // Configura la ruta
-        this.app.get('/inicioSesion', archivos_1.cargarInicioSesion); // Configura la ruta
-        this.app.get('/producto/*', archivos_1.cargarProducto); // Configura la ruta
-        this.app.get('/*', archivos_1.cargarNotFound); // Configura la ruta
+        this.app.get('/', cargarIndex); // Configura la ruta
+        this.app.get('/index', cargarIndex); // Configura la ruta
+        this.app.get('/catalogo', cargarCatalogo); // Configura la ruta
+        this.app.get('/inicioSesion', cargarInicioSesion); // Configura la ruta
+        this.app.get('/listaDeseados', cargarListaDeseados); // Configura la ruta
+        this.app.get('/producto/*', cargarProducto); // Configura la ruta
+        this.app.get('/*', cargarNotFound); // Configura la ruta
     }
     // Inicia el servidor
     start() {
@@ -80,4 +80,4 @@ class Server {
         });
     }
 }
-exports.default = Server;
+export default Server;

@@ -1,7 +1,7 @@
 // Middlewares
-import {validarCampos} from '../middlewares/validarCampos';
-import {validarJWT} from '../middlewares/validarJWT';
-import {validarRolJWT} from '../middlewares/validarRolJWT';
-import {validarIDJWT} from '../middlewares/validarIDJWT';
+import {validarCampos} from '../middlewares/validarCampos.js';
+import {validarJWT} from '../middlewares/validarJWT.js';
+import {validarRolJWT} from '../middlewares/validarRolJWT.js';
+import {validarIDJWT} from '../middlewares/validarIDJWT.js';
 
 export { validarCampos, validarJWT, validarRolJWT,validarIDJWT };

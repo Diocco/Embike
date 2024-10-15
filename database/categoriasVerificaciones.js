@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,16 +7,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.categoriaValida = exports.categoriaExiste = void 0;
-const categoria_1 = __importDefault(require("../src/models/categoria"));
+import Categoria from "../src/models/categoria.js";
 // Verifica si la categoria existe mediante su id
 const categoriaExiste = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const existe = yield categoria_1.default.findById(id); // Verifica si en la base de datos haya un objeto que tenga el id pasado como argumento
+        const existe = yield Categoria.findById(id); // Verifica si en la base de datos haya un objeto que tenga el id pasado como argumento
         if (!existe) { // Si la categoria no existe entonces:
             throw new Error(`La categoria con id: ${id}, no existe`);
         }
@@ -27,10 +21,9 @@ const categoriaExiste = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error(`El id: ${id}, no es valido`);
     }
 });
-exports.categoriaExiste = categoriaExiste;
 const categoriaValida = (id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const categoriaExiste = yield categoria_1.default.findById(id); // Busca la categoria de entrada en la base de datos de categorias
+        const categoriaExiste = yield Categoria.findById(id); // Busca la categoria de entrada en la base de datos de categorias
         if (!categoriaExiste) { // Si la categoria no existe:
             throw new Error(`La categoria no es válida`); // Lanza un error dentro del check (el codigo sigue ejecutandose)
         }
@@ -39,4 +32,4 @@ const categoriaValida = (id) => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error(`La categoria no tiene un formato valido`); // Lanza un error dentro del check (el codigo sigue ejecutandose)
     }
 });
-exports.categoriaValida = categoriaValida;
+export { categoriaExiste, categoriaValida };

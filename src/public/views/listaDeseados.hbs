@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="../css/normalize.css">
-		<link rel="stylesheet" type="text/css" href="../css/index.css">
+		<link rel="stylesheet" type="text/css" href="../css/listaDeseados.css">
 		<meta charset="utf-8">
 		<title>Embike</title>
 		<meta name="keywords" content="Bicicletas, MontainBike, Ñiños, Ruedas, Cubiertas, Frenos, Disco, Asientos">
@@ -17,20 +17,16 @@
 <body>
     <header>{{>  header }}</header>
 
-	<div class="inicio-grid">
-		<div class="inicio-grid__div">
-			<a class="inicio-grid__div__a" href="/catalogo?categorias=MTB%2C">Bicicletas MTB</a>
-		</div>
-		<div class="inicio-grid__div">
-			<a class="inicio-grid__div__a" href="/catalogo?palabraBuscada=Accesorios" >Accesorios</a>
-		</div>
-		<div class="inicio-grid__div">
-			<a class="inicio-grid__div__a" href="/catalogo?categorias=Niños%2C" >Niños</a>
-		</div>
-		<div class="inicio-grid__div">
-			<a class="inicio-grid__div__a" href="/catalogo?categorias=BMX%2C">BMX</a>
-		</div>
+	<div id="contenedorGeneral">
+        <div id="titulo">Lista de productos deseados</div>
+		<div id="cargandoProductos"></div>
+        <div id="contenedorProductos"></div>
 	</div>
+
+
+
+    <script type="module" src="../js/listaDeseados.js"></script>
+    <script type="module" src="../js/helpers/agregarProductosDOM.js"></script>
 
 </body>
 

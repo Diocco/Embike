@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { usuario } from "../../interfaces/usuario";
+import { usuario } from "../../interfaces/usuario.js";
 
 // Verifica que el rol del usuario autenticado mediante JWT sea del rol o roles pasados como argumentos
 export const validarRolJWT = (...roles:string[]) => { 

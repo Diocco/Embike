@@ -21,6 +21,10 @@ const cargarProducto = (req: Request, res: Response) => {
     res.render("producto.hbs");
 };
 
+const cargarListaDeseados = (req: Request, res: Response) => {
+    res.render("listaDeseados.hbs");
+};
+
 
 
 
@@ -29,5 +33,6 @@ export{
     cargarIndex,
     cargarNotFound,
     cargarInicioSesion,
-    cargarProducto
+    cargarProducto,
+    cargarListaDeseados
 }

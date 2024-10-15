@@ -1,10 +1,5 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const productoSchema = new mongoose_1.default.Schema({
+import mongoose from 'mongoose';
+const productoSchema = new mongoose.Schema({
     nombre: {
         type: String,
         required: [true, "El nombre es obligatorio"]
@@ -23,11 +18,11 @@ const productoSchema = new mongoose_1.default.Schema({
         required: true
     },
     usuario: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Usuario'
     },
     categoria: {
-        type: mongoose_1.default.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Categoria'
     },
     variantes: [
@@ -54,7 +49,7 @@ const productoSchema = new mongoose_1.default.Schema({
                     },
                     imagenes: {
                         type: [String],
-                        default: '../img/catalogoImagenes/icono-sinFoto.avif',
+                        default: '../img/icons/icono-sinFoto.avif',
                         required: true
                     }
                 }
@@ -68,8 +63,12 @@ const productoSchema = new mongoose_1.default.Schema({
         type: Number,
         default: 0
     },
+    precioViejo: {
+        type: Number,
+        default: 0
+    },
     especificaciones: {
-        type: mongoose_1.default.Schema.Types.Mixed // Permite características dinámicas
+        type: mongoose.Schema.Types.Mixed // Permite características dinámicas
     },
     disponible: {
         type: Boolean,
@@ -80,5 +79,5 @@ const productoSchema = new mongoose_1.default.Schema({
         type: [String]
     }
 });
-const Producto = mongoose_1.default.model('Producto', productoSchema);
-exports.default = Producto;
+const Producto = mongoose.model('Producto', productoSchema);
+export default Producto;

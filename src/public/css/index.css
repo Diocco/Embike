@@ -330,18 +330,18 @@ filter: grayscale(0%) brightness(1);
 
 }
 .header-resposive__div__buttom-menu{
-	background-image: url(../img/indexImagenes/menu-icono.png);
+	background-image: url(../img/icons/menu-icono.png);
 	background-size: 90%;
 }
 .header-resposive__div__buttom-inicioSesion{
-	background-image: url(../img/indexImagenes/logo-sesion.png);
+	background-image: url(../img/icons/logo-sesion.png);
 	background-size: 75%;
 }
 
 .header-resposive__div__buttom-summit{
 	width: 70px;
 	height: 70px;
-	background-image: url(../img/indexImagenes/lupa-icono.png);
+	background-image: url(../img/icons/lupa-icono.png);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-color: white;

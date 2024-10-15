@@ -1,3 +1,5 @@
+import { buscarProductos } from "./catalogo.js";
+
 // Define el entorno
 let url:string
 const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
@@ -104,7 +106,7 @@ botonCuentaVolver.addEventListener('click',(event)=>{
 
 
 // Cerrar sesion
-const botonCerrarSesion:HTMLElement = document.getElementById('botonUsuario__lista__salir')!
+const botonCerrarSesion:HTMLElement = document.getElementById('botonUsuario__li__ul-salir')!
 const botonCerrarSesionResponsive:HTMLElement = document.getElementById('ul-opciones__li-cerrarSesion')!
 
 botonCerrarSesion.addEventListener('click',()=>{ // Escucha cuando se hace click en cerrar sesion
@@ -147,7 +149,6 @@ const buscarPalabra =(palabraBuscada:string)=>{
     const esCatalogo:Boolean = window.location.pathname.includes('/catalogo')
     if(esCatalogo){
         // Si el usuario esta en el catalogo:
-
         // Define los query element 
         const urlObjeto = new URL(window.location.href); // Crea un objeto para definir los query elements mas facilmente
         urlObjeto.searchParams.set('palabraBuscada', palabraBuscada ); // Si no existe, lo crea; si existe, lo actualiza

@@ -1,11 +1,16 @@
 import express from 'express';
-import path from 'path'
+import path from 'path';
+import { fileURLToPath } from 'url'
 import 'dotenv/config';
 import hbs from 'hbs';
 import cors from 'cors'
 
+// Directorio
+const __filename = fileURLToPath(import.meta.url); // Obtiene el nombre del archivo actual
+const __dirname = path.dirname(__filename); // Obtiene el directorio del archivo actual
+
 // Base de datos
-import { conexionDB } from '../../database/config';
+import { conexionDB } from '../../database/config.js';
 
 // Controladores
 import { 
@@ -13,14 +18,15 @@ import {
     cargarIndex, 
     cargarInicioSesion, 
     cargarNotFound,
-    cargarProducto
-    } from '../controllers/archivos';
+    cargarProducto,
+    cargarListaDeseados,
+    } from '../controllers/archivos.js';
 
 // Rutas
-import usuariosRoutes from '../routes/usuarios';
-import authRoutes from '../routes/auth'; 
-import categoriasRoutes from '../routes/categorias'; 
-import productosRoutes from '../routes/productos'; 
+import usuariosRoutes from '../routes/usuarios.js';
+import authRoutes from '../routes/auth.js'; 
+import categoriasRoutes from '../routes/categorias.js'; 
+import productosRoutes from '../routes/productos.js'; 
 
 
 
@@ -89,6 +95,7 @@ class Server {
         this.app.get('/index', cargarIndex); // Configura la ruta
         this.app.get('/catalogo', cargarCatalogo); // Configura la ruta
         this.app.get('/inicioSesion', cargarInicioSesion); // Configura la ruta
+        this.app.get('/listaDeseados', cargarListaDeseados); // Configura la ruta
         this.app.get('/producto/*', cargarProducto); // Configura la ruta
         this.app.get('/*', cargarNotFound); // Configura la ruta
     }

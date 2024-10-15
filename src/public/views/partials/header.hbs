@@ -32,7 +32,7 @@
             <ul id='div-ventana__ul-opciones'>
                 <li class="ul-opciones__botones">Perfil</li>
                 <li class="ul-opciones__botones">Historial de compras</li>
-                <li class="ul-opciones__botones">Lista de deseados</li>
+                <a class="ul-opciones__botones" href="/listaDeseados" >Lista de deseados</a>
                 <li id="ul-opciones__li-cerrarSesion" class="ul-opciones__botones">Cerrar sesion</li>
             </ul>
         </div>
@@ -59,13 +59,27 @@
     <a class="header__botones desktop" href="/carrito">Carrito</a>
     <a id='botonIniciarSesion' class="header__botones desktop" href="/inicioSesion">Iniciar sesion</a>
     <div id='botonUsuario' class="header__botones noActive desktop">Cuenta 
-        <li id="botonUsuario__lista">
-            <a id="botonUsuario__lista__perfil" class="botonUsuario__lista__a" href="/miPerfil">Mi cuenta</a>
-            <a id="botonUsuario__lista__contactos" class="botonUsuario__lista__a">Contacto</a>
-            <a id="botonUsuario__lista__salir" class="botonUsuario__lista__a">Salir</a>
+        <li id="botonUsuario__li" class="botonUsuario__li__ul">
+            <ul class="botonUsuario__li__ul">
+                <a class="botonUsuario__li__a" href="/miPerfil">Mi cuenta</a>
+                <i class="botonUsuario__li__i fa-solid fa-user"></i>
+            </ul>
+            <ul class="botonUsuario__li__ul">
+                <a class="botonUsuario__li__a" href="/listaDeseados">Deseados</a>
+                <i class="botonUsuario__li__i fas fa-heart"></i>
+            </ul>
+            <ul class="botonUsuario__li__ul">
+                <a class="botonUsuario__li__a" href="/contacto">Contacto</a>
+                <i class="botonUsuario__li__i fa-brands fa-whatsapp"></i>
+            </ul>
+            <ul class="botonUsuario__li__ul">
+                <a class="botonUsuario__li__a" id="botonUsuario__li__ul-salir">Salir</a>
+                <i class="botonUsuario__li__i fa-solid fa-arrow-right-from-bracket"></i>
+            </ul>
+
         </li>
     </div>
 </div>
 
 
-<script src="../../js/header.js"></script>
+<script type="module" src="../../js/header.js"></script>

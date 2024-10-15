@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,18 +7,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.conexionDB = void 0;
-require("dotenv/config");
-const mongoose_1 = __importDefault(require("mongoose"));
+import 'dotenv/config';
+import mongoose from "mongoose";
 const conexionDB = () => __awaiter(void 0, void 0, void 0, function* () {
     // Manejo de errores por si falla la conexion
     try {
         //Conecta la base de datos usando la variable global como argumento
-        yield mongoose_1.default.connect(process.env.MONGO_DB);
+        yield mongoose.connect(process.env.MONGO_DB);
         console.log("Base de datos conectada con exito");
     }
     catch (error) {
@@ -27,4 +21,4 @@ const conexionDB = () => __awaiter(void 0, void 0, void 0, function* () {
         throw new Error("No se pudo conectar con la base de datos");
     }
 });
-exports.conexionDB = conexionDB;
+export { conexionDB };

@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.validarIDJWT = void 0;
 // Verifica que el rol del usuario autenticado mediante JWT sea del rol o roles pasados como argumentos
-const validarIDJWT = (req, res, next) => {
+export const validarIDJWT = (req, res, next) => {
     const usuario = req.body.usuario; // Recupera el usuario del JWT
     const id = req.params.id;
     if (!usuario) { // Si no se encontro ningun usuario entonces:
@@ -24,4 +21,3 @@ const validarIDJWT = (req, res, next) => {
     }
     next();
 };
-exports.validarIDJWT = validarIDJWT;

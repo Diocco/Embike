@@ -1,3 +1,14 @@
+import { agregarProductosDOM } from "./helpers/agregarProductosDOM.js";
+
+// Define el entorno
+let url:string
+const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
+
+if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
+    url = 'http://localhost:8080';
+}else{ // Si no tiene localhost define el url en la pagina web para la peticion
+    url= 'https://embike-223a165b4ff6.herokuapp.com';
+}
 
 
 // Define el url dependiendo si se esta en produccion o en desarrollo
@@ -8,78 +19,12 @@ let urlCategorias:string = '/api/categorias'
 
 //Se agrega el comportamiento de cuando se hace click sobre cualquier producto
 
-// Agrega los productos recibidos como parametros al DOM
-const agregarProductosDOM = (productos: any[]) => {
-    const contenedorProductos: HTMLElement = document.getElementById('catalogo')!; //Toma el catalogo como el contenedor de los productos a agregar
-    contenedorProductos.innerHTML='';
-    const fragmento: DocumentFragment = document.createDocumentFragment(); //Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
-
-
-    productos.forEach((producto: any ) => { // Recorre los productos
-
-        let agregarElemento = document.createElement('div'); // Crea un div para alojar el nuevo producto
-        // Verifica que exista una imagen, sino muestra un icono de error
-        const imagenProducto = producto.variantes[0].caracteristicas[0].imagenes[0]?producto.variantes[0].caracteristicas[0].imagenes[0]:'../img/catalogoImagenes/icono-sinFoto.avif' 
-        const tieneDescuento:boolean = producto.precioViejo?true:false
-        
-        // Busca la distintas variedades de colores
-        const coloresUnicos: Set<string> = new Set(); // Usamos un Set para almacenar colores únicos
-
-        producto.variantes.forEach((variante: { color: string; caracteristicas: any[]; }) => {
-            // Agregar el color al Set de colores únicos
-            coloresUnicos.add(variante.color);
-        });
-
-        // Convertir los Sets a arrays 
-        const coloresArray = Array.from(coloresUnicos);
-
-        // Prepara el HTML con los colores para luego cargarlo junto al producto
-        let coloresHTML:string=''
-        // Recorre el array de colores
-        coloresArray.forEach(color=>{
-            const colorHTML = `<div style="background-color: ${color};" class="catalogo__div__color"></div>`
-            coloresHTML=coloresHTML+colorHTML
-        })
-
-        
-
-        if(tieneDescuento){
-            const precio = (Number(producto.precio))
-            const precioViejo = (Number(producto.precioViejo))
-            const porcentajeDescuento = Math.floor((1-precio/precioViejo)*100)
-            agregarElemento.innerHTML=`
-            <div class="catalogo__div" id="${producto._id}" data-imagen1="${imagenProducto}" data-nombre="${producto.nombre}" data-precio="$ ${producto.precio}">
-            <div class="catalogo__div__imagen" style='background-image: url("${imagenProducto}');">
-                ${coloresHTML}
-            </div>
-            <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
-            <div class="catalogo__div__descuento">
-                <h3 class="descuento__precioViejo">$ ${(Number(producto.precioViejo)).toLocaleString('es-AR')}</h3>
-                <h3 class="descuento__porcentaje"> ${porcentajeDescuento}% OFF!</h3>
-            </div>
-            <h3 class="catalogo__div__precio">$ ${precio.toLocaleString('es-AR')}</h3>
-            `;
-        }else{
-            agregarElemento.innerHTML=`
-            <div class="catalogo__div" id="${producto._id}" data-imagen1="${imagenProducto}" data-nombre="${producto.nombre}" data-precio="$ ${producto.precio}">
-            <div class="catalogo__div__imagen" style='background-image: url("${imagenProducto}');">
-                ${coloresHTML}
-            </div>
-            <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
-            <h3 class="catalogo__div__precio">$ ${(Number(producto.precio)).toLocaleString('es-AR')}</h3>
-            `;
-        }
-        fragmento.appendChild(agregarElemento); //Agrega el producto recien creado al fragmento
-
-    })
-    contenedorProductos.appendChild(fragmento); //Agrega el fragmento con todos los productos al catalogo
-
-}
-
-const buscarProductos = ()=>{
+export const buscarProductos = ()=>{
         // Vacia el contenedor de productos y coloca una barra de carga
+    
         const contenedorProductos: HTMLElement = document.getElementById('catalogo')!; //Toma el catalogo como el contenedor de los productos a agregar
-        contenedorProductos.innerHTML=`<div id="cargandoProductos"></div>`
+        contenedorProductos.innerHTML=`<div id="cargandoProductos"></div>` // Muestra el icono de carga 
+        contenedorProductos.classList.add('catalogo-conMensaje') // Centra el icono de carga
         
         // Define los query params para enviarlos en el fetch y asi filtrar los productos
         const params = new URLSearchParams(window.location.search);
@@ -90,7 +35,6 @@ const buscarProductos = ()=>{
         const palabraBuscada = params.get('palabraBuscada') || '';
         const categorias = params.get('categorias') || '';
         const ordenar = params.get('ordenar') || '';
-    
         // Realiza la peticion GET para obtener los productos
         fetch(urlProductos+`?desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}`, { 
             method: 'GET',
@@ -105,9 +49,10 @@ const buscarProductos = ()=>{
             }else{ // Si el servidor no devuelve errores:
 
                 if(data.productos[0]){ // Si se encuentran productos para los parametros de busqueda entonces los agrega
-                    agregarProductosDOM(data.productos)
+                    contenedorProductos.classList.remove('catalogo-conMensaje')
+                    agregarProductosDOM(data.productos,contenedorProductos)
                 }else{ // Si no se encontraron productos da aviso al usuario
-                     // Vacia el contenedor y muestra un mensaje de error
+                    // Vacia el contenedor y muestra un mensaje de error
                     contenedorProductos.innerHTML=`
                     <div id="mensajeSinProductos">
                         <div id="mensajeSinProductos__logo"></div>
@@ -120,20 +65,8 @@ const buscarProductos = ()=>{
         .catch(error => { // Si hay un error se manejan 
             console.error(error);
         })
-        .finally(()=>{
-            verProductos(); // Funcion para que cuando se aprete en un producto te reedirija a su pagina con informacion
-        })
 }
 
-const verProductos =()=>{
-    const productos = document.querySelectorAll(".catalogo__div")
-    console.log(productos)
-    productos.forEach(producto =>{
-        producto.addEventListener("click",()=>{
-            location.assign(`/producto/${producto.id}`)
-        })
-    })
-}
 
 const agregarCategoriasDOM = (categorias: string[]) => {
     const contenedoresCategorias: NodeListOf<Element> = document.querySelectorAll('.contenedorCategorias')!; // Selecciona los contenedores de los filtros de categorias
@@ -357,5 +290,6 @@ document.addEventListener("DOMContentLoaded", async() => {
     precioMinMax(); // Le da la funcionalidad a los input de precio maximo y minimo
     ordenarPrecios(); // Define el comportacion de el boton de ordenar productos por precio
     filtrosResponsive(); // Define el comportamiento de la barra lateral de los filtros
+
 })
 

@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node app"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",

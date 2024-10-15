@@ -6,16 +6,18 @@ import {
     actualizarUsuario,
     agregarUsuario, 
     eliminarUsuario, 
+    modificarDeseado, 
+    verDeseados, 
     verUsuarios,
     verUsuarioToken
-    } from '../controllers/usuarios';
+    } from '../controllers/usuarios.js';
 
 // Middlewares
 import { 
     validarCampos,
     validarJWT,
     validarRolJWT,
-    validarIDJWT } from '../middlewares';
+    validarIDJWT } from '../middlewares/index.js';
 
 
 // Verificaciones con la base de datos
@@ -23,7 +25,7 @@ import {
     esRolValido, 
     correoUnico, 
     nombreUnico, 
-    usuarioExiste } from '../../database/usuariosVerificaciones';
+    usuarioExiste } from '../../database/usuariosVerificaciones.js';
 
 
 const router = express.Router();
@@ -37,7 +39,19 @@ router.post('/', // Crea un nuevo usuario
     check('rol').custom( esRolValido ), 
     validarCampos, // Devuelve un error al usuario si algun check fallo
     agregarUsuario) // Agrega un nuevo usuario a la base de datos
-    
+
+// Actualiza la lista de productos deseados del usuario
+router.put('/listaDeseados/:idProducto', 
+    validarJWT,
+    validarCampos, // Devuelve un error al usuario si algun check fallo
+    modificarDeseado)
+
+// Devuelve la lista de productos deseados
+router.get('/listaDeseados', 
+    validarJWT,
+    validarCampos, // Devuelve un error al usuario si algun check fallo
+    verDeseados) 
+
 router.put('/:id', //Actualiza un usuario
     check('id').custom( usuarioExiste ), // Verifica existencia y validez del id
     validarJWT,

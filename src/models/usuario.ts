@@ -15,6 +15,10 @@ const usuarioSchema = new mongoose.Schema({
         type: String,
         required: [true, "La contraseña es obligatoria"]
     },
+    listaDeseados:{
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Producto'
+    },
     rol: { 
         type: String, 
         required: true,

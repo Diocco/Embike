@@ -1,4 +1,4 @@
-import Producto from "../src/models/productos";
+import Producto from "../src/models/productos.js";
 
 // Verifica que el producto exista
 const productoExiste = async(id:string) =>{

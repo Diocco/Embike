@@ -1,4 +1,3 @@
-"use strict";
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -10,12 +9,8 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const mongoose_1 = __importDefault(require("mongoose"));
-const usuarioSchema = new mongoose_1.default.Schema({
+import mongoose from 'mongoose';
+const usuarioSchema = new mongoose.Schema({
     nombre: {
         type: String,
         required: [true, "El nombre es obligatorio"], //Mensaje de error personalizado
@@ -29,6 +24,10 @@ const usuarioSchema = new mongoose_1.default.Schema({
     password: {
         type: String,
         required: [true, "La contraseña es obligatoria"]
+    },
+    listaDeseados: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Producto'
     },
     rol: {
         type: String,
@@ -56,5 +55,5 @@ usuarioSchema.methods.toJSON = function () {
     // Retorna el objeto 'usuario' sin las propiedades 'password' y '__v'.
     return usuario;
 };
-const Usuario = mongoose_1.default.model('Usuario', usuarioSchema);
-exports.default = Usuario;
+const Usuario = mongoose.model('Usuario', usuarioSchema);
+export default Usuario;

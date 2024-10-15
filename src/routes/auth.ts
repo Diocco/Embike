@@ -3,13 +3,13 @@ import express from 'express'; // Express
 import { check } from 'express-validator'; // Validaciones
 
 // Controladores
-import { login } from '../controllers/auth'
+import { login } from '../controllers/auth.js'
 
 // Middlewares
-import { validarCampos } from '../middlewares/validarCampos';
+import { validarCampos } from '../middlewares/validarCampos.js';
 
 // Validaciones
-import { correoExiste } from '../../database/usuariosVerificaciones';
+import { correoExiste } from '../../database/usuariosVerificaciones.js';
 
 
 const router = express.Router();

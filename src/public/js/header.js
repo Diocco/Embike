@@ -1,4 +1,4 @@
-"use strict";
+import { buscarProductos } from "./catalogo.js";
 // Define el entorno
 let url;
 const esDesarollo = window.location.hostname.includes('localhost'); // Revisa el url actual
@@ -95,7 +95,7 @@ botonCuentaVolver.addEventListener('click', (event) => {
     event.stopPropagation(); // Evita que el evento ejecute el evento del elemento padre, es decir, el evento de "botonUsuarioResponsive"
 });
 // Cerrar sesion
-const botonCerrarSesion = document.getElementById('botonUsuario__lista__salir');
+const botonCerrarSesion = document.getElementById('botonUsuario__li__ul-salir');
 const botonCerrarSesionResponsive = document.getElementById('ul-opciones__li-cerrarSesion');
 botonCerrarSesion.addEventListener('click', () => {
     localStorage.removeItem('tokenAcceso'); // Elimina el token de acceso

@@ -9,26 +9,26 @@ import {
     actualizarProducto,
     eliminarProducto, 
     agregarVariante
-} from '../controllers/productos';
+} from '../controllers/productos.js';
 
 // Middlewares
 import { 
     validarCampos,
     validarJWT,
     validarRolJWT
-} from '../middlewares';
+} from '../middlewares/index.js';
 
 
 // Verificaciones con la base de datos
 import {
     categoriaValida 
-} from '../../database/categoriasVerificaciones';
+} from '../../database/categoriasVerificaciones.js';
 
 import {
     productoExiste,
     SKUUnico,
     variantesValidas,
-} from '../../database/productosVerificaciones';
+} from '../../database/productosVerificaciones.js';
 
 
 const router = express.Router();

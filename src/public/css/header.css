@@ -99,25 +99,39 @@
 
 
 /* Barra deslisadorado de cuenta */
-#botonUsuario__lista{
+#botonUsuario__li{
 	display: none;
 	flex-direction: column;
 	justify-items: center;
+
 	position: absolute;
 	width: 150px;
 	height: min-content;
 	background-color: var(--azul-logo);
-    transform: translate(-60px, 84px);
+    transform: translate(-60px, 100px);
 	color: white;
 	margin:50px
 }
-#botonUsuario:hover>#botonUsuario__lista,#botonUsuario__lista:hover{
+#botonUsuario:hover>#botonUsuario__li,#botonUsuario__li:hover{
 	display: flex;
 }
 
-.botonUsuario__lista__a{
+.botonUsuario__li__ul{
+	display: flex;
+	flex-direction: row;
 	margin: 10px;
+	justify-content: space-between;
+}
+
+.botonUsuario__li__a{
 	color: white;
+}
+
+/*Contenedor de los botones*/
+.botonUsuario__li__i{
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
 }
 /*///////////////////////////*/
 
@@ -189,7 +203,7 @@
 #header-responsive__form-barraBusqueda__button{
 	width: 85px;
 	height: 70px;
-	background-image: url(../img/indexImagenes/lupa-icono.png);
+	background-image: url(../img/icons/lupa-icono.png);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-color: white;
@@ -206,16 +220,16 @@
 
 /*Logo*/
 #header-responsive__a-logo{
-	background-image: url(../img/logo.ico);
+	background-image: url(../img/icons/logo.ico);
 }
 
 /*Imagenes de los botones*/
 #header-responsive__a-iniciarSesion, #header-responsive__div-cuenta{
-	background-image: url(../img/indexImagenes/logo-sesion.png);
+	background-image: url(../img/icons/logo-sesion.png);
 	background-size: 75%;
 }
 #header-responsive__div-menu{
-	background-image: url(../img/indexImagenes/menu-icono.png);
+	background-image: url(../img/icons/menu-icono.png);
 	background-size: 90%;
 }
 
@@ -274,7 +288,7 @@
 	background-repeat: no-repeat;
 	background-color: white;
 	border-color: var(--azul-logo);
-	background-image: url(../img/indexImagenes/volver.png);
+	background-image: url(../img/icons/volver.png);
 	background-size: 60%;
 }
 
