@@ -249,6 +249,24 @@ const filtrosResponsive=()=>{
     })
 }
 
+const buscarPalabra=(input:HTMLInputElement)=>{
+            // Define los query element 
+            const urlObjeto = new URL(window.location.href); // Crea un objeto para definir, o ver, los query elements mas facilmente
+            const palabraBuscada = input.value
+
+            urlObjeto.searchParams.set('palabraBuscada', palabraBuscada ); // Si no existe, lo crea; si existe, lo actualiza
+            window.history.pushState({}, '', urlObjeto); // Actualizar la URL sin recargar la página
+            buscarProductos() // Realiza la busqueda de los productos con el nuevo filtro
+    
+            if(palabraBuscada){ // Si la palabra buscada existe
+                inputBusqueda.value = palabraBuscada // La define como valor en el input de la barra de busqueda
+                inputBusqueda.classList.add('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
+            }else{
+                inputBusqueda.classList.remove('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
+            }        
+    }
+
+
 //Alternar el active en los botones del indice
 document.addEventListener("DOMContentLoaded", async() => {
 
@@ -292,4 +310,23 @@ document.addEventListener("DOMContentLoaded", async() => {
     filtrosResponsive(); // Define el comportamiento de la barra lateral de los filtros
 
 })
+
+    // Escuchar busquedas
+    const inputBusqueda = document.getElementById('header__form-barraBusqueda__input')! as HTMLInputElement
+    const formularioBusqueda = document.getElementById('header__form-barraBusqueda')! as HTMLFormElement
+
+    formularioBusqueda.onsubmit = (event)=>{
+        event.preventDefault()
+        buscarPalabra(inputBusqueda)
+    }
+
+
+    const inputBusquedaResponsive = document.getElementById('header-responsive__form-barraBusqueda__input')! as HTMLInputElement
+    const formularioBusquedaResponsive = document.getElementById('header-responsive__form-barraBusqueda')! as HTMLFormElement
+    formularioBusquedaResponsive.addEventListener('submit', (event)=>{ // Escucha cuando se envia el formulario, es decir, cuando se realiza una busqueda
+        event.preventDefault()
+        buscarPalabra(inputBusquedaResponsive)    
+    })
+
+    
 
