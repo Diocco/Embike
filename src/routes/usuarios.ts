@@ -9,8 +9,9 @@ import {
     modificarDeseado, 
     verDeseados, 
     verUsuarios,
-    verUsuarioToken
-    } from '../controllers/usuarios.js';
+    verUsuarioToken,
+    subirFotoPerfil
+} from '../controllers/usuarios.js';
 
 // Middlewares
 import { 
@@ -61,6 +62,12 @@ router.put('/:id', //Actualiza un usuario
     check('correo', 'El correo no es valido').optional().isEmail(), // Si se manda un correo verifica que sea valido
     validarCampos, // Devuelve un error al usuario si algun check fallo
     actualizarUsuario) // Agrega un nuevo usuario a la base de datos
+
+router.post('/fotoPerfil/:id', // Sube la foto de perfil del usuario
+    check('id').custom( usuarioExiste ), // Verifica existencia y validez del id
+    validarJWT,
+    validarIDJWT,
+    subirFotoPerfil)
 
 router.get('/', // Devuelve los usuarios
     verUsuarios) 

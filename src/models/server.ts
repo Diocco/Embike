@@ -27,6 +27,7 @@ import usuariosRoutes from '../routes/usuarios.js';
 import authRoutes from '../routes/auth.js'; 
 import categoriasRoutes from '../routes/categorias.js'; 
 import productosRoutes from '../routes/productos.js'; 
+import fileUpload from 'express-fileupload';
 
 
 
@@ -79,6 +80,9 @@ class Server {
 
         // Parseo de JSON
         this.app.use(express.json());
+
+        // Carga de archivos
+        this.app.use(fileUpload());
     }
 
     // Configura las rutas

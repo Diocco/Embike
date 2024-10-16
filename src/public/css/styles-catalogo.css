@@ -1,9 +1,3 @@
-:root {
---fondo: white;
---boton: rgb(228, 228, 228);
---crema-logo: #DFC5B4; 
---azul-logo: #033452;
-}/*Variables*/
 
 /*Desactiva los elementos que son para telefono*/
 .phone{
@@ -13,6 +7,7 @@
 #contenedorCatalogo{
 	display: flex;
 	justify-content: center;
+	background-color: var(--fondo);
 }
 
 /*Contenedor de productos*/
@@ -23,8 +18,8 @@
     align-content: flex-start;
 
 	width: 900px;
-	height: 80vh;
-	margin-top: 40px;
+	height: 100%;
+	margin-top: 60px;
 }
 .catalogo-conMensaje{
 	justify-content: center !important;
@@ -69,7 +64,6 @@
 	width: 100px;
 	background-position: center;
 	background-repeat: no-repeat;
-	background-color: var(--fondo);
 	background-size: 75%;
 	border-radius: 30px;
 	background-image: url(../img/icons/icono-advertencia.webp);
@@ -92,18 +86,22 @@
 
 
 /*Productos*/
-.catalogo__div{
-	display: flex;
+.catalogo__div {
+    display: flex;
     justify-items: center;
     align-items: center;
     flex-direction: column;
-    max-width: 450px;
-    height: 400px;
-    margin-top: 5px;
+    width: 280px;
+    height: 380px;
+    margin: 10px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 4px 0px #033452;
+    border: 1px solid grey;
     filter: opacity(0);
     transition: border 0.25s, box-shadow 0.25s, filter 0.5s;
     animation: catalogo__div-aparecer 1s forwards 0.5s;
     justify-content: space-evenly;
+    background-color: white;
 }
 
 .catalogo__div:hover{
@@ -129,8 +127,8 @@
     justify-content: flex-end;
     flex-wrap: nowrap;
 
-	width: 290px;
-    height: 290px;
+	width: 270px;
+    height: 270px;
     margin: 5px;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -185,7 +183,7 @@
 	margin: 10px;
 	height: 100px;
 	position: absolute;
-    transform: translate(550px, -40px);
+    transform: translate(520px, -25px);
 	font-size: 20px;
 }
 
@@ -228,7 +226,7 @@
 	height: min-content;
 
 	background-color: var(--azul-logo);
-	color: var(--fondo);
+	color: var(--letra);
 }
 /*Cuando se apreta en el boton de filtros activa la barra deslizadora*/
 .div-contenedorFiltros__div-ordenar:hover>.div-ordenar__li-opciones{
@@ -239,7 +237,7 @@
 /*Letra de la barra deslizadora del filtro ordenar*/
 .li-opciones__ul{
 	margin: 20px;
-	color: var(--fondo);
+	color: var(--letra);
 }
 
 /*Barra lateral de filtros*/
@@ -267,11 +265,11 @@
 .filtroBoton:hover{
 	background-color: #033452;
 	box-shadow: 0px 0px 10px 0px #033452;
-	color: var(--fondo);
+	color: var(--letra);
 }
 .botonActive{
 	background-color: #033452 !important;
-	color: var(--fondo) !important;
+	color: var(--letra) !important;
 }
 
 
@@ -291,7 +289,7 @@
 /*Inputs de precio maximo y precio minimo cuando tienen un valor de busqueda activo*/
 .casillaPrecio-active{
 	background-color: var(--azul-logo);
-	color: var(--fondo);
+	color: var(--letra);
 }
 .casillaPrecio:hover{
 	box-shadow: 0px 0px 10px 0px #033452;
@@ -333,6 +331,7 @@
 	/*Contenedor de productos*/
 	.catalogo__div{
 		height: 550px;
+        width: 430px;
 	}
 	/*Titulo de productos*/
 	.catalogo__div__nombre {
@@ -397,7 +396,7 @@
 		font-size: 55px;
         padding: 15px;
         padding-left: 26px;
-        width: 360px;
+        width: 330px;
         margin-right: 25px;
         border-radius: 20px;
 	}
@@ -445,8 +444,8 @@
 
 	/*Aumenta el tamaño de los productos*/
 	.catalogo__div__imagen {
-		width: 440px;
-		height: 440px;
+		width: 420px;
+        height: 390px;
 	}
 
 	/*Contenedor de botones de filtros*/
@@ -463,18 +462,20 @@
 		display: flex;
 		justify-content: flex-start;
 		flex-direction: column;
-		position: fixed;
-		background-color: var(--fondo);
-		min-width: 100vw;
-		min-height: 100vh;
+		position: fixed; /* Para que el div se mantenga fijo en la pantalla */
+		top: 0;
+		left: 0;
+		width: 100vw;    /* Cubre el 100% del ancho del viewport */
+		height: 100vh;   /* Cubre el 100% del alto del viewport */
+		transform: translateX(-100vw);
+		background-color: var(--letra);
 		transition: transform 0.25s;
-		transform: translate(-100%,-23vw);
 		z-index: 1500;
 	}
 
 	/*Los deslizadores se activan cuando se hacen click en sus respectivos botones*/
 	.ventanaLateral-Filtros-active{
-		transform: translate(0,-23vw) !important;
+		transform: translateX(0) !important;
 	}
 
 	/*Boton volver*/

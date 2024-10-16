@@ -7,7 +7,13 @@ import Usuario from '../models/usuario.js';
 import { generarJWT } from '../../helpers/generarJWT.js';
 import { Types } from 'mongoose';
 import Producto from '../models/productos.js';
+import fileUpload from 'express-fileupload';
 
+// Directorio
+import path from 'path';
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url); // Obtiene el nombre del archivo actual
+const __dirname = path.dirname(__filename); // Obtiene el directorio del archivo actual
 
 
 const agregarUsuario = async(req: Request, res: Response) => {
@@ -116,6 +122,62 @@ const actualizarUsuario = async(req: Request, res: Response) =>{
     })
 }
 
+const subirFotoPerfil = async(req: Request, res: Response) =>{
+    // Se verifica que venga un archivo
+    if(!req.files || Object.keys(req.files).length===0 || !req.files.archivo){
+        return res.status(400).json({
+            errors:[{
+                msg: "No hay archivos que subir",
+                path: "archivo"
+            }]
+        })
+    }
+
+    // Verifica la extension del archivo
+    const archivo = req.files!.archivo as fileUpload.UploadedFile
+    const nombreArchivoDividido = archivo.name.split('.')
+    const extension = nombreArchivoDividido[nombreArchivoDividido.length - 1]
+    const extensionesPermitidas = [`jpg`,`png`,`jpeg`]
+
+    if(!extensionesPermitidas.includes(extension)){
+        return res.status(400).json({
+            errors:[{
+                msg: `Extension no permitida, las extensiones permitidas son: ${extensionesPermitidas}`,
+                path: "archivo"
+            }]
+        })
+    }
+
+    // Define un nuevo nombre para el archivo
+    const nombreArchivo=req.params.id+'.'+extension
+
+    // Ruta donde se va a colocar el archivo
+    const uploadPath = path.join(__dirname,'../public/img/fotosPerfil',nombreArchivo )
+    // Mueve el archivo a la ruta definida
+    archivo.mv(uploadPath,(err)=>{
+        if (err){
+            return res.status(500).json({
+                errors:[{
+                    msg: `Error al guardar el archivo`,
+                    path: "Servidor"
+                }]
+            })
+        }
+    })
+
+    // Actualiza la informacion del usuario
+    const usuario = await Usuario.findByIdAndUpdate( req.params.id , { 'img':nombreArchivo }, { new: true }); 
+
+    res.status(200).json({ //Devuelve un mensaje y el usuario agregado a la base de datos
+        msg: "Foto de perfil actualizada",
+        usuario
+    })
+    
+    
+
+
+}
+
 const verUsuarios = async(req: Request, res: Response) =>{
 
     const desde:number = Math.abs(Number(req.query.desde)) || 0;  // Valor por defecto 0 si no se pasa el parámetro o es invalido
@@ -171,5 +233,6 @@ export {
     eliminarUsuario,
     verUsuarioToken,
     modificarDeseado,
-    verDeseados
+    verDeseados,
+    subirFotoPerfil
 }

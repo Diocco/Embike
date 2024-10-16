@@ -1,7 +1,8 @@
 :root {
---fondo: white;
---crema-logo: #DFC5B4; 
---azul-logo: #033452;
+	--letra:white;
+	--fondo: rgb(219 219 219 / 55%);
+	--crema-logo: #DFC5B4; 
+	--azul-logo: #033452;
 }/*Variables*/
 
 
@@ -18,7 +19,7 @@
 	display: flex;
     justify-content: center;
 	
-	background-color: var(--fondo);
+	background-color: var(--azul-logo);
 
 	align-items: center;
 	justify-items: center;
@@ -29,12 +30,15 @@
 
 
 /*Imagen*/
-.header__a-logo__img{
-    border-radius: 30px;
-    height: 90px;
-}
 .header__a-logo{
-	margin: 10px;
+	border-radius: 30px;
+    height: 90px;
+	width: 300px;
+	background-image: url('../img/header/logoConFondoMejorado-SinFondo.png');
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 75%;
+	margin: 10px
 }
 
 
@@ -42,7 +46,6 @@
 #header__form-barraBusqueda, #header-responsive__form-barraBusqueda{
 	justify-items: center;
     align-items: center;
-	margin: 0px 10px;
 	z-index: 1000;
 }
 #header__form-barraBusqueda__input{
@@ -51,15 +54,19 @@
     border-bottom: 2px;
     border-style: solid;
 	border-radius: 0px;
-	border-color: var(--azul-logo);
+	background-color: var(--azul-logo);
+	color: white;
 	outline: 2px;
 	width: 400px;
 	height: 45px;
 }
+#header__form-barraBusqueda__input::placeholder{
+	color: white;
+}
 /* Cambia el input cuando tiene un contenido que forma parte del filtro de busqueda actual */
 .header__form-barraBusqueda__input-active{
-	background-color: var(--azul-logo) !important;
-	color:white !important;
+	background-color: white !important;
+	color:var(--azul-logo) !important;
 	border: solid 1px !important;
 	border-radius: 10px !important;
 }
@@ -70,14 +77,14 @@
 	text-decoration: none;
 	font-size: 20px;
 	padding: 10px;
-	color: var(--azul-logo);
-    background: white;
+	color: white;
+    background: var(--azul-logo);
     justify-items: center;
     align-items: center;
 	border-radius:0px;
 	border: 0px;
 	border-bottom: 2px;
-	border-color: var(--azul-logo);
+	border-color: white;
 	border-style: solid;
 	margin: 0px 10px;
 	transition: 0.1s ease-out;
@@ -86,11 +93,11 @@
 
 /* Seleccion */
 .header__botones:hover{
-	background: var(--azul-logo) ;
+	background: white ;
 	transform: scale(1.1);
 	border: 0px;
 	border-radius:10px;
-	color: white;
+	color: var(--azul-logo);
 }
 #botonUsuario:hover{
 	border-radius: 0px;
@@ -99,18 +106,19 @@
 
 
 /* Barra deslisadorado de cuenta */
-#botonUsuario__li{
-	display: none;
-	flex-direction: column;
-	justify-items: center;
-
-	position: absolute;
-	width: 150px;
-	height: min-content;
-	background-color: var(--azul-logo);
-    transform: translate(-60px, 100px);
-	color: white;
-	margin:50px
+#botonUsuario__li {
+    display: none;
+    flex-direction: column;
+    justify-items: center;
+    position: absolute;
+    width: 150px;
+    height: min-content;
+    background-color: white;
+    transform: translate(-61px, 100px);
+    color: var(--azul-logo);
+    margin: 50px;
+    border: 1px solid var(--azul-logo);
+    border-top: 0;
 }
 #botonUsuario:hover>#botonUsuario__li,#botonUsuario__li:hover{
 	display: flex;
@@ -124,7 +132,7 @@
 }
 
 .botonUsuario__li__a{
-	color: white;
+	color: var(--azul-logo);
 }
 
 /*Contenedor de los botones*/
@@ -165,7 +173,7 @@
 	align-items: center;
 	justify-items: center;
 	font-size: 50px;
-	background-color: var(--fondo);
+	background-color: var(--azul-logo);
 	width: 100vw;
 	padding-top: 10px;
 }
@@ -177,25 +185,35 @@
 	display: flex;
 	justify-content: space-between;
 	width: 100vw;
-	margin-top: 10px;
+	border-radius: 0;
+	margin: 0;
+	background-color: var(--azul-logo);
 }
 
 /*Input de barra de busqueda*/
-#header-responsive__form-barraBusqueda__input{
+#header-responsive__form-barraBusqueda__button{
+	width: 70px;
+	height: 70px;
+	color: var(--letra);
+	border: 0;
+	font-size: 50px;
+	background-color: var(--azul-logo);
+}
+
+#header-responsive__form-barraBusqueda__input {
 	width: 100%;
 	height: 70px;
-	font-size: 35px;
-	padding: 10px;
-	margin: 20px;
-	border: 0px;
-	border-bottom: 2px;
-	border-style: solid;
-	border-color: var(--azul-logo);
+	color: var(--letra);
+	border: 0;
+	border-bottom: 2px solid var(--letra);
+	margin-right: 30px;
+	padding-left: 10px;
+	font-size: 50px;
+	background-color: var(--azul-logo);
 }
 
 #header-responsive__form-barraBusqueda__input:focus{
 	border: 0px;
-	outline-color: var(--azul-logo);
 }
 
 
@@ -203,15 +221,10 @@
 #header-responsive__form-barraBusqueda__button{
 	width: 85px;
 	height: 70px;
-	background-image: url(../img/icons/lupa-icono.png);
-	background-position: center;
-	background-repeat: no-repeat;
-	background-color: white;
-	background-size: 75%;
+	color: var(--letra);
 	border: 0px;
 	border-bottom: 2px;
 	border-style: solid;
-	border-color: var(--azul-logo);
 }
 
 
@@ -219,60 +232,60 @@
 
 
 /*Logo*/
-#header-responsive__a-logo{
-	background-image: url(../img/icons/logo.ico);
+#header-responsive__a-logo {
+	background-image: url(../img/header/logoConFondoMejorado-SinFondo.png);
+	background-size: 551%;
+	background-position-x: -13px;
+	background-position-y: -37px;
+	border-radius: 100%;
 }
 
-/*Imagenes de los botones*/
-#header-responsive__a-iniciarSesion, #header-responsive__div-cuenta{
-	background-image: url(../img/icons/logo-sesion.png);
-	background-size: 75%;
-}
-#header-responsive__div-menu{
-	background-image: url(../img/icons/menu-icono.png);
-	background-size: 90%;
-}
+
 
 /*Estilos de los botones*/
 .header-responsive__botones{
-    display: flex;
+	display: flex;
 	overflow: hidden;
 	height: 80px;
-    margin-top: 10px;
-    text-align: center;
+	margin-top: 10px;
 	width: 100px;
 	height: 100px;
-	border-radius: 50px;
-	border: 0px;
+	font-size: 66px;
 	margin: 10px;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-color: white;
-	border-color: var(--azul-logo);
+	color: var(--letra);
+	align-items: center;
+	justify-content: center;
 }
 
 /*Desilazador del boton de cuenta y el de menu*/
-#div-cuenta__div-ventana,#div-menu__ul-opciones{
+#div-cuenta__div-ventana,#div-menu__div-ventana{
 	display: flex;
+	align-items: center;
 	justify-content: flex-start;
 	flex-direction: column;
+	background-color: var(--azul-logo);
 	position: fixed;
-	background-color: white;
-	min-width: 100vw;
-	min-height: 100vh;
+	top: 0;
+	left: 0;
+	width: 100vw;    /* Cubre el 100% del ancho del viewport */
+	height: 100vh;   /* Cubre el 100% del alto del viewport */
 	transition: transform 0.25s;
-	transform: translateX(100vw);
 	z-index: 1500;
 }
-#div-menu__ul-opciones{
-	transform: translateX(-120vw);
+
+#div-cuenta__div-ventana{
+	transform: translateX(100vw);
+}
+
+#div-menu__div-ventana{
+	transform: translateX(-100vw);
 }
 
 /*Los deslizadores se activan cuando se hacen click en sus respectivos botones*/
 .div-cuenta__div-ventana-active{
-	transform: translate(-89vw, -2vw) !important;
+	transform: translateX(0) !important;
 }
-.div-menu__ul-opciones-active{
+.div-menu__div-ventana-active{
 	transform: translateX(0) !important;
 }
 
@@ -282,30 +295,29 @@
 	height: 90px;
 	position: absolute;
 	align-self: start;
+	transform: rotate(180deg);
+    color: var(--letra);
 	justify-self: start;
 	margin: 10px;
-	background-position: center;
-	background-repeat: no-repeat;
-	background-color: white;
-	border-color: var(--azul-logo);
-	background-image: url(../img/icons/volver.png);
-	background-size: 60%;
 }
 
 /*Titulo de la seccion*/
 #div-menu__div-titulo,#div-ventana__div-titulo{
 	margin-top: 40px;
+	color: var(--letra);
 }
 #div-menu__div-titulo{
 	margin-bottom: 40px;
 }
 
 /*Secciones del deslizador*/
-#div-ventana__div-informacion,#div-ventana__ul-opciones{
+#div-ventana__div-informacion,#div-ventana__ul-opciones,#div-menu__ul-opciones{
 	display: flex;
 	flex-direction: column;
 	position: relative;
 	margin-top: 15px;
+	color: var(--letra);
+	width: 95%;
 }
 
 /*Opciones de la seccion de informacion de usuario*/
@@ -359,7 +371,7 @@
 	font-size: 70px;
     padding: 50px;
 	transition: background 0.5s ease;
-	color: black;
+	color: var(--letra);
 }
 .ul-opciones__botones:active,.div-menu__ul-opciones__li:active{
 	background-color: lightgray;

@@ -49,9 +49,9 @@ if(tokenAcceso){ // Si el token de acceso existe entonces lo verifica
                 const correoUsuario = document.getElementById('div-informacion__div-correo')! as HTMLDivElement
                 const idUsuario = document.getElementById('div-informacion__div-ID')! as HTMLDivElement
 
-                if(data.usuarioVerificado.foto){ // Si el usuario tiene foto de perfil entonces la coloca
-                    // COMPLETAR
-                    console.log('HAY QUE COMPLETAR ESTO')
+                // Verifica que el usuario tenga foto de perfil
+                if(data.usuarioVerificado.img){ // Si el usuario tiene foto de perfil entonces la coloca
+                    fotoUsuario.style.backgroundImage=`url(../img/fotosPerfil/${data.usuarioVerificado.img})`
                 }else{// Si el usuario no tiene foto entonces pone como imagen su inicial de nombre o sus dos primeras iniciales
                     const nombres:string[] = (data.usuarioVerificado.nombre as string).split(' '); // Divide el nombre de usuario por la cantidad de espacios que tiene
                     if(nombres.length > 1){ // Si el usuario tiene mas de un espacio entonces coloca la primer letra de las primeros dos palabras del nombre
@@ -80,14 +80,14 @@ if(tokenAcceso){ // Si el token de acceso existe entonces lo verifica
 }
 
 // Alternar menu del boton de "menu" responsive
-const menuVentanaResponsive = document.getElementById('div-menu__ul-opciones')! as HTMLUListElement;
+const menuVentanaResponsive = document.getElementById('div-menu__div-ventana')! as HTMLUListElement;
 const botonMenuResposive = document.getElementById('header-responsive__div-menu')! as HTMLDivElement;
 botonMenuResposive.addEventListener('click',()=>{
-    menuVentanaResponsive.classList.add('div-menu__ul-opciones-active')
+    menuVentanaResponsive.classList.add('div-menu__div-ventana-active')
 })
 const botonMenuVolver = document.getElementById('div-menu__div-volver')! as HTMLDivElement
 botonMenuVolver.addEventListener('click',(event)=>{
-    menuVentanaResponsive.classList.remove('div-menu__ul-opciones-active')
+    menuVentanaResponsive.classList.remove('div-menu__div-ventana-active')
     event.stopPropagation() // Evita que el evento ejecute el evento del elemento padre, es decir, el evento de "botonUsuarioResponsive"
 })
 

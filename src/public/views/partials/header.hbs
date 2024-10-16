@@ -3,10 +3,11 @@
 <link rel="stylesheet" type="text/css" href="../../css/normalize.css">
 
 <div class="header-responsive phone">
-    <div id='header-responsive__div-menu' class="phone header-responsive__botones">
+    <div id='header-responsive__div-menu' class="phone header-responsive__botones fa-solid fa-bars"></div>
+    <div id='div-menu__div-ventana'>
+        <div id='div-menu__div-volver' class="fa-solid fa-arrow-right"></div>   
+        <div id='div-menu__div-titulo'>Menu</div>   
         <ul id='div-menu__ul-opciones'>
-            <div id='div-menu__div-volver'></div>   
-            <div id='div-menu__div-titulo'>Menu</div>   
             <a class='div-menu__ul-opciones__li' href="/carrito">Carrito</a>
             <a class='div-menu__ul-opciones__li' href="/catalogo">Catalogo</a>
             <li class='div-menu__ul-opciones__li'>FAQ</li>
@@ -14,12 +15,13 @@
         </ul>
     </div>
 
+
     <a href="/index" id="header-responsive__a-logo" class=" header-responsive__botones"></a>
 
-    <a href="/inicioSesion" id='header-responsive__a-iniciarSesion' class="phone header-responsive__botones"></a>
-    <div id='header-responsive__div-cuenta' class="noActive header-responsive__botones">
-        <div id='div-cuenta__div-ventana'>
-            <div id='div-ventana__div-volver'></div>
+    <a href="/inicioSesion" id='header-responsive__a-iniciarSesion' class="phone header-responsive__botones fa-solid fa-right-to-bracket"></a>
+    <div id='header-responsive__div-cuenta' class="noActive header-responsive__botones fa-regular fa-user"></div>
+    <div id='div-cuenta__div-ventana'>
+            <div id='div-ventana__div-volver' class="fa-solid fa-arrow-right"></div>
             <div id='div-ventana__div-titulo'>Mi cuenta</div>
             <div id='div-ventana__div-informacion'>
                 <div id='div-informacion__div-nombreFoto' class="div-informacion__info">
@@ -36,19 +38,16 @@
                 <li id="ul-opciones__li-cerrarSesion" class="ul-opciones__botones">Cerrar sesion</li>
             </ul>
         </div>
-    </div>
 
     <form id="header-responsive__form-barraBusqueda" class="phone header-responsive__botones">
         <input type="text" id="header-responsive__form-barraBusqueda__input" placeholder="Busca un producto">
-        <button type="submin" id="header-responsive__form-barraBusqueda__button" placeholder="Busca un producto"></button>
+        <button type="submit" id="header-responsive__form-barraBusqueda__button" class="fa-solid fa-magnifying-glass"></button>
     </form>
 </div>
 
 
 <div class="header desktop">
-    <a href="/index" class="header__a-logo desktop">
-        <img src="../img/indexImagenes/logo_extendido.png"  class="header__a-logo__img">
-    </a>
+    <a href="/index" class="header__a-logo desktop"></a>
 
     <form id="header__form-barraBusqueda" class="desktop">
         <input type="text" id="header__form-barraBusqueda__input" placeholder="Busca un producto">
