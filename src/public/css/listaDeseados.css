@@ -69,6 +69,7 @@
     grid-template-rows: min-content 30px 80px;
 
     width: 100%;
+    margin: 3px;
 
     filter: opacity(0);
     transition: border 0.25s, box-shadow 0.25s, filter 0.5s;

@@ -1,14 +1,5 @@
 
-// Define el entorno
-let url:string
-const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
-
-if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
-    url = 'http://localhost:8080';
-}else{ // Si no tiene localhost define el url en la pagina web para la peticion
-    url= 'https://embike-223a165b4ff6.herokuapp.com';
-}
-
+import {url} from "./header.js";
 
 const cargarColoresTalles =(productoInformacion:any)=>{
     // Carga los colores y talles

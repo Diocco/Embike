@@ -34,8 +34,30 @@ const usuarioSchema = new mongoose.Schema({
     google:{ // Indica si los datos del usuario se obtuvieron mediante google
         type: Boolean,
         default: false
+    },
+    telefono: { // Telefono del usuario
+        type: String,
+    },
+    direccion:{
+        codPostal:{
+            type:String,
+        },
+        provincia:{
+            type:String,
+        },
+        ciudad:{
+            type:String,
+        },
+        calle:{
+            type:String,
+        },
+        piso:{
+            type:String,
+        },
+        observacion:{
+            type:String,
+        }
     }
-
 }, { timestamps: true });
 
 // Cuando se llama a "usuarioSchema" dentro de un "toJSON" se ejecuta la siguiente funcion:

@@ -25,6 +25,10 @@ const cargarListaDeseados = (req: Request, res: Response) => {
     res.render("listaDeseados.hbs");
 };
 
+const cargarMiPerfil = (req: Request, res: Response) => {
+    res.render("miPerfil.hbs");
+};
+
 
 
 
@@ -34,5 +38,6 @@ export{
     cargarNotFound,
     cargarInicioSesion,
     cargarProducto,
-    cargarListaDeseados
+    cargarListaDeseados,
+    cargarMiPerfil
 }

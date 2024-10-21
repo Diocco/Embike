@@ -1,0 +1,199 @@
+#contenedorInformacion{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--fondo);
+}
+
+/*Contenedor general*/
+#contenedorInformacion__form{
+    display: flex;
+    flex-direction: column;
+    width: 1000px;
+    height: auto;
+    padding: 50px 100px;
+    background-color: var(--letra);
+    border: 1px solid lightgray;
+    margin: 30px;
+    border-radius: 30px;
+}
+/*Contenedores de seccion*/
+#form__div-identificacion,#form__div-Direccion,#form__div-fotoPerfil{
+    margin-left: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+/*Estilos de la foto (o iniciales) del usuario*/
+#form__div-fotoPerfil__div-foto{
+	display: flex;
+	justify-content: center;
+	grid-row: 1 / 3;
+	min-width: 250px;
+	min-height: 250px;
+	padding: 60px;
+	font-size: 110px;
+	border: solid 1px black;
+	border-radius: 100%;
+	margin: 25px;
+	background: lightgray;
+	background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/*Boton de subir archivo*/
+#form__div-fotoPerfil__input-subirFoto {
+    width: 200px;
+    align-self: end;
+    background-color: var(--azul-logo);
+    color: var(--letra);
+    border-radius: 10px;
+}
+/* Ocultar el input file original */
+#form__div-fotoPerfil__input-subirFoto::file-selector-button{
+    display: none;
+}
+
+/*Titulo de la seccion*/
+.form__h3{
+    width: 100%;
+    font-size: 30px;
+    margin: 30px 0 20px 0;
+    border-bottom: 1px solid rgb(63, 63, 63);
+}
+/*Titulo de los input*/
+.form__h4{
+    width: 100%;
+}
+.form__h4-telefono{
+    width: auto !important;
+}
+.form__h5{
+    color: lightgray;
+    margin-left: 10px;
+    width: 90%
+}
+/*Inputs*/
+.form__input{
+    height: 40px;
+    padding: 10px;
+    min-width: 550px;
+    margin: 5px 100% 0 15px;
+}
+#form__input-telefono{
+    margin: 5px 15px 0 15px;
+    min-width: 485px;
+}
+.form__input-enError{
+    border:2px solid !important;
+    border-color: red !important;
+}
+.form__p{
+    height: 40px;
+    padding: 10px;
+    width: auto;
+    margin: 5px -10px 0 15px;
+    background-color: var(--letra);
+    border: 1px solid gray;
+}
+/*Errores de los input*/
+.form__error{
+    width: 100%;
+    min-height: 20px;
+    font-size: 15px;
+    color: red;
+    align-self: start;
+    margin: 0 0 15px 15px;
+}
+
+#form__button-enviarFormulario{
+    height: 40px;
+    padding: 10px;
+    width: 200px;
+    margin: 20px 0 50px 20px;
+    align-self: end;
+
+    background-color: var(--azul-logo);
+    color: var(--letra);
+
+    border-radius: 10px;
+}
+
+.form__button-enviarFormulario-enProceso{
+    filter: contrast(0.7);
+}
+
+
+
+@media screen and (max-width:1200px){
+    /*Contenedor general*/
+    #contenedorInformacion__form{
+        width: 900px;
+        padding: 0px 25px;
+    }
+    /*Contenedores de seccion*/
+    #form__div-fotoPerfil{
+        justify-content: center;
+    }
+
+    /*Titulos de seccion*/
+    .form__h3{
+        font-size: 60px;
+    }
+
+    /*Titulo de los inputs*/
+    .form__h4{
+        width: 100%;
+        font-size: 40px;
+        margin-bottom: 15px;
+    }
+
+    /*Aclaracion en un input*/
+    .form__h5{
+        color: gray;
+        margin-left: 28px;
+        width: 75%;
+        margin-top: 10px;
+        font-size: 26px;
+    }
+
+    /*Inputs*/
+    .form__input{
+        margin: 5px 0 0 15px;
+        height: 80px;
+        font-size: 40px;
+        border: 2px solid gray;
+        padding-left: 20px;
+    }
+
+    /*Complemento del inputs de telefono*/
+    .form__p{
+        height: 80px;
+        font-size: 40px;
+        padding: 16px;
+        margin: 5px 4px 0 15px;
+        border: 2px solid gray;
+    }
+
+    /*Input para enviar formulario*/
+    #form__button-enviarFormulario {
+        height: 85px;
+        font-size: 40px;
+        padding: 15px;
+        width: 280px;
+    }
+
+    /*Estilos de la foto (o iniciales) del usuario*/
+    #form__div-fotoPerfil__div-foto{
+        min-width: 500px;
+        min-height: 500px;
+    }
+    
+
+}

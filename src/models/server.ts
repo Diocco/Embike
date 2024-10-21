@@ -20,6 +20,7 @@ import {
     cargarNotFound,
     cargarProducto,
     cargarListaDeseados,
+    cargarMiPerfil,
     } from '../controllers/archivos.js';
 
 // Rutas
@@ -101,6 +102,7 @@ class Server {
         this.app.get('/inicioSesion', cargarInicioSesion); // Configura la ruta
         this.app.get('/listaDeseados', cargarListaDeseados); // Configura la ruta
         this.app.get('/producto/*', cargarProducto); // Configura la ruta
+        this.app.get('/miPerfil', cargarMiPerfil); // Configura la ruta
         this.app.get('/*', cargarNotFound); // Configura la ruta
     }
 

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="../css/normalize.css">
+		<link rel="stylesheet" type="text/css" href="../css/miPerfil.css">
+		<meta charset="utf-8">
+		<title>Embike</title>
+		<meta name="keywords" content="Bicicletas, MontainBike, Ñiños, Ruedas, Cubiertas, Frenos, Disco, Asientos">
+		<meta name="description" content="Embike, la esencia ciclista. Encontra bicicletas y accesorios en nuestra tienda virtual, ideales para recorrer las sierras o las rutas de Cordoba">
+		<meta name="author" content="Diego Nicolas Iocco">
+		<meta name="robots" content="index">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=0.4, user-scalable=no">
+		<link rel="icon" href="../img/icons/logo.ico">
+		<script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
+	</head>
+
+<body>
+    <header>{{>  header }}</header>
+    <div id="contenedorGeneral">
+        <div id="contenedorInformacion">
+            <form id="contenedorInformacion__form">
+                <h3 class="form__h3">Foto de perfil</h3>
+                    <!-- Foto de perfil -->
+                    <div id="form__div-fotoPerfil">
+                        <div id="form__div-fotoPerfil__div-foto"></div>
+                        <input class="form__input" name="img" type="file" id="form__div-fotoPerfil__input-subirFoto" accept=".jpg, .jpeg, .png, .webp, .gif">
+                        <p id="form__a-subirFoto" class="form__error"></p>
+                    </div>
+                <h3 class="form__h3">Identificación</h3>
+                <div id="form__div-identificacion">
+                    <!-- Nombre -->
+                    <h4 class="form__h4">Nombre completo</h4>
+                    <input class="form__input" name="nombre" type="text" id="form__input-nombre" placeholder="Ingrese su nombre completo" >
+                    <p id="form__a-nombre" class="form__error"></p>
+
+                    <!-- Correo -->
+                    <h4 class="form__h4">Correo</h4>
+                    <input class="form__input" name="correo" type="email" id="form__input-correo" placeholder="Ingrese su correo electrónico" >
+                    <p id="form__a-correo" class="form__error"></p>
+
+                    <!-- Cambiar contraseña -->
+                    <h4 class="form__h4">Cambiar contraseña</h4>
+                    <input class="form__input" name="password" type="password" id="form__input-nuevaContraseña" placeholder="Contraseña nueva">
+                    <p id="form__a-contraseña" class="form__error"></p>
+                    <input class="form__input" type="password" id="form__input-repetirContraseña" placeholder="Repetir contraseña">
+                    <p id="form__a-repetirContraseña" class="form__error"></p>
+
+                    <!-- Teléfono -->
+                    <h4 class="form__h4 form__h4-telefono">Teléfono</h4><h5 class="form__h5">Sin el 0 ni el 15</h3>
+                    <p class="form__p">+54 9</p>
+                    <input class="form__input" name="telefono" type="tel" id="form__input-telefono" placeholder="Ingrese un número de teléfono" pattern="[0-9]{10}" title="Debe contener 10 dígitos">
+                    <p id="form__a-telefono" class="form__error"></p>
+
+                </div>
+                
+                <!-- Dirección -->
+                <h3 class="form__h3">Dirección</h3>
+                <div id="form__div-Direccion">
+                    <h4 class="form__h4">Código Postal</h4>
+                    <input name="codPostal" class="form__input" type="text" id="form__input-codigoPostal" placeholder="Ingrese el código postal" pattern="[0-9]{4,5}" title="Debe contener entre 4 y 5 dígitos" >
+                    <p id="form__a-codPostal" class="form__error"></p>
+
+                    <h4 class="form__h4">Provincia/Estado</h4>
+                    <input name="provincia" class="form__input" type="text" id="form__input-provincia" placeholder="Ingrese la provincia o estado" >
+                    <p id="form__a-provincia" class="form__error"></p>
+
+                    <h4 class="form__h4">Ciudad</h4>
+                    <input name="ciudad" class="form__input" type="text" id="form__input-ciudad" placeholder="Ingrese la ciudad" >
+                    <p id="form__a-ciudad" class="form__error"></p>
+
+                    <h4 class="form__h4">Calle y número</h4>
+                    <input name="calle" class="form__input" type="text" id="form__input-calleNumero" placeholder="Ingrese la calle y número" >
+                    <p id="form__a-calle" class="form__error"></p>
+                    
+                    <h4 class="form__h4">Piso/Departamento</h4>
+                    <input name="piso" class="form__input" type="text" id="form__input-pisoDepto" placeholder="Ingrese piso o departamento (opcional)">
+                    <p id="form__a-piso" class="form__error"></p>
+                    
+                    <h4 class="form__h4">Observacion</h4>
+                    <input name="observacion" class="form__input" type="text" id="form__input-observacion" placeholder="Observacion adicional">
+                    <p id="form__a-observacion" class="form__error"></p>
+
+                </div>
+
+                <!-- Botón de envío -->
+                <button type="submit" id="form__button-enviarFormulario">Enviar</button>
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <script type="module" src="../js/header.js"></script>
+    <script type="module" src="../js/miPerfil.js"></script>
+
+</body>
+
+</html>

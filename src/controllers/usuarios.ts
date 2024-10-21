@@ -102,79 +102,107 @@ const verDeseados = async(req: Request, res: Response) =>{
     }
 }
 
-
 const actualizarUsuario = async(req: Request, res: Response) =>{
-    const { id } = req.params; 
-    const { nombre, activo, google, _id, __v, password, ...resto  } = req.body // Deja en "resto" las propiedades que son modificables
+    const { usuario } = req.body; 
+    const { nombre,
+            correo, 
+            password, 
+            telefono ,
+            codPostal,
+            provincia,
+            ciudad,
+            calle,
+            piso,
+            observacion} = req.body // Desestructura las propiedades modificables
+    const  imgPura  = (req.files?req.files.img:undefined) as fileUpload.UploadedFile// Obtiene la imagen 
+    let img:string|undefined // Se inicia la variable que va a contener el path de la foto de perfil del usuario
+    
+    const direccion = {
+        codPostal,
+        provincia,
+        ciudad,
+        calle,
+        piso,
+        observacion
+    }
+
+    let data = {
+        nombre,
+        correo,
+        password,
+        telefono,
+        img,
+        direccion
+    }
+
+    if(imgPura){ // Si se envia una foto de perfil del usuario entonces la sube al servidor
+        try {
+            data.img = await subirFotoPerfil(imgPura,usuario.uid) 
+        } catch (errors) {
+            if ((errors as any).path==='Servidor'){
+                return res.status(500).json({errors})
+            }
+            return res.status(400).json({errors})
+        }
+    }
+
 
     if(password){ // Si se mando una contraseña:
         // Encriptar contraseña
         const salt = bcryptjs.genSaltSync() // Genera un "salt" para indicar el nivel de encriptacion
-        resto.password = hashSync(password, salt) // Genera un hash relacionado a la contraseña del usuario y la agrega al resto de propiedades
+        data.password = hashSync(password, salt) // Genera un hash relacionado a la contraseña del usuario y la agrega al resto de propiedades
     }
 
     // Busca por id en la base de datos que actualiza las propiedades que esten en "resto". { new: true } devuelve el documento actualizado
-    const usuario = await Usuario.findByIdAndUpdate( id , { resto }, { new: true }); 
-
+    const usuarioActualizado = await Usuario.findByIdAndUpdate( usuario._id ,  data , { new: true }); 
     res.status(200).json({ //Devuelve un mensaje y el usuario agregado a la base de datos
         msg: "Usuario actualizado en la base de datos",
-        usuario
+        usuarioActualizado,
     })
 }
 
-const subirFotoPerfil = async(req: Request, res: Response) =>{
-    // Se verifica que venga un archivo
-    if(!req.files || Object.keys(req.files).length===0 || !req.files.archivo){
-        return res.status(400).json({
-            errors:[{
-                msg: "No hay archivos que subir",
-                path: "archivo"
-            }]
-        })
-    }
+const subirFotoPerfil = async(img:fileUpload.UploadedFile,idUsuario:string) =>{
+    // Recibe la foto de perfil del usuario y su id, la sube al servidor y devuelve el path de la imagen
+
 
     // Verifica la extension del archivo
-    const archivo = req.files!.archivo as fileUpload.UploadedFile
-    const nombreArchivoDividido = archivo.name.split('.')
-    const extension = nombreArchivoDividido[nombreArchivoDividido.length - 1]
-    const extensionesPermitidas = [`jpg`,`png`,`jpeg`]
-
-    if(!extensionesPermitidas.includes(extension)){
-        return res.status(400).json({
-            errors:[{
-                msg: `Extension no permitida, las extensiones permitidas son: ${extensionesPermitidas}`,
-                path: "archivo"
-            }]
-        })
-    }
-
-    // Define un nuevo nombre para el archivo
-    const nombreArchivo=req.params.id+'.'+extension
-
-    // Ruta donde se va a colocar el archivo
-    const uploadPath = path.join(__dirname,'../public/img/fotosPerfil',nombreArchivo )
-    // Mueve el archivo a la ruta definida
-    archivo.mv(uploadPath,(err)=>{
-        if (err){
-            return res.status(500).json({
-                errors:[{
-                    msg: `Error al guardar el archivo`,
-                    path: "Servidor"
-                }]
-            })
+    return new Promise<string>((resolve, reject) => {
+        const nombreArchivoDividido = img.name.split('.')
+        const extension = nombreArchivoDividido[nombreArchivoDividido.length - 1]
+        const extensionesPermitidas = [`jpg`,`png`,`jpeg`,'webp','gif']
+    
+        if(!extensionesPermitidas.includes(extension)){
+            reject([{
+                    msg: `Extension no permitida, las extensiones permitidas son: ${extensionesPermitidas}`,
+                    path: "archivo"
+                }])
         }
-    })
+        if(img.size > 5 * 1024 * 1024){
+            reject([{
+                    msg: `El archivo no debe superar los 5MB`,
+                    path: "archivo"
+                }])
+        }
+    
+        // Define un nuevo nombre para el archivo
+        const nombreArchivo=idUsuario+'.'+extension
+    
+        // Ruta donde se va a colocar el archivo
+        const uploadPath = path.join(__dirname,'../public/img/fotosPerfil',nombreArchivo )
 
-    // Actualiza la informacion del usuario
-    const usuario = await Usuario.findByIdAndUpdate( req.params.id , { 'img':nombreArchivo }, { new: true }); 
-
-    res.status(200).json({ //Devuelve un mensaje y el usuario agregado a la base de datos
-        msg: "Foto de perfil actualizada",
-        usuario
+        // Mueve el archivo a la ruta definida
+        img.mv(uploadPath,(err)=>{
+            if (err){
+                reject([{
+                        msg: `Error al guardar el archivo`,
+                        path: "Servidor"
+                    }])
+            }
+        })
+    
+        resolve(nombreArchivo)
     })
     
-    
-
 
 }
 
