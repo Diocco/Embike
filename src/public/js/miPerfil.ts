@@ -15,7 +15,6 @@ const pisoInput:HTMLInputElement = document.getElementById('form__input-pisoDept
 const observacionInput:HTMLInputElement = document.getElementById('form__input-observacion')! as HTMLInputElement;
 
 // Formulario y envio de formulario
-const formulario = document.getElementById('contenedorInformacion__form')! as HTMLFormElement; 
 const enviarFormulario:HTMLElement = document.getElementById('form__button-enviarFormulario')! as HTMLButtonElement;
 
 
@@ -119,6 +118,8 @@ const informacionFormulario=(usuario:any)=>{
 
     return new Promise<FormData>((resolve, reject) => {
         // Formulario
+        const formulario = document.getElementById('contenedorInformacion__form')! as HTMLFormElement; 
+
         // Modifica el estilo del boton para aclarar que se esta procesando la solicitud
         enviarFormulario.classList.add('form__button-enviarFormulario-enProceso') 
 
@@ -225,6 +226,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     })
 
     // Escucha cuando se envia el formulario
+    const formulario = document.getElementById('contenedorInformacion__form')! as HTMLFormElement; 
     formulario.addEventListener('submit',async(event)=>{
         event.preventDefault(); // Evita que el formulario recargue la página
         const datosFormulario = await informacionFormulario(usuario) // Recupera la informacion colocada por el usuario en los inputs

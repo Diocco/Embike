@@ -193,7 +193,9 @@
     #form__div-fotoPerfil__div-foto{
         min-width: 500px;
         min-height: 500px;
+        display: flex;
+        align-items: center;
+        font-size: 200px;
     }
     
-
 }
