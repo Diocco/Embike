@@ -201,6 +201,13 @@ const informacionFormulario=(usuario:any)=>{
 }
 
 document.addEventListener('DOMContentLoaded',async()=>{
+    // Escucha cuando se envia el formulario
+    document.getElementById('contenedorInformacion__form')!.addEventListener('submit',async(event)=>{
+        event.preventDefault(); // Evita que el formulario recargue la página
+        const datosFormulario = await informacionFormulario(usuario) // Recupera la informacion colocada por el usuario en los inputs
+        actualizarUsuario(datosFormulario) // Enviar la informacion al servidor
+    })
+
     // Espera la solicitud del servidor realizada en el header para obtener la informacion del usuario
     const usuario = await usuarioVerificado    
 
@@ -225,13 +232,6 @@ document.addEventListener('DOMContentLoaded',async()=>{
         }
     })
 
-    // Escucha cuando se envia el formulario
-    const formulario = document.getElementById('contenedorInformacion__form')! as HTMLFormElement; 
-    formulario.addEventListener('submit',async(event)=>{
-        event.preventDefault(); // Evita que el formulario recargue la página
-        const datosFormulario = await informacionFormulario(usuario) // Recupera la informacion colocada por el usuario en los inputs
-        actualizarUsuario(datosFormulario) // Enviar la informacion al servidor
-    })
 })
 
 
