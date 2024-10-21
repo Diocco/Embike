@@ -216,6 +216,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
             const reader = new FileReader(); // Crear un objeto FileReader
 
             reader.onload = (e) => {
+                contenedorImagen.textContent='' // Vacia el contenedor
                 contenedorImagen.style.backgroundImage = `url(${e.target!.result})`; // Establece la imagen como fondo del div
             };
     
