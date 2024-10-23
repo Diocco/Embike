@@ -17,31 +17,30 @@ export const mostrarMensaje=(codigoMensaje:string="sc",error:boolean=false)=>{
         contenedorMensaje.classList.add('mensajeUsuario-enError') // Cambia el color del fondo
     }
 
-    if(codigoMensaje){ // Si hay un mensaje entonces lo muestra
-            switch (codigoMensaje) {
-        case '1':
-            textoMensaje.textContent='La sesion ha caducado';
-            break;
-        case '2':
-            textoMensaje.textContent='Error del servidor';
-            break;
-        case '3':
-            textoMensaje.textContent='Error del servidor, vuelva a iniciar sesion';
-            break;
-        case '4':
-            textoMensaje.textContent='Usuario actualizado con exito';
-            break;
-        case 'sc':
-            textoMensaje.textContent='';
-            break;
-    
-        default: 
-            textoMensaje.textContent=`Error desconocido (${codigoMensaje})`;
-            break;
-    }
-    }else{ // Si no hay ningun mensaje
+    if(codigoMensaje==='sc'||!codigoMensaje){ // Si no hay ningun mensaje
         // Cambia la animacion
         contenedorMensaje.classList.add('mensajeUsuario-animacionSinMensaje');
+    }else{ // Si hay un mensaje entonces lo muestra
+        switch (codigoMensaje) {
+            case '1':
+                textoMensaje.textContent='La sesion ha caducado';
+                break;
+            case '2':
+                textoMensaje.textContent='Error del servidor';
+                break;
+            case '3':
+                textoMensaje.textContent='Error del servidor, vuelva a iniciar sesion';
+                break;
+            case '4':
+                textoMensaje.textContent='Usuario actualizado con exito';
+                break;
+            case 'sc':
+                textoMensaje.textContent='';
+                break;
+            default: 
+                textoMensaje.textContent=`Error desconocido (${codigoMensaje})`;
+                break;
+        }
     }
 
 
