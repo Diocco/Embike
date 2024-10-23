@@ -35,6 +35,7 @@ export const buscarProductos = ()=>{
         })
         .then(response => response.json()) // Parsear la respuesta como JSON
         .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
+            console.log(data)
             if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
                 mostrarMensaje('',true);
                 (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
@@ -264,13 +265,11 @@ document.addEventListener("DOMContentLoaded", async() => {
     let url:string
     if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
         url = 'http://localhost:8080';
-        urlProductos = url + urlProductos;
-        urlCategorias = url + urlCategorias;
     }else{ // Si no tiene localhost define el url en la pagina web para la peticion
         url= 'https://embike-223a165b4ff6.herokuapp.com';
-        urlProductos=url + urlProductos;
-        urlCategorias=url + urlCategorias;
     }
+    urlProductos = url + urlProductos;
+    urlCategorias = url + urlCategorias;
 
     // Carga las categorias validas en el DOM
     fetch(

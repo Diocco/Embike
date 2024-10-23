@@ -21,6 +21,7 @@ import {
     cargarProducto,
     cargarListaDeseados,
     cargarMiPerfil,
+    cargarRegistener,
     } from '../controllers/archivos.js';
 
 // Rutas
@@ -103,6 +104,7 @@ class Server {
         this.app.get('/listaDeseados', cargarListaDeseados); // Configura la ruta
         this.app.get('/producto/*', cargarProducto); // Configura la ruta
         this.app.get('/miPerfil', cargarMiPerfil); // Configura la ruta
+        this.app.get('/registener', cargarRegistener); // Configura la ruta
         this.app.get('/*', cargarNotFound); // Configura la ruta
     }
 

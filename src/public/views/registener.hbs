@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Registener</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/registener.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/ventanaProductos.css'>
+    <script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    {{>  mensajeEmergente }}
+
+    <div id="ventanaEmergenteFondo"></div>
+
+    <div id="ventanaEmergente">
+        <div id="ventanaEmergente__contenido">
+            
+            <div id="ventanaEmergente__contenido__mensaje"></div>
+            <div id="ventanaEmergente__contenido__aceptar">
+                <button id="ventanaEmergente__contenido__aceptar__boton">Aceptar</button>
+            </div>
+            <div id="ventanaEmergente__contenido__rechazar">
+                <button id="ventanaEmergente__contenido__rechazar__boton">Rechazar</button>
+            </div>
+        </div>
+    </div>
+    <div id="ventanaEmergenteModificarProducto">
+        <div id="ventanaEmergenteModificarProducto__contenido">
+            <div id="ventanaEmergenteModificarProducto__contenido__fotoDescripcion">
+                Foto<div id="ventanaEmergenteModificarProducto__contenido__fotoDescripcion__foto"></div>
+                Descripcion<textarea id="ventanaEmergenteModificarProducto__contenido__fotoDescripcion__descripcion"></textarea>
+            </div>
+            <div id="ventanaEmergenteModificarProducto__contenido__caracteristicas">
+                Nombre<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__nombre">
+                Precio Unitario<input type="number" class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__precio">
+                Stock<input type="number" class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__stock">
+                ID<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__id">
+                Color<input type="color" class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__color">
+                Codigo de barra<input type="number" class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__codigoBarra">
+                Promocionable<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__promocionable">
+                Tipo<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__tipo">
+                Categoria<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__categoria">
+            </div>
+            <div id="ventanaEmergenteModificarProducto__contenido__AceptarRechazar">
+                <button id="ventanaEmergenteModificarProducto__contenido__AceptarRechazar__aceptar" class="ventanaEmergenteModificarProducto__contenido__AceptarRechazar__varios">Aceptar</button>
+                <button id="ventanaEmergenteModificarProducto__contenido__AceptarRechazar__rechazar" class="ventanaEmergenteModificarProducto__contenido__AceptarRechazar__varios">Rechazar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="barraLateral">
+        <div id="barraLateral__iconos">
+            <div id="barraLateral_AA__icono" class="barraLateral__iconos">C</div>
+            <div id="barraLateral_A__icono" class="barraLateral__iconos">M</div>
+            <div id="barraLateral_B__icono" class="barraLateral__iconos">S</div>
+            <div id="barraLateral_C__icono" class="barraLateral__iconos">P</div>
+            <div id="barraLateral_D__icono" class="barraLateral__iconos">E</div>
+            <div id="barraLateral_E__icono" class="barraLateral__iconos">R</div>
+        </div>
+        <div id="barraLateral__nombres">
+            <div id="barraLateral_AA__nombre" class="barraLateral__botones">Configuracion</div>
+            <div id="barraLateral_A__nombre" class="barraLateral__botones">Modificar Productos</div>
+            <div id="barraLateral_B__nombre" class="barraLateral__botones">Seleccionar productos</div>
+            <div id="barraLateral_C__nombre" class="barraLateral__botones">Pago</div>
+            <div id="barraLateral_D__nombre" class="barraLateral__botones">Estadisicas</div>
+            <div id="barraLateral_E__nombre" class="barraLateral__botones">Registro de empleados</div>
+        </div>
+    </div>
+    
+    <div id="configuracionProductos">
+        <div id="contenedorConfiguracionProductos"></div>
+    </div>
+
+    {{!-- Contenedor general de categorias, indice y productos --}}
+    <div id="contenedorConfiguracionProductos__contenido">
+
+        {{!-- Contenedor de categorias --}}
+        <div id="contenedorConfiguracionProductos__contenido__categorias"></div>
+
+        {{!-- Indice de categorias --}}
+        <div class="tipo__categoria__producto">
+            <div>Nombre</div>
+            <div>Precio</div>
+            <div>Stock</div>
+            <div>Opciones</div>
+        </div>
+
+        {{!-- Contenedor de productos --}}
+        <div id="contenedorConfiguracionProductos__contenido__productos" ></div>
+
+    </div>
+
+    <div id="seleccionProductos">
+    </div>
+
+    </div>
+
+    <div id="seccionCobro">
+        <div class="seccionCobro__titulo text">Resumen</div>
+        <div class="seccionCobro__titulo text">Modo de pago</div>
+        <div class="seccionCobro__titulo text">Modificacion</div>
+        <div id="seccionCobro__resumen">
+            <div id="seccionCobro__resumen__indice-nombre" class="seccionCobro__resumen__indices">Nombre</div>
+            <div id="seccionCobro__resumen__indice-cantidad" class="seccionCobro__resumen__indices">Cantidad</div>
+            <div id="seccionCobro__resumen__indice-precio" class="seccionCobro__resumen__indices">Precio</div>
+        </div>
+        <div id="seccionCobro__metodoPago">
+            <button class="seccionCobro__metodoPago__metodo">Efectivo</button>
+            <button class="seccionCobro__metodoPago__metodo">Cuenta DNI</button>
+            <button class="seccionCobro__metodoPago__metodo">Nave</button>
+            <button class="seccionCobro__metodoPago__metodo">Postnet</button>
+            <button class="seccionCobro__metodoPago__metodo">Transferencia</button>
+            <button class="seccionCobro__metodoPago__metodo">Otro</button>
+            <button class="seccionCobro__metodoPago__metodo"></button>
+            <button class="seccionCobro__metodoPago__metodo">Combinado</button>
+        </div>
+        <div id="seccionCobro__modificacion">
+            <button class="seccionCobro__modificacion__metodo">10% de descuento</button>
+            <button class="seccionCobro__modificacion__metodo">15% de descuento</button>
+            <button class="seccionCobro__modificacion__metodo">Cambios de stock</button>
+            <button class="seccionCobro__modificacion__metodo">Pedido</button>
+            <button class="seccionCobro__modificacion__metodo"></button>
+            <button class="seccionCobro__modificacion__metodo"></button>
+            <button class="seccionCobro__modificacion__metodo"></button>
+            <button class="seccionCobro__modificacion__metodo"></button>
+        </div>
+        <div id="seccionCobro__promociones">
+            <div id="seccionCobro__promociones__promocion1" class="seccionCobro__promociones__contenedores">
+                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por facha</div>
+                <div class="seccionCobro__promociones__contenedores__precio">-$1.500</div>
+                <button class="seccionCobro__promociones__contenedores__boton">^</button>
+            </div>
+            <div id="seccionCobro__promociones__promocion2" class="seccionCobro__promociones__contenedores">
+                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por feo</div>
+                <div class="seccionCobro__promociones__contenedores__precio">-$2.500</div>
+                <button class="seccionCobro__promociones__contenedores__boton">^</button>
+            </div>
+            <div id="seccionCobro__promociones__promocion3" class="seccionCobro__promociones__contenedores">
+                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por jubilado</div>
+                <div class="seccionCobro__promociones__contenedores__precio">-$3.500</div>
+                <button class="seccionCobro__promociones__contenedores__boton">^</button>
+            </div>
+            <div id="seccionCobro__promociones__promocion4" class="seccionCobro__promociones__contenedores">
+                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por hincha de boca</div>
+                <div class="seccionCobro__promociones__contenedores__precio">-$500</div>
+                <button class="seccionCobro__promociones__contenedores__boton">^</button>
+            </div>
+            <div id="seccionCobro__promociones__promocion5" class="seccionCobro__promociones__contenedores">
+                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por algo</div>
+                <div class="seccionCobro__promociones__contenedores__precio">-$1.500</div>
+                <button class="seccionCobro__promociones__contenedores__boton">^</button>
+            </div>
+        </div>
+        <div id="seccionCobro__pago">
+            <div id="seccionCobro__pago__pago1">
+                <div class="seccionCobro__pago__titulo">Pago 1</div>
+                <input class="seccionCobro__pago__valor" type="number" placeholder="Ingrese el monto">
+            </div>
+            <div id="seccionCobro__pago__pago2">
+                <div class="seccionCobro__pago__titulo">Pago 2</div>
+                <input class="seccionCobro__pago__valor" type="number" placeholder="Ingrese el monto">
+            </div>
+            <div id="seccionCobro__pago__vuelto">
+                <div class="seccionCobro__pago__titulo">Vuelto</div>
+                <div class="seccionCobro__pago__valor" id="seccionCobro__pago__vuelto__valor">$ 1.250</div>
+            </div>
+            <div id="seccionCobro__pago__total">
+                <div class="seccionCobro__pago__titulo">Total</div>
+                <div class="seccionCobro__pago__valor" id="seccionCobro__pago__total__valor">$ 10.000</div>
+            </div>
+
+        </div>
+        <div id="seccionCobro__confirmar">
+            <textarea id="seccionCobro__confirmar__observacion" placeholder="Ingrese una observacion"></textarea>
+            <button id="seccionCobro__confirmar__boton">Confirmar</button>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <script type='module' src="../js/registener.js"></script>
+    <script type='module' src="../js/helpers/mostrarMensaje.js"></script>
+
+</body>
+</html>

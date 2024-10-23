@@ -72,14 +72,14 @@ const verProductos = async(req: Request, res: Response)=>{
                 { tags: { $in: [palabraBuscadaRegExp] } }  // Aquí el uso de $in, pero asegurándonos que tags es un array
             ],
             $and: [
-                { estado: true },  // El producto debe estar disponible
+                { disponible: true },  // El producto debe estar disponible
+                { estado: true },  // El producto no tiene que estar eliminado
                 { precio: { $gte: precioMin, $lte: precioMax } },  // Rango de precios
                 { categoria: { $in: categoriasIds } }  // Las categorías deben ser parte de las seleccionadas
             ]
         };
 
 
-        
         // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
         const [productos, productosCantidad]:[producto[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
             Producto.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condicion

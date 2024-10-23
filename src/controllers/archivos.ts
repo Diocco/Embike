@@ -29,6 +29,10 @@ const cargarMiPerfil = (req: Request, res: Response) => {
     res.render("miPerfil.hbs");
 };
 
+const cargarRegistener = (req: Request, res: Response) => {
+    res.render("registener.hbs");
+};
+
 
 
 
@@ -39,5 +43,6 @@ export{
     cargarInicioSesion,
     cargarProducto,
     cargarListaDeseados,
-    cargarMiPerfil
+    cargarMiPerfil,
+    cargarRegistener
 }
