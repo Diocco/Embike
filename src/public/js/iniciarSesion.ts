@@ -1,3 +1,5 @@
+import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -19,6 +21,12 @@ document.addEventListener("DOMContentLoaded", function() {
         urlInicioSesion=url + urlInicioSesion;
         urlRegistro= url + urlRegistro;
     }
+
+    // Verifica si hay que mostrar algun mensaje
+    const params = new URLSearchParams(window.location.search);
+    const codigoMensaje:string|null = params.get('error')
+    if(codigoMensaje!==null) mostrarMensaje(codigoMensaje,true);
+
 
 
     // Si se hace click en "Registrarse" se muestra el formulario para registrarse
@@ -67,6 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json()) // Parsear la respuesta como JSON
         .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
             if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
+                mostrarMensaje('',true);
                 (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
                     if(error.path==='correo'){ // Si el error es del correo:
                         emailInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
@@ -87,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         })
         .catch(error => { // Si hay un error se manejan 
+            mostrarMensaje('2',true);
             console.error(error);
         })
         .finally(()=>{
@@ -147,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 registroPasswordRepetirInput.classList.add('boton__enError')
                 mensajeErrorPasswordRepetirRegistro.textContent='Las contraseñas introducidas no coinciden'
-
+                mostrarMensaje('',true);
             }else{ // Si las contraseñas son iguales entonces se realiza la peticion POST
 
 
@@ -166,6 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 })
                 .then(response => response.json()) // Parsear la respuesta como JSON
                 .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
+                    mostrarMensaje('',true);
                     if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
                         (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
 
@@ -199,6 +210,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     }
                 })
                 .catch(error => { // Si hay un error se manejan 
+                    mostrarMensaje('2',true);
                     console.error(error);
                 })
                 .finally( ()=>{

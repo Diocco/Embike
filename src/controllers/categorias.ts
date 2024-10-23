@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import Categoria from '../models/categoria.js';
+import { categoria } from '../models/interfaces/categorias.js';
+import { usuario } from '../models/interfaces/usuario.js';
 
 
 
@@ -7,12 +9,12 @@ import Categoria from '../models/categoria.js';
 const verCategorias = async(req: Request, res: Response)=>{
     const desde:number = Math.abs(Number(req.query.desde)) || 0;  // Valor por defecto 0 si no se pasa el parámetro o es invalido
     const cantidad:number = Math.abs(Number(req.query.cantidad)) || 10;  // Valor por defecto 10 si no se pasa el parámetro o es invalido
-    const nombres = req.query.nombres || null;
+    const nombres:string[]|null = req.query.nombres as string[] || null;
 
     const condicion = {estado:true}; // Condicion/es que debe cumplir la busqueda
 
     // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
-    let [categorias, categoriasCantidad] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
+    let [categorias, categoriasCantidad]:[ categoria[] | string[] , number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
         Categoria.find(condicion).populate('usuario')  // Busca a todos los categorias en la base de datos que cumplen la condicion
             .skip(desde).limit(cantidad),
         Categoria.countDocuments(condicion) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
@@ -22,7 +24,7 @@ const verCategorias = async(req: Request, res: Response)=>{
     const paginasCantidad = Math.ceil(categoriasCantidad/cantidad); 
 
     if(nombres){ // Si nombres es "true" entonces devuelve la solicitud solo un array con los nombres de las categorias
-        categorias = categorias.map(categoria => categoria.nombre as any)
+        categorias = categorias.map(categoria => categoria.nombre)
     }
 
     res.status(200).json({
@@ -34,7 +36,7 @@ const verCategorias = async(req: Request, res: Response)=>{
 
 // Devuelve la categoria con el id pasado como parametro
 const verCategoriaID = async(req: Request, res: Response)=>{
-    const { id } = req.params
+    const { id } = req.params 
     const condicion = {estado:true}; // Condicion/es que debe cumplir la busqueda de la categoria
 
     const categoria = await Categoria.findById(id,condicion).populate('usuario')
@@ -44,8 +46,8 @@ const verCategoriaID = async(req: Request, res: Response)=>{
 
 // Crea una nueva categoria
 const crearCategoria = async(req: Request, res: Response)=>{
-    const nombre = req.body.nombre
-    const usuario = req.body.usuario
+    const nombre:string = req.body.nombre
+    const usuario:usuario = req.body.usuario
 
     // Verifica que el nombre sea unico
     const categoriaDB = await Categoria.findOne({ nombre })
@@ -75,7 +77,7 @@ const crearCategoria = async(req: Request, res: Response)=>{
 // Actualiza una categoria con el id pasado como parametro
 const actualizarCategoria = async(req: Request, res: Response)=>{
     const { id } = req.params; 
-    const { nombre } = req.body // Extrae el parametro que sea modificable
+    const nombre:string = req.body.nombre; // Extrae el parametro que sea modificable
 
     // Busca por id en la base de datos que actualiza las propiedades que esten en el segundo parametro. { new: true } devuelve el documento actualizado
     const categoriaActualizada = await Categoria.findByIdAndUpdate( id,{ nombre }, { new: true }); 
@@ -92,7 +94,7 @@ const eliminarCategoria = async(req: Request, res: Response) =>{
     const {id} = req.params; // Desestructura el id
     // Busca la categoria con ese id y cambia su estado de actividad
     const categoriaEliminada = await Categoria.findByIdAndUpdate( id , {estado: false}, { new: true }); 
-    const usuarioAutenticado = req.body.usuario
+    const usuarioAutenticado:usuario = req.body.usuario
     res.status(200).json({
         categoriaEliminada,
         usuarioAutenticado

@@ -1,4 +1,6 @@
+import { usuario } from "../../models/interfaces/usuario.js";
 import {url,usuarioVerificado} from "./header.js";
+import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
 
 // Inputs con la informacion del usuario 
 const imgInput:HTMLInputElement = document.getElementById('form__div-fotoPerfil__input-subirFoto')! as HTMLInputElement;
@@ -26,8 +28,8 @@ const actualizarUsuario = async(datosFormulario:FormData)=>{
     })
     .then(response => response.json()) // Parsear la respuesta como JSON
     .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        console.log(data)
         if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
+            mostrarMensaje('',true);
             (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
 
                 if(error.path==='correo'){ // Si el error es del correo:
@@ -66,18 +68,19 @@ const actualizarUsuario = async(datosFormulario:FormData)=>{
                 }
             })
         }else{ // Si el servidor devuelve un  exitoso:
-            console.log('cambios realizados de forma exitosa :)')
+            mostrarMensaje('4');
         }
     })
     .catch(error => { // Si hay un error se manejan 
         console.error(error);
+        mostrarMensaje('2',true);
     })
     .finally( ()=>{
         enviarFormulario.classList.remove('form__button-enviarFormulario-enProceso') // Modifica el estilo del boton para aclarar que la solicitud termino
-    });;
+    });
 }
 
-const mostrarInformacionUsuario =(usuario:any)=>{
+const mostrarInformacionUsuario =(usuario:usuario)=>{
     // Coloca la informacion del usuario en los inputs correspondientes
 
     // Foto de perfil
@@ -101,8 +104,8 @@ const mostrarInformacionUsuario =(usuario:any)=>{
 
     if (nombreInput) nombreInput.value = usuario.nombre;
     if (correoInput) correoInput.value = usuario.correo;
-    if (telefonoInput) telefonoInput.value = (usuario.telefono).substring(3);
-
+    if (usuario.telefono) if (telefonoInput) telefonoInput.value = (usuario.telefono).substring(3);
+    
     if(usuario.direccion){ // Verifica si existe la informacion de la direccion de usuario
         // Informacion de la direccion del usuario
         if (usuario.direccion.codPostal) codPostalInput.value = usuario.direccion.codPostal;
@@ -114,7 +117,7 @@ const mostrarInformacionUsuario =(usuario:any)=>{
     }
 }
 
-const informacionFormulario=(usuario:any)=>{
+const informacionFormulario=(usuario:usuario)=>{
 
     return new Promise<FormData>((resolve, reject) => {
         // Formulario
@@ -172,30 +175,6 @@ const informacionFormulario=(usuario:any)=>{
         if(passwordInput.value===''||passwordInput.value===usuario.password){
             datosFormulario.delete('password')
         }
-        // // Codigo Postal: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        // if(codPostalInput.value===''||codPostalInput.value===usuario.direccion.codPostal){
-        //     datosFormulario.delete('codPostal')
-        // }
-        // // Provincia: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        // if(provinciaInput.value===''||provinciaInput.value===usuario.direccion.provincia){
-        //     datosFormulario.delete('provincia')
-        // }
-        // // Ciudad: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        // if(ciudadInput.value===''||ciudadInput.value===usuario.direccion.ciudad){
-        //     datosFormulario.delete('ciudad')
-        // }
-        // // Calle: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        // if(calleInput.value===''||calleInput.value===usuario.direccion.calle){
-        //     datosFormulario.delete('calle')
-        // }
-        // // Piso: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        // if(pisoInput.value===''||pisoInput.value===usuario.direccion.piso){
-        //     datosFormulario.delete('piso')
-        // }
-        // // Observacion: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        // if(observacionInput.value===''||observacionInput.value===usuario.direccion.observacion){
-        //     datosFormulario.delete('observacion')
-        // }
         resolve(datosFormulario)
     })
 }
@@ -209,7 +188,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     })
 
     // Espera la solicitud del servidor realizada en el header para obtener la informacion del usuario
-    const usuario = await usuarioVerificado    
+    const usuario = (await usuarioVerificado)!   
 
     // Muestra la informacion del usuario en los inputs
     mostrarInformacionUsuario(usuario)
@@ -233,26 +212,3 @@ document.addEventListener('DOMContentLoaded',async()=>{
     })
 
 })
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-    
-
-
-
-
-
-
-
-

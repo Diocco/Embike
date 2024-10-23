@@ -1,12 +1,14 @@
-export const agregarProductosDOM = (productos: any[],contenedorProductos:HTMLElement) => {
+import { producto } from "../../../models/interfaces/producto";
+
+export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTMLElement) => {
+
+
     new Promise<void>((resolve) => {
-        
         contenedorProductos.innerHTML=''; // Reinicia el contenedor
         const fragmento: DocumentFragment = document.createDocumentFragment(); //Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
     
     
-        productos.forEach((producto: any ) => { // Recorre los productos
-    
+        productos.forEach((producto) => { // Recorre los productos
             let agregarElemento = document.createElement('div'); // Crea un div para alojar el nuevo producto
             // Verifica que exista una imagen, sino muestra un icono de error
             const imagenProducto = producto.variantes[0].caracteristicas[0].imagenes[0]?producto.variantes[0].caracteristicas[0].imagenes[0]:'../img/icons/icono-sinFoto.avif' 

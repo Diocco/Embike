@@ -1,3 +1,7 @@
+html{
+    background-color: var(--fondo);
+}
+
 #contenedorGeneral {
     display: flex;
     align-items: center;
@@ -5,7 +9,7 @@
     width: 100vw;
     padding: 0 18vw;
     height: 100vh;
-    background-color: var(--fondo);
+
 }
 #contenedorProductos{
     display: flex;
@@ -15,8 +19,11 @@
 
 #titulo{
     font-size: 50px;
-    padding: 30px;
-    align-self: center;
+    padding: 30px 30px 10px 30px;
+    margin-bottom: 20px;
+    text-align: center;
+    width: 100%;
+    border-bottom: 1px solid lightgray;
 }
 
 /*Icono de carga de productos*/

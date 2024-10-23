@@ -2,19 +2,26 @@ import { Request, Response } from 'express';
 import Producto from '../models/productos.js';
 import Categoria from '../models/categoria.js';
 import mongoose from 'mongoose';
+import { producto } from '../models/interfaces/producto.js';
+import { usuario } from '../models/interfaces/usuario.js';
 
 
 
 // Devuelve todas las productos
 const verProductos = async(req: Request, res: Response)=>{
-    const { idProductos } = req.body 
+    const idProductos:string[] = req.body.idProductos
     if(idProductos){ // Si se envia como parametro un array con id's entonces se devuelve esos productos especificos
         let productos=[]
     
         for (const indice in idProductos) {
             const id = idProductos[indice]
-            const producto = await Producto.findById(id)
-            productos.push(producto)
+            try{ // Busca el producto
+                const producto = await Producto.findById(id)
+                if(!producto){
+                    productos.push(producto)
+                }
+            } // Si hay algun problema con un producto lo saltea
+            catch{}
         }
 
         res.status(200).json(productos)
@@ -74,14 +81,14 @@ const verProductos = async(req: Request, res: Response)=>{
 
         
         // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
-        const [productos, productosCantidad] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
+        const [productos, productosCantidad]:[producto[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
             Producto.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condicion
                 .skip(desde).sort(ordenar as any).limit(cantidad),
             Producto.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
         ])
 
         // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
-        const paginasCantidad = Math.ceil(productosCantidad/cantidad); 
+        const paginasCantidad:number = Math.ceil(productosCantidad/cantidad); 
 
         res.status(200).json({
             categoriasIds,
@@ -95,8 +102,6 @@ const verProductos = async(req: Request, res: Response)=>{
 // Devuelve la producto con el id pasado como parametro
 const verProductoID = async(req: Request, res: Response)=>{
     const { id } = req.params
-
-
     const producto = await Producto.findById(id)
 
     res.status(200).json(producto)
@@ -117,7 +122,7 @@ const crearProducto = async(req: Request, res: Response)=>{
         tags
     } = req.body
 
-    const usuario = req.body.usuario
+    const usuario:usuario = req.body.usuario
     
     const data={
         nombre,
@@ -144,8 +149,8 @@ const crearProducto = async(req: Request, res: Response)=>{
 const agregarVariante = async(req: Request, res: Response)=>{
     // Busca el producto al cual hay que agregarle la variante
     const { id } = req.params
-    const producto = await Producto.findById(id)
-    const variantes = producto!.variantes // Recupera las variantes actual del producto
+    const producto = (await Producto.findById(id))! // Previamente se verifico que existe
+    const variantes = producto.variantes // Recupera las variantes actual del producto
     let respuesta // Variable que almacena la respuesta del servidor segun como se resuelva la solicitud
     const { // Desestructura la informacion del body para utilizar solo la informacion requerida
         color, 
@@ -153,6 +158,12 @@ const agregarVariante = async(req: Request, res: Response)=>{
         SKU,
         stock,
         imagenes,
+    }:{
+        color:string,
+        talle:string,
+        SKU:string,
+        stock:number
+        imagenes:[string]
     } = req.body
     
 
@@ -161,7 +172,7 @@ const agregarVariante = async(req: Request, res: Response)=>{
         if(variante.color === color){
             // Si el producto ya tiene una variante con el mismo color que el color recibido de entrada entonces verifica si el talle tambien existe o es nuevo
             let varianteActualizada:boolean = false // Valor que indica si se actualizo la variante o no
-            variante.caracteristicas!.forEach(caracteristicas => {
+            variante.caracteristicas.forEach(caracteristicas => {
                 if(caracteristicas.talle === talle){
                     // Si el producto ya tiene el color y el talle recibido como valores de entrada entonces actualiza los valores
                     // Solo cambia el valor de la variante si el valor de entrada no es nulo
@@ -202,15 +213,26 @@ const agregarVariante = async(req: Request, res: Response)=>{
                 })
             }
             // Estructura la informacion para enviarla correctamente al servidor
-            const varianteNueva={
+            let varianteNueva: {
+                color: string;
+                caracteristicas: [{
+                    talle: string;
+                    SKU: string;
+                    stock: number;
+                    imagenes: [string];
+                }];
+            }= {
                 color,
-                caracteristicas:{
+                caracteristicas: [{
                     talle,
                     SKU,
                     stock,
                     imagenes,
-                }
+                },
+                ],
             }
+            
+
             variantes.push(varianteNueva)
             respuesta="Se creo la nueva variante"
         }
@@ -241,7 +263,7 @@ const actualizarProducto = async(req: Request, res: Response)=>{
             tags
         } = req.body
 
-    const usuario = req.body.usuario
+    const usuario:usuario = req.body.usuario
 
     // Estructura la informacion para enviarla correctamente al servidor
     const variantes=[{
@@ -284,7 +306,7 @@ const eliminarProducto = async(req: Request, res: Response) =>{
     const {id} = req.params; // Desestructura el id
     // Busca la producto con ese id y cambia su estado de actividad
     const productoEliminado = await Producto.findByIdAndUpdate( id , {estado: false}, { new: true }); 
-    const usuarioAutenticado = req.body.producto
+    const usuarioAutenticado:usuario = req.body.producto
     res.status(200).json({
         productoEliminado,
         usuarioAutenticado

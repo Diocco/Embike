@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { usuario } from "../../interfaces/usuario.js";
+import { usuario } from "../models/interfaces/usuario";
+
 
 
 

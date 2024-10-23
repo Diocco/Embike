@@ -3,6 +3,7 @@ import bcryptjs from 'bcryptjs'; // Encriptar contraseña
 import pkg from 'bcryptjs'; 
 const { hashSync } = pkg; // Destructura las funciones que necesitas
 
+
 import Usuario from '../models/usuario.js';
 import { generarJWT } from '../../helpers/generarJWT.js';
 import { Types } from 'mongoose';
@@ -12,6 +13,8 @@ import fileUpload from 'express-fileupload';
 // Directorio
 import path from 'path';
 import { fileURLToPath } from 'url'
+import { usuario } from '../models/interfaces/usuario.js';
+import { producto } from '../models/interfaces/producto.js';
 const __filename = fileURLToPath(import.meta.url); // Obtiene el nombre del archivo actual
 const __dirname = path.dirname(__filename); // Obtiene el directorio del archivo actual
 
@@ -40,39 +43,42 @@ const agregarUsuario = async(req: Request, res: Response) => {
     })
 };
 
+
+const alternarProductoDeseado=(usuario:usuario ,productoAlternar:string)=>{
+    return new Promise<string>((resolve, reject) => {
+        // Se busca el indice del producto deseado dentro de la lista de productos deseados del usuario
+        const indice = usuario.listaDeseados.indexOf(productoAlternar)
+        // Si existe el indice entonces quiere decir que el producto ya existe en la lista de deseados
+        if(indice!==-1){
+            // Lo elimina de la lista
+            usuario.listaDeseados.splice(indice,1);
+            // Guarda los cambios en la base de datos
+            usuario.save()
+
+            resolve("Producto eliminado con exito");
+        }else{ // Si no existe el indice:
+            // Lo agrega a la lista
+            usuario.listaDeseados.push(productoAlternar)
+            // Guarda los cambios en la base de datos
+            usuario.save()
+            resolve("Producto agregado con exito");
+        }
+    })
+}
+
 const modificarDeseado = async(req: Request, res: Response) =>{
     // Agrega un producto a la lista de productos deseados, y si ya existe entonces lo elimina de la lista
 
     // Recibe el id del usuario que se va a modificar la lista, se toma el id del el JWT
-    const usuarioVerificado = req.body.usuario; 
+    const usuarioVerificado:usuario = req.body.usuario; 
 
     // Se toma el ObjetID del producto que se quiere agregar o eliminar
-    const nuevoProductoDeseado = req.params.idProducto as unknown as Types.ObjectId;
+    const nuevoProductoDeseado:string = req.params.idProducto ;
 
     // Se busca al usuario en la base de datos
-    const usuario = (await Usuario.findById(usuarioVerificado.id))!;
+    const usuario = (await Usuario.findById(usuarioVerificado._id))!;
     
-    // Se busca el indice del producto deseado dentro de la lista de productos deseados del usuario
-    const indice = usuario.listaDeseados.indexOf(nuevoProductoDeseado)
-    // Si existe el indice entonces quiere decir que el producto ya existe en la lista de deseados
-    if(indice!==-1){
-        // Lo elimina de la lista
-        usuario.listaDeseados.splice(indice,1)
-        // Guarda los cambios en la base de datos
-        usuario.save()
-
-        res.json("Producto eliminado con exito");
-    }else{ // Si no existe el indice:
-        // Lo agrega a la lista
-        usuario.listaDeseados.push(nuevoProductoDeseado)
-        // Guarda los cambios en la base de datos
-        usuario.save()
-
-        res.json("Producto agregado con exito");
-    }
-
-
-
+    alternarProductoDeseado(usuario,nuevoProductoDeseado)
 
 }
 
@@ -81,10 +87,10 @@ const verDeseados = async(req: Request, res: Response) =>{
     const productoCompleto = req.query.productoCompleto // Almacena el valor, si existe se devuelven los productos completos y no solo sus id
 
     // Recibe el id del usuario de la lista de deseados, se toma el id del el JWT
-    const usuarioVerificado = req.body.usuario; 
+    const usuarioVerificado:usuario = req.body.usuario; 
 
     // Se busca al usuario en la base de datos
-    const usuario = (await Usuario.findById(usuarioVerificado.id))!;
+    const usuario = (await Usuario.findById(usuarioVerificado._id))!;
     
     
     if(!productoCompleto){// Devuelve solo los id de lista de productos deseados
@@ -94,8 +100,14 @@ const verDeseados = async(req: Request, res: Response) =>{
     
         for (const indice in usuario.listaDeseados) {
             const id = usuario.listaDeseados[indice]
-            const producto = await Producto.findById(id)
-            productos.push(producto)
+            try{ // Busca el producto
+                const producto = await Producto.findById(id)
+                if(producto){
+                    // Si el producto existe lo agrega
+                    productos.push(producto)
+                }
+            } // Si hay algun problema con un producto lo saltea
+            catch{}
         }
 
         res.status(200).json(productos)
@@ -103,7 +115,7 @@ const verDeseados = async(req: Request, res: Response) =>{
 }
 
 const actualizarUsuario = async(req: Request, res: Response) =>{
-    const { usuario } = req.body; 
+    const usuario:usuario = req.body.usuario; 
     const { nombre,
             correo, 
             password, 
@@ -137,7 +149,7 @@ const actualizarUsuario = async(req: Request, res: Response) =>{
 
     if(imgPura){ // Si se envia una foto de perfil del usuario entonces la sube al servidor
         try {
-            data.img = await subirFotoPerfil(imgPura,usuario.uid) 
+            data.img = await subirFotoPerfil(imgPura,usuario._id.toString()) 
         } catch (errors) {
             if ((errors as any).path==='Servidor'){
                 return res.status(500).json({errors})
@@ -232,7 +244,7 @@ const verUsuarios = async(req: Request, res: Response) =>{
 
 const verUsuarioToken = async(req: Request, res: Response) =>{
 
-    const usuarioVerificado = req.body.usuario!
+    const usuarioVerificado:usuario = req.body.usuario!
 
     res.status(200).json({
         usuarioVerificado
@@ -244,7 +256,7 @@ const eliminarUsuario = async(req: Request, res: Response) =>{
     const {id} = req.params; // Desestructura el id
     // Busca el usuario con ese id y cambia su estado de actividad
     const usuario = await Usuario.findByIdAndUpdate( id , {activo: false}, { new: true }); 
-    const usuarioAutenticado = req.body.usuario
+    const usuarioAutenticado:usuario = req.body.usuario
     res.status(200).json({
         usuario,
         usuarioAutenticado

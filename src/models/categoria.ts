@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
+import { categoria } from './interfaces/categorias';
 
-const categoriaSchema = new mongoose.Schema({ // Crea el esquema para la categoria
+const categoriaSchema = new mongoose.Schema<categoria>({ // Crea el esquema para la categoria
     nombre:{ //Se puede estructurar de esta forma para que sea mas legible
         type: String,
         required: [true, "El nombre es obligatorio"] //Mensaje de error personalizado
@@ -16,6 +17,6 @@ const categoriaSchema = new mongoose.Schema({ // Crea el esquema para la categor
     }
 })
 
-const Categoria = mongoose.model('Categoria', categoriaSchema);
+const Categoria:Model<categoria> = mongoose.model<categoria>('Categoria', categoriaSchema);
 
 export default Categoria;

@@ -1,15 +1,8 @@
+import { producto } from "../../models/interfaces/producto.js";
 import { agregarProductosDOM } from "./helpers/agregarProductosDOM.js";
-
-// Define el entorno
-let url:string
-const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
-
-if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
-    url = 'http://localhost:8080';
-}else{ // Si no tiene localhost define el url en la pagina web para la peticion
-    url= 'https://embike-223a165b4ff6.herokuapp.com';
-}
-
+import { esDesarollo } from "./header.js";
+import { categoria } from "../../models/interfaces/categorias.js";
+import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
 
 // Define el url dependiendo si se esta en produccion o en desarrollo
 let urlProductos:string = '/api/productos'
@@ -43,26 +36,28 @@ export const buscarProductos = ()=>{
         .then(response => response.json()) // Parsear la respuesta como JSON
         .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
             if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
+                mostrarMensaje('',true);
                 (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
                     console.log(error);
                 })
             }else{ // Si el servidor no devuelve errores:
-
-                if(data.productos[0]){ // Si se encuentran productos para los parametros de busqueda entonces los agrega
+                const productos:[producto]=data.productos
+                if(productos[0]){ // Si se encuentran productos para los parametros de busqueda entonces los agrega
                     contenedorProductos.classList.remove('catalogo-conMensaje')
-                    agregarProductosDOM(data.productos,contenedorProductos)
+                    agregarProductosDOM(productos,contenedorProductos)
                 }else{ // Si no se encontraron productos da aviso al usuario
                     // Vacia el contenedor y muestra un mensaje de error
                     contenedorProductos.innerHTML=`
                     <div id="mensajeSinProductos">
-                        <div id="mensajeSinProductos__logo"></div>
-                        <div id="mensajeSinProductos__mensaje">No se encontraron productos para los parametros de busqueda</div>
+                        <i id="mensajeSinProductos__logo" class="fa-solid fa-triangle-exclamation"></i>
+                        <p id="mensajeSinProductos__mensaje" >No se encontraron productos para los parametros de busqueda</p>
                     </div>
                     `
                 }
             }
         })
         .catch(error => { // Si hay un error se manejan 
+            mostrarMensaje('2',true);
             console.error(error);
         })
 }
@@ -237,15 +232,11 @@ const filtrosResponsive=()=>{
 
     botonFiltrosResponsive.addEventListener('click',(event)=>{
         barraLateralResponsive.classList.add('ventanaLateral-Filtros-active')
-        //event.stopPropagation()
-        console.log("se muestra")
     })
 
     const botonVolverBarraLateral:HTMLElement = document.getElementById("ventanaLateral-Filtros__div-volver")!
     botonVolverBarraLateral.addEventListener('click',()=>{
         barraLateralResponsive.classList.remove('ventanaLateral-Filtros-active')
-
-        console.log("se esconde")
     })
 }
 
@@ -264,12 +255,13 @@ const buscarPalabra=(input:HTMLInputElement)=>{
             }else{
                 inputBusqueda.classList.remove('header__form-barraBusqueda__input-active'); // La define como valor en el input de la barra de busqueda
             }        
-    }
+}
 
 
 //Alternar el active en los botones del indice
 document.addEventListener("DOMContentLoaded", async() => {
 
+    let url:string
     if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
         url = 'http://localhost:8080';
         urlProductos = url + urlProductos;
@@ -289,11 +281,13 @@ document.addEventListener("DOMContentLoaded", async() => {
     .then(response => response.json()) // Parsear la respuesta como JSON
     .then(data=> { // Si todo sale bien se maneja la respuesta del servidor, maneja errores o agrega elementos al DOM
         if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
+            mostrarMensaje('',true);
             (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
                 console.log(error);
             })
         }else{ // Si el servidor no devuelve errores:
-            agregarCategoriasDOM(data.categorias)
+            const nombreCategorias:string[] = data.categorias
+            agregarCategoriasDOM(nombreCategorias)
         }
     })
     .then(()=>{ // Una vez que se agregaron los elementos al DOM o se manejaron los errores, verifica los estados activos de los parametros de busqueda, para reflejarlos visualmente
@@ -301,6 +295,7 @@ document.addEventListener("DOMContentLoaded", async() => {
 
     })
     .catch(error => { // Si hay un error se manejan 
+        mostrarMensaje('2',true)
         console.error(error);
     })
 

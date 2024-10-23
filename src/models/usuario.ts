@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import { usuario } from './interfaces/usuario';
 
-const usuarioSchema = new mongoose.Schema({
+const usuarioSchema = new mongoose.Schema<usuario>({
     nombre:{ //Se puede estructurar de esta forma para que sea mas legible
         type: String,
         required: [true, "El nombre es obligatorio"], //Mensaje de error personalizado
@@ -16,7 +17,7 @@ const usuarioSchema = new mongoose.Schema({
         required: [true, "La contraseña es obligatoria"]
     },
     listaDeseados:{
-        type: [mongoose.Schema.Types.ObjectId],
+        type: [String],
         ref: 'Producto'
     },
     rol: { 
@@ -63,8 +64,8 @@ const usuarioSchema = new mongoose.Schema({
 // Cuando se llama a "usuarioSchema" dentro de un "toJSON" se ejecuta la siguiente funcion:
 usuarioSchema.methods.toJSON = function() {
     // Convierte el documento Mongoose a un objeto de JavaScript.
-    const { __v, password, _id,...usuario } = this.toObject();
-    usuario.uid = _id; // Cambio visual del id
+    const { __v, password,...usuario } = this.toObject();
+
     
     // Retorna el objeto 'usuario' sin las propiedades 'password' y '__v'.
     return usuario;

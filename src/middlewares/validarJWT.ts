@@ -19,27 +19,30 @@ export const validarJWT = async(req: Request, res: Response,next:NextFunction)=>
 
     try {
         // Verifica que el token sea valido
-        const { uid } = jwt.verify(token,secretOrPrivateKey) as { uid: string } // Si es valido devuelve el token desencriptado, del cual se extrae el uid
+        const { _id } = jwt.verify(token,secretOrPrivateKey) as { _id: string } // Si es valido devuelve el token desencriptado, del cual se extrae el _id
+        
+        const usuario = await Usuario.findById(_id); // Busca el usuario que posee con el id del token
 
-        const usuario = await Usuario.findById(uid); // Busca el usuario que posee con el id del token
 
         if(!usuario){ // Si no se encontro el usuario:
             return res.status(401).json({
                 errors:[{
-                    msg: 'Token no valido - El usuario no existe',
+                    msg: 'El usuario no existe',
                     path: "accesoToken"
                 }]
             })
         }
+
         if(!usuario.activo){ // Si el usuario no esta activo:
             return res.status(401).json({
                 errors:[{
-                    msg: 'Token no valido - El usuario no esta activo',
+                    msg: 'El usuario no esta activo',
                     path: "accesoToken"
                 }]
             })
         }
-        req.body.usuario = usuario // Define el uid del usuario que esta realizando la solitud, en la request, para ser usado en los siguientes middlewares
+
+        req.body.usuario = usuario // Define el _id del usuario que esta realizando la solitud, en la request, para ser usado en los siguientes middlewares
         
         next() // Continúa con el siguiente middleware o controlador
     } catch (error) { // Si el token no es valido "verify" lanzara un error y se atrapa aqui

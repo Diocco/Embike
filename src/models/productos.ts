@@ -1,6 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Model } from 'mongoose';
+import { producto } from './interfaces/producto';
 
-const productoSchema = new mongoose.Schema({
+const productoSchema = new mongoose.Schema<producto>({
     nombre:{ 
         type: String,
         required: [true, "El nombre es obligatorio"]
@@ -80,6 +81,6 @@ const productoSchema = new mongoose.Schema({
     }
 });
 
-const Producto = mongoose.model('Producto', productoSchema);
+const Producto:Model<producto> = mongoose.model<producto>('Producto', productoSchema);
 
 export default Producto;

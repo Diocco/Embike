@@ -143,25 +143,7 @@
 }
 /*///////////////////////////*/
 
-
-
-
-
-/*Version de telefono*/
 @media screen and (max-width:1200px){
-
-.phone{
-	display: block;
-}
-.desktop{
-	display: none !important;
-}
-
-
-.header{
-	display: none;
-}
-
 
 
 

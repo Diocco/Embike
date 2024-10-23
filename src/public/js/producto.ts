@@ -1,7 +1,9 @@
 
+import { producto } from "../../models/interfaces/producto.js";
 import {url} from "./header.js";
+import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
 
-const cargarColoresTalles =(productoInformacion:any)=>{
+const cargarColoresTalles =(productoInformacion:producto)=>{
     // Carga los colores y talles
     const coloresUnicos: Set<string> = new Set(); // Usamos un Set para almacenar colores únicos
     const tallesUnicos: Set<string> = new Set(); // Usamos un Set para almacenar talles únicos
@@ -44,7 +46,7 @@ const cargarColoresTalles =(productoInformacion:any)=>{
     contenedorTalles.appendChild(fragmento)
 }
 
-const verificarListaDeseados =(productoInformacion:any)=>{
+const verificarListaDeseados =(productoInformacion:producto)=>{
     // Refleja si el producto esta o no en la lista de deseados
 
     // Le da funcion al boton de agregar a la lista de deseados
@@ -103,7 +105,7 @@ const verificarListaDeseados =(productoInformacion:any)=>{
     })
 }
 
-const cargarInformacionProducto =(productoInformacion:any)=>{
+const cargarInformacionProducto =(productoInformacion:producto)=>{
     // Carga la imagen del producto
     const productoImagen = document.getElementById('catalogoProducto__imagen')!
     productoImagen.style.backgroundImage=`url(${productoInformacion.variantes[0].caracteristicas[0].imagenes[0]})`;
@@ -163,13 +165,19 @@ document.addEventListener("DOMContentLoaded",async()=>{
         .then(response => response.json()) // Parsea la respuesta 
         .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
             if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
+                mostrarMensaje('',true);
                 (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
                     console.log(error.msg)})
             }else{ // Si no hay errores:
-                cargarInformacionProducto(data) // Carga la informacion general del producto en el DOM
-                cargarColoresTalles(data) // Carga las variantes de colores y talles del producto
-                verificarListaDeseados(data) // Le define la funcion al boton de agregar el producto a la lista de deseados y verifica si el producto ya forma parte o no de la lista
+                const producto:producto = data
+                cargarInformacionProducto(producto) // Carga la informacion general del producto en el DOM
+                cargarColoresTalles(producto) // Carga las variantes de colores y talles del producto
+                verificarListaDeseados(producto) // Le define la funcion al boton de agregar el producto a la lista de deseados y verifica si el producto ya forma parte o no de la lista
             }
+        })
+        .catch(error=>{
+            mostrarMensaje('2',true);
+            console.error(error)
         })
     }
 

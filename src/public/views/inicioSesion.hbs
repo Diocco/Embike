@@ -3,6 +3,7 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="../css/normalize.css">
 		<link rel="stylesheet" type="text/css" href="../css/inicioSesion.css">
+        <link rel="stylesheet" type="text/css" href="../../css/mensajeEmergente.css">
 		<meta charset="utf-8">
 		<title>Embike</title>
 		<meta name="keywords" content="Bicicletas,MontainBike,Ñiños,Ruedas,Cubiertas,Frenos,Disco,Acientos">
@@ -15,6 +16,8 @@
 	</head>
 
 <body>
+    {{>  mensajeEmergente }}
+
     <div id="inicioSesion">
         <div id="inicioSesion__imagenFondo">
             <a id="volver" href="index"></a>
@@ -50,7 +53,8 @@
         </div>
     </div>
 
-    <script src="../js/iniciarSesion.js"></script>
+    <script type="module" src="../js/iniciarSesion.js"></script>
+    <script type="module" src="../js/helpers/mostrarMensaje.js"></script>
 </body>
 
 </html>

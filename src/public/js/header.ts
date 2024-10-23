@@ -1,4 +1,8 @@
+import { text } from "express";
 import { buscarProductos } from "./catalogo.js";
+import { usuario } from "../../models/interfaces/usuario.js";
+import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+
 
 // Define el entorno
 export let url:string
@@ -9,10 +13,9 @@ if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo qu
 }else{ // Si no tiene localhost define el url en la pagina web para la peticion
     url= 'https://embike-223a165b4ff6.herokuapp.com';
 }
+    
+const reflejarSesionActiva=(usuarioVerificado:usuario)=>{
 
-    
-    
-const reflejarSesionActiva=(usuarioVerificado:any)=>{
     // Se definen los botones de "cuenta" o de "iniciar sesion" segun si el usuario esta o no con la sesion activa
     const botonIniciarSesion:HTMLAnchorElement = document.getElementById('botonIniciarSesion')! as HTMLAnchorElement
     const botonIniciarSesionResponsive:HTMLAnchorElement = document.getElementById('header-responsive__a-iniciarSesion')! as HTMLAnchorElement
@@ -35,7 +38,7 @@ const reflejarSesionActiva=(usuarioVerificado:any)=>{
     if(usuarioVerificado.img){ // Si el usuario tiene foto de perfil entonces la coloca
         fotoUsuario.style.backgroundImage=`url(../img/fotosPerfil/${usuarioVerificado.img})`
     }else{// Si el usuario no tiene foto entonces pone como imagen su inicial de nombre o sus dos primeras iniciales
-        const nombres:string[] = (usuarioVerificado.nombre as string).split(' '); // Divide el nombre de usuario por la cantidad de espacios que tiene
+        const nombres:string[] = usuarioVerificado.nombre.split(' '); // Divide el nombre de usuario por la cantidad de espacios que tiene
         if(nombres.length > 1){ // Si el usuario tiene mas de un espacio entonces coloca la primer letra de las primeros dos palabras del nombre
             fotoUsuario.textContent = nombres[0][0].toUpperCase() + nombres[1][0].toUpperCase()
         }else{ 
@@ -45,25 +48,16 @@ const reflejarSesionActiva=(usuarioVerificado:any)=>{
     }
     nombreUsuario.textContent = usuarioVerificado.nombre // Coloca el nombre del usuario
     correoUsuario.textContent = usuarioVerificado.correo // Coloca el correo del usuario
-    idUsuario.textContent = `ID: ${usuarioVerificado.uid}` // Coloca el id del usuario
+    idUsuario.textContent = `ID: ${usuarioVerificado._id}` // Coloca el id del usuario
 }
 
 
-
-
-
-
-
-
-
-
-
-
 // Informacion del usuario
-export let usuarioVerificado:any;
+export let usuarioVerificado: Promise<usuario | undefined>
 
 const tokenAcceso: string | null = localStorage.getItem('tokenAcceso') // Recupera el token de acceso desde el localStorage
 if(tokenAcceso){ // Si el token existe entonces quiere decir que el usuario tiene una sesion activa
+
     usuarioVerificado = fetch(url+'/api/usuarios/token', {  // Solicita la informacion del usuario
         method: 'GET',
         headers: { 'Content-Type': 'application/json',
@@ -72,16 +66,29 @@ if(tokenAcceso){ // Si el token existe entonces quiere decir que el usuario tien
     .then(response => response.json())
     .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
         if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
+            mostrarMensaje('',true);
             (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
                 console.log(error.msg)})
                 // Borra el token con problemas
                 localStorage.removeItem('tokenAcceso') // Elimina el token de acceso
-                window.location.assign(url) // Redirije al usuario al inicio de la pagina
+                window.location.assign(url+'/inicioSesion?error=1') // Redirije al usuario al inicio de sesion
+                return undefined
         }else{
-            reflejarSesionActiva(data.usuarioVerificado)
-            return data.usuarioVerificado
+            const usuarioVerificado:usuario = data.usuarioVerificado
+            reflejarSesionActiva(usuarioVerificado)
+            return usuarioVerificado
         };
     })
+    .catch(error =>{
+        // Borra el token con problemas
+        localStorage.removeItem('tokenAcceso') // Elimina el token de acceso
+        mostrarMensaje('3',true)
+        console.error(error)
+        setTimeout(() => {
+            window.location.assign(url+'/inicioSesion') // Redirije al usuario al inicio de sesion
+        }, 6000);
+        return undefined
+    }) 
 }
 
 

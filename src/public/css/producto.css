@@ -5,13 +5,18 @@
     justify-content: center;
     flex-direction: column;
     align-items: center;
+    background-color: var(--fondo)
 }
 
 /*Visualizar un producto */
 #catalogoProducto{
     display: grid;
-    grid-template-columns: max-content 300px 300px;
-    grid-template-rows: 10px repeat(7, 100px);
+    grid-template-columns: 630px 285px 285px;
+    grid-template-rows: 10px repeat(6, 100px);
+    background-color: white;
+    padding: 30px 30px 30px 30px;
+    margin-top: 20px;
+    border-radius: 30px;
 }
 
 /*Imagen del producto */
@@ -244,6 +249,10 @@
     display: grid;
     grid-template-columns: 600px 600px;
     grid-template-rows: repeat(6, min-content);
+    background-color: white;
+    padding: 30px 30px 30px 30px;
+    border-radius: 30px;
+    margin: 20px;
 }
 /*Titulos*/
 h3{
