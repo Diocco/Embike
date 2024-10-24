@@ -9,94 +9,79 @@ import { usuario } from '../models/interfaces/usuario.js';
 
 // Devuelve todas las productos
 const verProductos = async(req: Request, res: Response)=>{
-    const idProductos:string[] = req.body.idProductos
-    if(idProductos){ // Si se envia como parametro un array con id's entonces se devuelve esos productos especificos
-        let productos=[]
+
+    // Si se envian queryparams entonces se buscan todos los productos filtrados por los parametros recibidos
+    const desde:number = Math.abs(Number(req.query.desde)) || 0;  // Valor por defecto 0 si no se pasa el parámetro o es invalido
+    const cantidad:number = Math.abs(Number(req.query.cantidad)) || 10;  // Valor por defecto 10 si no se pasa el parámetro o es invalido
+    const precioMin:number = Math.abs(Number(req.query.precioMin)) || 0 // Precio minimo del producto
+    const precioMax:number = Math.abs(Number(req.query.precioMax)) || 1000000000 // Precio maximo del producto
+    const palabraBuscada:string = req.query.palabraBuscada as string || ''; // Palabra buscada por el usuario
+    const categoriasNombresCadena:string = req.query.categorias as string || ''; // Categorias especificadas por el usuario en formato de cadena con separador por coma Ej:(categ1,categ2,categ3,)
+    const disponible:boolean | undefined = (req.query.disponible)?false:true; // Indica si busca productos solo disponibles al publico, por defecto es true a menos que se envie un parametro
     
-        for (const indice in idProductos) {
-            const id = idProductos[indice]
-            try{ // Busca el producto
-                const producto = await Producto.findById(id)
-                if(!producto){
-                    productos.push(producto)
-                }
-            } // Si hay algun problema con un producto lo saltea
-            catch{}
+    // Se obtiene la forma de ordenar los resultados
+    let ordenar: { [key: string]: number } = {}; // Inicia la variable vacia
+    if(req.query.ordenar){ // Verifica si se envio la variable
+        if (req.query.ordenar === 'precioMax') { 
+            ordenar = { precio: -1 }; // Ordena por precio descendente
+        } else if (req.query.ordenar === 'precioMin') {
+            ordenar = { precio: 1 }; // Ordena por precio ascendente
         }
-
-        res.status(200).json(productos)
-    }else{ // Si se envian queryparams entonces se buscan todos los productos filtrados por los parametros recibidos
-        const desde:number = Math.abs(Number(req.query.desde)) || 0;  // Valor por defecto 0 si no se pasa el parámetro o es invalido
-        const cantidad:number = Math.abs(Number(req.query.cantidad)) || 10;  // Valor por defecto 10 si no se pasa el parámetro o es invalido
-        const precioMin:number = Math.abs(Number(req.query.precioMin)) || 0 // Precio minimo del producto
-        const precioMax:number = Math.abs(Number(req.query.precioMax)) || 1000000000 // Precio maximo del producto
-        const palabraBuscada:string = req.query.palabraBuscada as string || ''; // Palabra buscada por el usuario
-        const categoriasNombresCadena:string = req.query.categorias as string || ''; // Categorias especificadas por el usuario en formato de cadena con separador por coma Ej:(categ1,categ2,categ3,)
-        
-        // Se obtiene la forma de ordenar los resultados
-        let ordenar: { [key: string]: number } = {}; // Inicia la variable vacia
-        if(req.query.ordenar){ // Verifica si se envio la variable
-            if (req.query.ordenar === 'precioMax') { 
-                ordenar = { precio: -1 }; // Ordena por precio descendente
-            } else if (req.query.ordenar === 'precioMin') {
-                ordenar = { precio: 1 }; // Ordena por precio ascendente
-            }
-        }
-
-
-
-        const categoriasNombreArreglo:string[] = categoriasNombresCadena.split(',').filter(Boolean) // Convierte la cadena en un arreglo
-
-        // Busca las categorías por sus nombres
-        let categoriasEncontradas
-        if(categoriasNombreArreglo[0]){ // Si se pasa como argumento las categorias especificas:
-            categoriasEncontradas = await Categoria.find({ nombre: {$in: categoriasNombreArreglo}});
-        }else{ // Si no se busco ninguna categoria en particular entonces busca todas las categorias validas
-            categoriasEncontradas = await Categoria.find();
-        }
-
-        // Extrae los ObjectId de las categorías encontradas
-        const categoriasIds: mongoose.Types.ObjectId[] = categoriasEncontradas.map(categoria => categoria._id);
-
-
-        // Definir la expresión regular para buscar productos cuyo nombre, descripción, etc., contenga la palabra buscada
-        const palabraBuscadaRegExp = new RegExp(palabraBuscada, 'i');
-
-        const filtros = {
-            // Los filtros opcionales donde el valor buscado puede estar en varias propiedades
-            $or: [
-                { nombre: palabraBuscadaRegExp },
-                { marca: palabraBuscadaRegExp },
-                { modelo: palabraBuscadaRegExp },
-                { descripcion: palabraBuscadaRegExp },
-                { tags: { $in: [palabraBuscadaRegExp] } }  // Aquí el uso de $in, pero asegurándonos que tags es un array
-            ],
-            $and: [
-                { disponible: true },  // El producto debe estar disponible
-                { estado: true },  // El producto no tiene que estar eliminado
-                { precio: { $gte: precioMin, $lte: precioMax } },  // Rango de precios
-                { categoria: { $in: categoriasIds } }  // Las categorías deben ser parte de las seleccionadas
-            ]
-        };
-
-
-        // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
-        const [productos, productosCantidad]:[producto[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
-            Producto.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condicion
-                .skip(desde).sort(ordenar as any).limit(cantidad),
-            Producto.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
-        ])
-
-        // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
-        const paginasCantidad:number = Math.ceil(productosCantidad/cantidad); 
-
-        res.status(200).json({
-            categoriasIds,
-            productosCantidad,
-            paginasCantidad,
-            productos
-        })
     }
+
+
+
+    const categoriasNombreArreglo:string[] = categoriasNombresCadena.split(',').filter(Boolean) // Convierte la cadena en un arreglo
+
+    // Busca las categorías por sus nombres
+    let categoriasEncontradas
+    if(categoriasNombreArreglo[0]){ // Si se pasa como argumento las categorias especificas:
+        categoriasEncontradas = await Categoria.find({ nombre: {$in: categoriasNombreArreglo}});
+    }else{ // Si no se busco ninguna categoria en particular entonces busca todas las categorias validas
+        categoriasEncontradas = await Categoria.find();
+    }
+
+    // Extrae los ObjectId de las categorías encontradas
+    const categoriasIds: mongoose.Types.ObjectId[] = categoriasEncontradas.map(categoria => categoria._id);
+
+
+    // Definir la expresión regular para buscar productos cuyo nombre, descripción, etc., contenga la palabra buscada
+    const palabraBuscadaRegExp = new RegExp(palabraBuscada, 'i');
+
+    let filtros: any = {
+        // Los filtros opcionales donde el valor buscado puede estar en varias propiedades
+        $or: [
+            { nombre: palabraBuscadaRegExp },
+            { marca: palabraBuscadaRegExp },
+            { modelo: palabraBuscadaRegExp },
+            { descripcion: palabraBuscadaRegExp },
+            { tags: { $in: [palabraBuscadaRegExp] } }  // Aquí el uso de $in, pero asegurándonos que tags es un array
+        ],
+        $and: [
+            { estado: true },  // El producto no tiene que estar eliminado
+            { precio: { $gte: precioMin, $lte: precioMax } },  // Rango de precios
+            { categoria: { $in: categoriasIds } }  // Las categorías deben ser parte de las seleccionadas
+        ]
+    };
+
+    if(disponible) filtros.$and[0].disponible = disponible // Si se tiene que realizar la busqueda de productos que esten disponibles entonces agrega el aparametro al filtro
+    
+    // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
+    const [productos, productosCantidad]:[producto[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
+        Producto.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condicion
+            .skip(desde).sort(ordenar as any).limit(cantidad),
+        Producto.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
+    ])
+
+    // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
+    const paginasCantidad:number = Math.ceil(productosCantidad/cantidad); 
+
+    res.status(200).json({
+        categoriasIds,
+        productosCantidad,
+        paginasCantidad,
+        productos
+    })
 }
 
 // Devuelve la producto con el id pasado como parametro

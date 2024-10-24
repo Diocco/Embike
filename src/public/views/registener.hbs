@@ -14,43 +14,60 @@
 
     {{>  mensajeEmergente }}
 
-    <div id="ventanaEmergenteFondo"></div>
+    {{!-- Fondo oscuro de la ventana emergente --}}
+    <div id="ventanaEmergenteFondo" class="noActivo">
 
-    <div id="ventanaEmergente">
-        <div id="ventanaEmergente__contenido">
-            
-            <div id="ventanaEmergente__contenido__mensaje"></div>
-            <div id="ventanaEmergente__contenido__aceptar">
-                <button id="ventanaEmergente__contenido__aceptar__boton">Aceptar</button>
+        {{!-- Ventana emergente que avisa o le hace una pregunta al usuario --}}
+        <div id="ventanaEmergente" class="noActivo">
+            <div id="ventanaEmergente__contenido">
+                
+                <div id="ventanaEmergente__contenido__mensaje"></div>
+                <div id="ventanaEmergente__contenido__aceptar">
+                    <button id="ventanaEmergente__contenido__aceptar__boton">Aceptar</button>
+                </div>
+                <div id="ventanaEmergente__contenido__rechazar">
+                    <button id="ventanaEmergente__contenido__rechazar__boton">Rechazar</button>
+                </div>
             </div>
-            <div id="ventanaEmergente__contenido__rechazar">
-                <button id="ventanaEmergente__contenido__rechazar__boton">Rechazar</button>
+    
+    
+    
+        </div>
+
+        {{!-- Ventana emergente para modificar un producto --}}
+        <div id="modificarProducto" class="noActivo">
+            <div id="modificarProducto__fotoDescripcion">
+                <h4>Foto</h4>
+                <img id="modificarProducto__fotoDescripcion__img"></img>
+                <h4>Descripcion</h4>
+                <textarea id="modificarProducto__fotoDescripcion__textarea"></textarea>
+            </div>
+            <div id="modificarProducto__caracteristicas">
+                <h4>Nombre</h4>
+                <input class="modificarProducto__caracteristicas__input" name="nombre" id="modificarProducto__caracteristicas__input__nombre">
+                <h4>Precio Unitario</h4>
+                <input class="modificarProducto__caracteristicas__input" name="precio" id="modificarProducto__caracteristicas__input__precio" type="number">
+                <h4>Marca</h4>
+                <input class="modificarProducto__caracteristicas__input" name="marca"  id="modificarProducto__caracteristicas__input__marca">
+                <h4>Modelo</h4>
+                <input class="modificarProducto__caracteristicas__input" name="modelo" id="modificarProducto__caracteristicas__input__modelo">
+                <h4>Categorias</h4>
+                <select>
+                    <option>BMX</option>
+                    <option>MTB</option>
+                    <option>Niños</option>
+                    <option>Accesorios</option>
+                    <option>+</option>
+                </select>
+            </div>
+            <div id="modificarProducto__aceptarRechazar">
+                <button id="modificarProducto__aceptarRechazar__aceptar" >Aceptar</button>
+                <button id="modificarProducto__aceptarRechazar__rechazar">Rechazar</button>
             </div>
         </div>
+
     </div>
-    <div id="ventanaEmergenteModificarProducto">
-        <div id="ventanaEmergenteModificarProducto__contenido">
-            <div id="ventanaEmergenteModificarProducto__contenido__fotoDescripcion">
-                Foto<div id="ventanaEmergenteModificarProducto__contenido__fotoDescripcion__foto"></div>
-                Descripcion<textarea id="ventanaEmergenteModificarProducto__contenido__fotoDescripcion__descripcion"></textarea>
-            </div>
-            <div id="ventanaEmergenteModificarProducto__contenido__caracteristicas">
-                Nombre<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__nombre">
-                Precio Unitario<input type="number" class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__precio">
-                Stock<input type="number" class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__stock">
-                ID<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__id">
-                Color<input type="color" class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__color">
-                Codigo de barra<input type="number" class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__codigoBarra">
-                Promocionable<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__promocionable">
-                Tipo<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__tipo">
-                Categoria<input class="ventanaEmergenteModificarProducto__contenido__caracteristicas__varios" id="ventanaEmergenteModificarProducto__contenido__caracteristicas__categoria">
-            </div>
-            <div id="ventanaEmergenteModificarProducto__contenido__AceptarRechazar">
-                <button id="ventanaEmergenteModificarProducto__contenido__AceptarRechazar__aceptar" class="ventanaEmergenteModificarProducto__contenido__AceptarRechazar__varios">Aceptar</button>
-                <button id="ventanaEmergenteModificarProducto__contenido__AceptarRechazar__rechazar" class="ventanaEmergenteModificarProducto__contenido__AceptarRechazar__varios">Rechazar</button>
-            </div>
-        </div>
-    </div>
+
 
     <div id="barraLateral">
         <div id="barraLateral__iconos">
@@ -188,6 +205,7 @@
 
 
     <script type='module' src="../js/registener.js"></script>
+    <script type='module' src="../js/helpers/productos.js"></script>
     <script type='module' src="../js/helpers/mostrarMensaje.js"></script>
 
 </body>

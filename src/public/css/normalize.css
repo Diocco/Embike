@@ -8,6 +8,12 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
+.noactivo{
+  display: none !important;
+}
+
+
+
 *{
   box-sizing: border-box;
   padding: 0;

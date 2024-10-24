@@ -1,6 +1,6 @@
 import { urlProductos } from "../registener.js";
-import { producto } from "../../../models/interfaces/producto";
-import { mostrarMensaje } from "./mostrarMensaje.js";
+import { producto } from "../../../models/interfaces/producto.js";
+import { mostrarMensaje, ventanaEmergenteModificarProducto } from "./mostrarMensaje.js";
 
 export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTMLElement) => {
 
@@ -64,8 +64,11 @@ export const buscarProductos = (contenedorProductos:HTMLElement)=>{
     const palabraBuscada = params.get('palabraBuscada') || '';
     const categorias = params.get('categorias') || '';
     const ordenar = params.get('ordenar') || '';
+
+
     // Realiza la peticion GET para obtener los productos
-    fetch(urlProductos+`?desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}`, { 
+
+    fetch(urlProductos+`?disponible=true&desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}`, { 
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     })
@@ -102,7 +105,6 @@ export const buscarProductos = (contenedorProductos:HTMLElement)=>{
 const botonesConfiguracionProducto =()=>{
     // Le da la funcion a los botones de alternar disponibilidad de un producto
     const botonesDisponibilidad: NodeListOf<HTMLDivElement> = document.querySelectorAll('.producto__disponibilidad')
-    console.log(botonesDisponibilidad)
     botonesDisponibilidad.forEach((boton)=>{
         boton.onclick =()=>{
             const idProducto = boton.parentElement!.parentElement!.id!
@@ -110,6 +112,19 @@ const botonesConfiguracionProducto =()=>{
             alternarDisponibilidadProducto(idProducto,estaDisponible,boton)
         }
     })
+
+    // Le da la funcion a los botones de modificar un producto
+    const botonesModificar: NodeListOf<HTMLDivElement> = document.querySelectorAll('.producto__modificar')
+    botonesModificar.forEach((boton)=>{
+        boton.onclick =()=>{
+            const idProducto = boton.parentElement!.parentElement!.id!
+            ventanaEmergenteModificarProducto(idProducto)
+        }
+    })
+
+
+
+
 }
 
 const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,boton:HTMLElement)=>{
@@ -118,9 +133,11 @@ const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,
         disponible:!estaDisponible // Envia el opuesto a la disponibilidad actual del producto
     }
 
+    const tokenAcceso: string | null = localStorage.getItem('tokenAcceso') // Recupera el token de acceso desde el localStorage
     fetch(urlProductos+`/${idProducto}`, { 
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {  'Content-Type': 'application/json' ,
+                    'tokenAcceso' : `${tokenAcceso}`  },
         body: JSON.stringify(data)
     })
     .then(response => response.json()) // Parsear la respuesta como JSON
@@ -140,3 +157,4 @@ const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,
         console.error(error);
     })
 }
+
