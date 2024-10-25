@@ -1,7 +1,9 @@
 import { producto } from "../../models/interfaces/producto.js";
+import { tokenAcceso } from "./global.js";
 import { url } from "./header.js";
 import { agregarProductosDOM } from "./helpers/agregarProductosDOM.js";
 import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+
 
 
 // Busca los productos que tiene el usuario en la lista de deseados
@@ -13,7 +15,7 @@ const contenedorProductos = document.getElementById('contenedorProductos')!; // 
 fetch(url+`/api/usuarios/listaDeseados?productoCompleto=true`,{ 
     method: 'GET',
     headers: { 'Content-Type': 'application/json',
-        'tokenAcceso':`${localStorage.getItem('tokenAcceso')}` // Envia el token de acceso del usuario
+        'tokenAcceso':`${tokenAcceso}` // Envia el token de acceso del usuario
     },
     })
     .then(response => response.json()) // Parsea la respuesta 

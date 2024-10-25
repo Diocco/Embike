@@ -198,15 +198,10 @@ font-size: 2vw;
     grid-template-rows: min-content min-content;
     background-color: var(--colorFondoVentana);
     color: var(--colorLetra);
-    padding: 1vw;
-    border: solid black 0.1vw ;
-    border-radius: 0.5vw;
-    left:0;
-    top: 0;
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    z-index: 500;
+    padding: 20px;
+    width: min-content;
+    height: min-content;
+    border-radius: 10px;
 }
 
 /*Contenedor de la imagen y la descripcion del producto*/
@@ -216,10 +211,10 @@ font-size: 2vw;
 
 /*Imagen del producto*/
 #modificarProducto__fotoDescripcion__img{
-    margin: 1vw;
-    width: 10vw;
-    height: 10vw;
-    border: solid 0.1vw black ;
+    margin: 10px;
+    width: 200px;
+    height: 200px;
+    border-radius: 10px;
 }
 
 /*Descripcion del producto*/
@@ -254,7 +249,7 @@ font-size: 2vw;
 }
 
 /*Contenedor de botones "aceptar" y "rechazar"*/
-#ventanaEmergenteModificarProducto__contenido__AceptarRechazar{
+#modificarProducto__aceptarRechazar{
     display: flex;
     grid-column: 2/3;
     flex-direction: row;

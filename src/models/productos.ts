@@ -50,9 +50,7 @@ const productoSchema = new mongoose.Schema<producto>({
                         required: true
                     },
                     imagenes: {
-                        type: [String],
-                        default:'../img/icons/icono-sinFoto.avif' ,
-                        required: true
+                        type: [String]
                     }
                 }]
         }

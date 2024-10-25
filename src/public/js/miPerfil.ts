@@ -1,6 +1,8 @@
 import { usuario } from "../../models/interfaces/usuario.js";
+import { tokenAcceso } from "./global.js";
 import {url,usuarioVerificado} from "./header.js";
 import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+
 
 // Inputs con la informacion del usuario 
 const imgInput:HTMLInputElement = document.getElementById('form__div-fotoPerfil__input-subirFoto')! as HTMLInputElement;
@@ -23,7 +25,7 @@ const enviarFormulario:HTMLElement = document.getElementById('form__button-envia
 const actualizarUsuario = async(datosFormulario:FormData)=>{
     return fetch(url+`/api/usuarios`, {
         method: 'PUT',
-        headers: { 'tokenAcceso':`${localStorage.getItem('tokenAcceso')}`},
+        headers: { 'tokenAcceso':`${tokenAcceso}`},
         body: datosFormulario
     })
     .then(response => response.json()) // Parsear la respuesta como JSON

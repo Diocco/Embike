@@ -1,4 +1,5 @@
 import mongoose, { ObjectId } from "mongoose"
+import { categoria } from "./categorias"
 
 export interface producto {
     _id:string
@@ -7,7 +8,7 @@ export interface producto {
     modelo:string,
     estado:boolean,
     usuario:mongoose.Schema.Types.ObjectId, 
-    categoria:mongoose.Schema.Types.ObjectId,
+    categoria:mongoose.Schema.Types.ObjectId|categoria,
     variantes: [
         {
             color:string,

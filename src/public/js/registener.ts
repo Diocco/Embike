@@ -1,7 +1,6 @@
 
 import { buscarCategorias } from "./helpers/categorias.js"
-import { mostrarMensaje } from "./helpers/mostrarMensaje.js"
-import { buscarProductos } from "./helpers/productos.js"
+import { buscarProductos } from "./helpers/registener/productos.js"
 
 interface Producto {
     foto:string,
@@ -77,19 +76,6 @@ let peticionDB:IDBOpenDBRequest = indexedDB.open("DB",1);
 let seleccionProductoCargada:boolean=false //Indica si el area de seleccion de productos esta cargada, util para volverla a cargar en caso de que se haya ingresado al area de modificacion de productos o si simplemente no esta cargada
 let posicionUsuario:number = 0 //Indica en que ventana esta el usuario, se usa para lanzar ventanas de error
 
-// Define el entorno
-export let url:string
-export const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
-
-if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
-    url = 'http://localhost:8080';
-}else{ // Si no tiene localhost define el url en la pagina web para la peticion
-    url= 'https://embike-223a165b4ff6.herokuapp.com';
-}
-
-// Define los url del REST server
-export const urlProductos:string = url + '/api/productos'
-export const urlCategorias:string = url + '/api/categorias'
 
 
 
@@ -310,57 +296,57 @@ function cargarSeccionPago(){
 }
 
 //Le da funcion a los botones de la seccion de pago
-function botonesSeccionPago():void{
+// function botonesSeccionPago():void{
 
-    //Les da la funcion a todos los botones de la seccion de pago
+//     //Les da la funcion a todos los botones de la seccion de pago
 
-    //Botones de agregar promociones
-    let botonesPromocion:NodeListOf<Element> = document.querySelectorAll(".seccionCobro__promociones__contenedores__boton")!
-    botonesPromocion.forEach(botonPromocion =>{
-        botonPromocion.addEventListener("click", event => {
-            let botonPromocion:Element = (event.target as HTMLElement)!
-            let contenedorPrecio:Element = botonPromocion.previousElementSibling!
-            let contenedorNombre:Element = contenedorPrecio.previousElementSibling!
+//     //Botones de agregar promociones
+//     let botonesPromocion:NodeListOf<Element> = document.querySelectorAll(".seccionCobro__promociones__contenedores__boton")!
+//     botonesPromocion.forEach(botonPromocion =>{
+//         botonPromocion.addEventListener("click", event => {
+//             let botonPromocion:Element = (event.target as HTMLElement)!
+//             let contenedorPrecio:Element = botonPromocion.previousElementSibling!
+//             let contenedorNombre:Element = contenedorPrecio.previousElementSibling!
 
-            let precio:number = Number(contenedorPrecio.textContent!.replace("$","").replace(".",""));
-            let nombre:string = contenedorNombre.textContent!
+//             let precio:number = Number(contenedorPrecio.textContent!.replace("$","").replace(".",""));
+//             let nombre:string = contenedorNombre.textContent!
 
-            carrito1.sumarCarrito(nombre,1,precio)
-            cargarSeccionPago();
-            calcularPrecioFinal()
-        })
-    })
-
-
-    //Botones de medios de pago
-    let botonesMediosPago:NodeListOf<Element> = document.querySelectorAll(".seccionCobro__metodoPago__metodo")! //Se selecciona todos los botones de medios de pago
-    botonesMediosPago.forEach(botonMedioPago =>{ //Se recorre cada boton
-        botonMedioPago.addEventListener("click", event =>{ //Se escucha cuando se hace click en cada uno de ellos
-            let botonMedioPago:Element = event.target as HTMLElement
-            let cantidadBotonesActivos = document.querySelectorAll(".seccionCobro__metodoPago__metodo-active").length
-            if(!botonMedioPago.classList.contains("seccionCobro__metodoPago__metodo-active")&&cantidadBotonesActivos>1){ //Si ya hay dos medios de pago seleccionados y ademas se quiere agregar uno mas se lanza un mensaje de error
-                ventanaEmergente("No se puede seleccionar mas de dos medios de pago")
-            }else{ //Selecciona un medio de pago
-                botonMedioPago.classList.toggle("seccionCobro__metodoPago__metodo-active");
-            }
-            calcularPrecioFinal()
-        })
-    })
+//             carrito1.sumarCarrito(nombre,1,precio)
+//             cargarSeccionPago();
+//             calcularPrecioFinal()
+//         })
+//     })
 
 
-    //Botones de modificaciones
-    let botonesModificacion:NodeListOf<Element>= document.querySelectorAll(".seccionCobro__modificacion__metodo")! //Selecciona todos los botones de modificaciones
-    botonesModificacion.forEach(botonModificacion =>{ //Se recorre cada boton
-        botonModificacion.addEventListener("click", event =>{ //Se escucha cuando se hace click en cada uno de ellos
-            let botonModificacion:Element = event.target as HTMLElement //Boton presionado
-            if(botonModificacion.classList.contains("seccionCobro__modificacion__metodo-active")){botonModificacion.classList.remove("seccionCobro__modificacion__metodo-active")} //Si esta activo y se presiona en el entonces lo desactiva
-            else{ //Si no esta activo y se presiona en el entonces...
-                document.querySelector(".seccionCobro__modificacion__metodo-active")?.classList.remove("seccionCobro__modificacion__metodo-active") //Desactiva el que esta activo
-                botonModificacion.classList.add("seccionCobro__modificacion__metodo-active") //Activa el boton presionado
-            }
-        })
-    })
-}
+//     //Botones de medios de pago
+//     let botonesMediosPago:NodeListOf<Element> = document.querySelectorAll(".seccionCobro__metodoPago__metodo")! //Se selecciona todos los botones de medios de pago
+//     botonesMediosPago.forEach(botonMedioPago =>{ //Se recorre cada boton
+//         botonMedioPago.addEventListener("click", event =>{ //Se escucha cuando se hace click en cada uno de ellos
+//             let botonMedioPago:Element = event.target as HTMLElement
+//             let cantidadBotonesActivos = document.querySelectorAll(".seccionCobro__metodoPago__metodo-active").length
+//             if(!botonMedioPago.classList.contains("seccionCobro__metodoPago__metodo-active")&&cantidadBotonesActivos>1){ //Si ya hay dos medios de pago seleccionados y ademas se quiere agregar uno mas se lanza un mensaje de error
+//                 ventanaEmergente("No se puede seleccionar mas de dos medios de pago")
+//             }else{ //Selecciona un medio de pago
+//                 botonMedioPago.classList.toggle("seccionCobro__metodoPago__metodo-active");
+//             }
+//             calcularPrecioFinal()
+//         })
+//     })
+
+
+//     //Botones de modificaciones
+//     let botonesModificacion:NodeListOf<Element>= document.querySelectorAll(".seccionCobro__modificacion__metodo")! //Selecciona todos los botones de modificaciones
+//     botonesModificacion.forEach(botonModificacion =>{ //Se recorre cada boton
+//         botonModificacion.addEventListener("click", event =>{ //Se escucha cuando se hace click en cada uno de ellos
+//             let botonModificacion:Element = event.target as HTMLElement //Boton presionado
+//             if(botonModificacion.classList.contains("seccionCobro__modificacion__metodo-active")){botonModificacion.classList.remove("seccionCobro__modificacion__metodo-active")} //Si esta activo y se presiona en el entonces lo desactiva
+//             else{ //Si no esta activo y se presiona en el entonces...
+//                 document.querySelector(".seccionCobro__modificacion__metodo-active")?.classList.remove("seccionCobro__modificacion__metodo-active") //Desactiva el que esta activo
+//                 botonModificacion.classList.add("seccionCobro__modificacion__metodo-active") //Activa el boton presionado
+//             }
+//         })
+//     })
+// }
 
 function calcularPrecioFinal():void{
     let mediosPago:NodeListOf<Element>=document.querySelectorAll(".seccionCobro__metodoPago__metodo-active")
@@ -378,17 +364,18 @@ function calcularPrecioFinal():void{
 
 
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
 
     // Busca y carga los productos en el contenedor pasado como argumento
     const contenedorProductos: HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__productos')!
     const contenedorCategorias:HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__categorias')!
+    const contenedorOpcionesCategorias = document.getElementById('modificarProducto__caracteristicas__select__categoria')! as HTMLSelectElement
 
     Promise.all([
         buscarProductos(contenedorProductos), // Busca y carga los productos
-        buscarCategorias(contenedorCategorias) // Busca y carga las categorias
-    ])
-
+        buscarCategorias(contenedorCategorias,contenedorOpcionesCategorias) // Busca y carga las categorias
+    ]);
+    
 
 
 

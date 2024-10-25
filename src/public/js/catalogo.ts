@@ -1,12 +1,8 @@
 import { producto } from "../../models/interfaces/producto.js";
 import { agregarProductosDOM } from "./helpers/agregarProductosDOM.js";
-import { esDesarollo } from "./header.js";
 import { categoria } from "../../models/interfaces/categorias.js";
+import { urlCategorias, urlProductos } from "./global.js";
 import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
-
-// Define el url dependiendo si se esta en produccion o en desarrollo
-let urlProductos:string = '/api/productos'
-let urlCategorias:string = '/api/categorias'
 
 
 
@@ -261,15 +257,6 @@ const buscarPalabra=(input:HTMLInputElement)=>{
 
 //Alternar el active en los botones del indice
 document.addEventListener("DOMContentLoaded", async() => {
-
-    let url:string
-    if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
-        url = 'http://localhost:8080';
-    }else{ // Si no tiene localhost define el url en la pagina web para la peticion
-        url= 'https://embike-223a165b4ff6.herokuapp.com';
-    }
-    urlProductos = url + urlProductos;
-    urlCategorias = url + urlCategorias;
 
     // Carga las categorias validas en el DOM
     fetch(

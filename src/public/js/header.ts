@@ -1,20 +1,9 @@
 import { text } from "express";
 import { buscarProductos } from "./catalogo.js";
 import { usuario } from "../../models/interfaces/usuario.js";
-import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+import { url, usuarioVerificado } from "./global.js";
 
-
-// Define el entorno
-export let url:string
-export const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
-
-if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
-    url = 'http://localhost:8080';
-}else{ // Si no tiene localhost define el url en la pagina web para la peticion
-    url= 'https://embike-223a165b4ff6.herokuapp.com';
-}
-    
-const reflejarSesionActiva=(usuarioVerificado:usuario)=>{
+const reflejarSesionActiva=(informacionUsuario:usuario)=>{
 
     // Se definen los botones de "cuenta" o de "iniciar sesion" segun si el usuario esta o no con la sesion activa
     const botonIniciarSesion:HTMLAnchorElement = document.getElementById('botonIniciarSesion')! as HTMLAnchorElement
@@ -35,10 +24,10 @@ const reflejarSesionActiva=(usuarioVerificado:usuario)=>{
     const idUsuario = document.getElementById('div-informacion__div-ID')! as HTMLDivElement
     
     // Verifica que el usuario tenga foto de perfil
-    if(usuarioVerificado.img){ // Si el usuario tiene foto de perfil entonces la coloca
-        fotoUsuario.style.backgroundImage=`url(../img/fotosPerfil/${usuarioVerificado.img})`
+    if(informacionUsuario.img){ // Si el usuario tiene foto de perfil entonces la coloca
+        fotoUsuario.style.backgroundImage=`url(../img/fotosPerfil/${informacionUsuario.img})`
     }else{// Si el usuario no tiene foto entonces pone como imagen su inicial de nombre o sus dos primeras iniciales
-        const nombres:string[] = usuarioVerificado.nombre.split(' '); // Divide el nombre de usuario por la cantidad de espacios que tiene
+        const nombres:string[] = informacionUsuario.nombre.split(' '); // Divide el nombre de usuario por la cantidad de espacios que tiene
         if(nombres.length > 1){ // Si el usuario tiene mas de un espacio entonces coloca la primer letra de las primeros dos palabras del nombre
             fotoUsuario.textContent = nombres[0][0].toUpperCase() + nombres[1][0].toUpperCase()
         }else{ 
@@ -46,50 +35,12 @@ const reflejarSesionActiva=(usuarioVerificado:usuario)=>{
             fotoUsuario.textContent = nombres[0].slice(0, 2).toUpperCase()      
         }
     }
-    nombreUsuario.textContent = usuarioVerificado.nombre // Coloca el nombre del usuario
-    correoUsuario.textContent = usuarioVerificado.correo // Coloca el correo del usuario
-    idUsuario.textContent = `ID: ${usuarioVerificado._id}` // Coloca el id del usuario
+    nombreUsuario.textContent = informacionUsuario.nombre // Coloca el nombre del usuario
+    correoUsuario.textContent = informacionUsuario.correo // Coloca el correo del usuario
+    idUsuario.textContent = `ID: ${informacionUsuario._id}` // Coloca el id del usuario
 }
 
 
-// Informacion del usuario
-export let usuarioVerificado: Promise<usuario | undefined>
-
-const tokenAcceso: string | null = localStorage.getItem('tokenAcceso') // Recupera el token de acceso desde el localStorage
-if(tokenAcceso){ // Si el token existe entonces quiere decir que el usuario tiene una sesion activa
-
-    usuarioVerificado = fetch(url+'/api/usuarios/token', {  // Solicita la informacion del usuario
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json',
-                    'tokenAcceso':`${tokenAcceso}`},
-    })
-    .then(response => response.json())
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error.msg)})
-                // Borra el token con problemas
-                localStorage.removeItem('tokenAcceso') // Elimina el token de acceso
-                window.location.assign(url+'/inicioSesion?error=1') // Redirije al usuario al inicio de sesion
-                return undefined
-        }else{
-            const usuarioVerificado:usuario = data.usuarioVerificado
-            reflejarSesionActiva(usuarioVerificado)
-            return usuarioVerificado
-        };
-    })
-    .catch(error =>{
-        // Borra el token con problemas
-        localStorage.removeItem('tokenAcceso') // Elimina el token de acceso
-        mostrarMensaje('3',true)
-        console.error(error)
-        setTimeout(() => {
-            window.location.assign(url+'/inicioSesion') // Redirije al usuario al inicio de sesion
-        }, 6000);
-        return undefined
-    }) 
-}
 
 
 // Alternar menu del boton de "menu" responsive
@@ -138,9 +89,14 @@ botonCerrarSesionResponsive.addEventListener('click',()=>{ // Escucha cuando se 
 const inputBusqueda = document.getElementById('header__form-barraBusqueda__input')! as HTMLInputElement
 const inputBusquedaResponsive = document.getElementById('header-responsive__form-barraBusqueda__input')! as HTMLInputElement
     
-document.addEventListener("DOMContentLoaded", () => { // Si se realizo una busqueda previa lo refleja en la barra de busqueda
+document.addEventListener("DOMContentLoaded", async() => { // Si se realizo una busqueda previa lo refleja en la barra de busqueda
     const urlObjeto = new URL(window.location.href); // Crea un objeto para definir, o ver, los query elements mas facilmente
     const palabraBuscada = urlObjeto.searchParams.get('palabraBuscada') // Almacena la palabra buscada previamente si existe
+
+    // Informacion del usuario
+    const informacionUsuario = await usuarioVerificado
+    if(informacionUsuario) reflejarSesionActiva(informacionUsuario) // Si hay informacion del usuario entonces refleja la sesion activa
+
 
     if(palabraBuscada){ // Si la palabra buscada existe
         inputBusqueda.value = palabraBuscada // La define como valor en el input de la barra de busqueda
@@ -167,3 +123,5 @@ formularioBusquedaResponsive.addEventListener('submit', (event)=>{ // Escucha cu
     event.preventDefault()
     location.assign(`/catalogo?palabraBuscada=${inputBusquedaResponsive.value}`) // Redirije al usuario a la pagina del catalogo con la plabra buscada como parametro de busqueda
 })
+
+export { url, usuarioVerificado };

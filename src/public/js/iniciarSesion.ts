@@ -1,26 +1,18 @@
+import { url, urlInicioSesion, urlRegistro } from "./global.js";
 import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
 
 
 
+
 document.addEventListener("DOMContentLoaded", function() {
-    let urlInicioSesion:string = '/api/auth/login'
-    let urlRegistro:string = '/api/usuarios'
-    let url:string
+
     const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
     const botonRegistrarse:HTMLElement = document.getElementById('inicioSesion__formulario__registrarse')!;
     const volverIniciarSesion:HTMLElement = document.getElementById('volverIniciarSesion')!;
     const formularioRegistrarse:HTMLElement = document.getElementById('registrarse__formulario')!;
     const formularioIniciarSesion:HTMLElement = document.getElementById('inicioSesion__formulario')!;
 
-    if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
-        url = 'http://localhost:8080';
-        urlInicioSesion = url + urlInicioSesion;
-        urlRegistro= url + urlRegistro;
-    }else{ // Si no tiene localhost define el url en la pagina web para la peticion
-        url= 'https://embike-223a165b4ff6.herokuapp.com';
-        urlInicioSesion=url + urlInicioSesion;
-        urlRegistro= url + urlRegistro;
-    }
+
 
     // Verifica si hay que mostrar algun mensaje
     const params = new URLSearchParams(window.location.search);

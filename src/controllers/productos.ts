@@ -4,6 +4,7 @@ import Categoria from '../models/categoria.js';
 import mongoose from 'mongoose';
 import { producto } from '../models/interfaces/producto.js';
 import { usuario } from '../models/interfaces/usuario.js';
+import { categoria } from '../models/interfaces/categorias.js';
 
 
 
@@ -87,7 +88,7 @@ const verProductos = async(req: Request, res: Response)=>{
 // Devuelve la producto con el id pasado como parametro
 const verProductoID = async(req: Request, res: Response)=>{
     const { id } = req.params
-    const producto = await Producto.findById(id)
+    const producto = await Producto.findById(id).populate('categoria')
 
     res.status(200).json(producto)
 }
@@ -230,16 +231,12 @@ const agregarVariante = async(req: Request, res: Response)=>{
 
 // Actualiza una producto con el id pasado como parametro
 const actualizarProducto = async(req: Request, res: Response)=>{
+
     const { id } = req.params; 
-    const { nombre, // Desestructura la informacion del body para utilizar solo la informacion requerida
+    let { nombre, // Desestructura la informacion del body para utilizar solo la informacion requerida
             marca,
             modelo,
             categoria,
-            color,
-            talle,
-            SKU,
-            stock,
-            imagenes,
             descripcion,
             precio,
             precioViejo,
@@ -250,24 +247,26 @@ const actualizarProducto = async(req: Request, res: Response)=>{
 
     const usuario:usuario = req.body.usuario
 
-    // Estructura la informacion para enviarla correctamente al servidor
-    const variantes=[{
-        color,
-        caracteristicas:{
-            talle,
-            SKU,
-            stock,
-            imagenes,
+    if(categoria){ // Si se envia el nombre de una categoria entonces la busca en la base de datos y remplaza el nombre por su ObjectID
+        const objetoCategoria:categoria|null = (await Categoria.findOne({'nombre':categoria}))!
+        if(!objetoCategoria) {
+            return res.status(400).json({
+                errors:[{
+                    msg: "La categoria no es valida",
+                    path: "categoria"
+                }]
+            })
         }
-    }]
+        categoria = objetoCategoria._id
 
+    }
+    // Estructura la informacion para enviarla correctamente al servidor
     const data={
         nombre,
         marca,
         modelo,
         usuario,
         categoria,
-        variantes,
         descripcion,
         precio,
         precioViejo,

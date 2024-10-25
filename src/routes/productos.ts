@@ -8,7 +8,7 @@ import {
     crearProducto,
     actualizarProducto,
     eliminarProducto, 
-    agregarVariante
+    agregarVariante,
 } from '../controllers/productos.js';
 
 // Middlewares
@@ -69,6 +69,7 @@ router.put('/:id', // Actualizar producto - Admin
     validarJWT, // Valida que el usuario que realiza la accion sea valido
     validarRolJWT('admin'), // Valida que el usuario tenga permisos de administrador
     check('id').custom(productoExiste),
+    check('precio', 'El precio ingresado no es valido').optional().isNumeric(),
     validarCampos,
     actualizarProducto)
 

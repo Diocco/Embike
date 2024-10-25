@@ -1,6 +1,7 @@
-import { urlProductos } from "../registener.js";
-import { producto } from "../../../models/interfaces/producto.js";
-import { mostrarMensaje, ventanaEmergenteModificarProducto } from "./mostrarMensaje.js";
+
+import { producto } from "../../../../models/interfaces/producto.js";
+import { tokenAcceso, urlProductos } from "../../global.js";
+import { mostrarMensaje, ventanaEmergenteModificarProducto } from "../mostrarMensaje.js";
 
 export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTMLElement) => {
 
@@ -49,7 +50,7 @@ export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTM
     })
 }
 
-export const buscarProductos = (contenedorProductos:HTMLElement)=>{
+export const buscarProductos = async(contenedorProductos:HTMLElement)=>{
     // Vacia el contenedor de productos y coloca una barra de carga
 
     contenedorProductos.innerHTML=`<div id="cargandoProductos"></div>` // Muestra el icono de carga 
@@ -133,7 +134,6 @@ const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,
         disponible:!estaDisponible // Envia el opuesto a la disponibilidad actual del producto
     }
 
-    const tokenAcceso: string | null = localStorage.getItem('tokenAcceso') // Recupera el token de acceso desde el localStorage
     fetch(urlProductos+`/${idProducto}`, { 
         method: 'PUT',
         headers: {  'Content-Type': 'application/json' ,
@@ -158,3 +158,26 @@ const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,
     })
 }
 
+export const actualizarProducto= async(datosProducto:FormData,productoId:string)=>{
+
+    return fetch(urlProductos+`/${productoId}`, { 
+        method: 'PUT',
+        headers: { 'tokenAcceso': `${tokenAcceso}`},
+        body:datosProducto
+    })
+    .then(response => response.json()) // Parsear la respuesta como JSON
+    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
+        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
+            mostrarMensaje('',true);
+            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
+                console.log(error);
+            })
+        }else{ // Si el servidor no devuelve errores:
+            return 0
+        }
+    })
+    .catch(error => { // Si hay un error se manejan 
+        mostrarMensaje('2',true);
+        console.error(error);
+    })
+}

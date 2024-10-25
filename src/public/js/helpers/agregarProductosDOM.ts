@@ -1,4 +1,4 @@
-import { producto } from "../../../models/interfaces/producto";
+import { producto } from "../../../models/interfaces/producto.js";
 
 export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTMLElement) => {
 
@@ -11,7 +11,7 @@ export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTM
         productos.forEach((producto) => { // Recorre los productos
             let agregarElemento = document.createElement('div'); // Crea un div para alojar el nuevo producto
             // Verifica que exista una imagen, sino muestra un icono de error
-            const imagenProducto = producto.variantes[0].caracteristicas[0].imagenes[0]?producto.variantes[0].caracteristicas[0].imagenes[0]:'../img/icons/icono-sinFoto.avif' 
+            const imagenProducto = producto.variantes[0].caracteristicas[0].imagenes[0]?producto.variantes[0].caracteristicas[0].imagenes[0]:'../img/icons/sinFoto.webp' 
             const tieneDescuento:boolean = producto.precioViejo?true:false
             
             // Busca la distintas variedades de colores
@@ -42,7 +42,7 @@ export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTM
                 const precioViejo = (Number(producto.precioViejo))
                 const porcentajeDescuento = Math.floor((1-precio/precioViejo)*100)
                 agregarElemento.innerHTML=`
-                <div class="catalogo__div__imagen" style='background-image: url("${imagenProducto}');">${coloresHTML}</div>
+                <div class="catalogo__div__imagen imagenProducto" style='background-image: url("${imagenProducto}');">${coloresHTML}</div>
                 <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
                 <div class="catalogo__div__descuento">
                     <h3 class="descuento__precioViejo">$ ${(Number(producto.precioViejo)).toLocaleString('es-AR')}</h3>

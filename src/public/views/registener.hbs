@@ -8,6 +8,7 @@
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/ventanaProductos.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/normalize.css'>
     <script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -38,28 +39,30 @@
         <div id="modificarProducto" class="noActivo">
             <div id="modificarProducto__fotoDescripcion">
                 <h4>Foto</h4>
-                <img id="modificarProducto__fotoDescripcion__img"></img>
+                <img id="modificarProducto__fotoDescripcion__img" class="imagenProducto"></img>
                 <h4>Descripcion</h4>
                 <textarea id="modificarProducto__fotoDescripcion__textarea"></textarea>
             </div>
-            <div id="modificarProducto__caracteristicas">
+            <form id="modificarProducto__caracteristicas">
                 <h4>Nombre</h4>
-                <input class="modificarProducto__caracteristicas__input" name="nombre" id="modificarProducto__caracteristicas__input__nombre">
+                <input class="modificarProducto__caracteristicas__input"  name="nombre"    id="modificarProducto__caracteristicas__input__nombre">
                 <h4>Precio Unitario</h4>
-                <input class="modificarProducto__caracteristicas__input" name="precio" id="modificarProducto__caracteristicas__input__precio" type="number">
+                <input class="modificarProducto__caracteristicas__input"  name="precio"    id="modificarProducto__caracteristicas__input__precio" type="number">
                 <h4>Marca</h4>
-                <input class="modificarProducto__caracteristicas__input" name="marca"  id="modificarProducto__caracteristicas__input__marca">
+                <input class="modificarProducto__caracteristicas__input"  name="marca"     id="modificarProducto__caracteristicas__input__marca">
                 <h4>Modelo</h4>
-                <input class="modificarProducto__caracteristicas__input" name="modelo" id="modificarProducto__caracteristicas__input__modelo">
+                <input class="modificarProducto__caracteristicas__input"  name="modelo"    id="modificarProducto__caracteristicas__input__modelo">
                 <h4>Categorias</h4>
-                <select>
+                <select class="modificarProducto__caracteristicas__input" name="categoria" id="modificarProducto__caracteristicas__select__categoria">
                     <option>BMX</option>
                     <option>MTB</option>
                     <option>Niños</option>
                     <option>Accesorios</option>
-                    <option>+</option>
+                    <option>Agregar Categoria</option>
                 </select>
-            </div>
+                <input class="modificarProducto__caracteristicas__input noActivo" name="categoria" placeholder="Ingrese una nueva categoria" id="modificarProducto__caracteristicas__input__categoria">
+
+            </form>
             <div id="modificarProducto__aceptarRechazar">
                 <button id="modificarProducto__aceptarRechazar__aceptar" >Aceptar</button>
                 <button id="modificarProducto__aceptarRechazar__rechazar">Rechazar</button>
@@ -203,7 +206,7 @@
 
 
 
-
+    <script type="module" src="../../js/global.js"></script>
     <script type='module' src="../js/registener.js"></script>
     <script type='module' src="../js/helpers/productos.js"></script>
     <script type='module' src="../js/helpers/mostrarMensaje.js"></script>

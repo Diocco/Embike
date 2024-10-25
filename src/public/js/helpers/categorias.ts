@@ -1,8 +1,9 @@
-import { urlCategorias } from "../registener.js";
-import { mostrarMensaje } from "../helpers/mostrarMensaje.js";
-import { buscarProductos } from "../helpers/productos.js";
 
-export const buscarCategorias = async(contenedor:HTMLElement|null=null): Promise<string[]|undefined> =>{
+import { urlCategorias } from "../global.js";
+import { mostrarMensaje } from "./mostrarMensaje.js"
+import { buscarProductos } from "./registener/productos.js";
+
+export const buscarCategorias = async(contenedor:HTMLElement|null=null,contenedorOpciones:HTMLSelectElement|null=null): Promise<string[]|undefined> =>{
     return fetch(
         urlCategorias + `?nombres=true`, { // Realiza la peticion GET para obtener un string[] con los nombres de las categorias validas
         method: 'GET',
@@ -18,7 +19,8 @@ export const buscarCategorias = async(contenedor:HTMLElement|null=null): Promise
             return undefined
         }else{ // Si el servidor no devuelve errores:
             const nombreCategorias:string[] = data.categorias
-            if(contenedor) cargarCategoriasEncontradas(nombreCategorias,contenedor) // Si se paso un contenedor como argumento entonces llama a la funcion para cargar las categorias en el DOM
+            if(contenedor)          cargarCategorias(nombreCategorias,contenedor)                         // Si se paso un contenedor como argumento entonces llama a la funcion para cargar las categorias en el DOM
+            if(contenedorOpciones)  cargarCategoriasVentanaModificar(nombreCategorias,contenedorOpciones) // Si se paso un contenedor del tipo "select" entonces le agrega como opciones las categorias encontradas
             return nombreCategorias
         }
     })
@@ -29,7 +31,9 @@ export const buscarCategorias = async(contenedor:HTMLElement|null=null): Promise
     })
 }
 
-export function cargarCategoriasEncontradas(nombresCategorias:string[],contenedorCategorias:HTMLElement) {
+export function cargarCategorias(nombresCategorias:string[],contenedorCategorias:HTMLElement) {
+
+    contenedorCategorias.innerHTML='' // Reinicia el contendor
 
     // Agrega las categorias al DOM
     const fragmento = document.createDocumentFragment()
@@ -84,4 +88,56 @@ const esCategoriaActiva = (categoria:string):boolean=>{
 
     // Si no se cumplio alguna de las dos condiciones anteriores devuelve falso
     return false
+}
+
+const cargarCategoriasVentanaModificar =(nombresCategorias:string[],contenedorOpciones:HTMLSelectElement)=>{
+    // Carga las categorias dentro del selector de la ventana emergente para crear o modificar un producto
+
+    contenedorOpciones.innerHTML='' // Reinicia el contenedor
+    let opcionesHTML:string =''
+
+    nombresCategorias.forEach(categoria=>{
+        opcionesHTML=opcionesHTML + `<option>${categoria}</option>`
+    })
+
+    contenedorOpciones.innerHTML=opcionesHTML+'<option>Agregar Categoria</option>'
+
+    // Le da la funcion al boton de agregar categoria
+    const inputAgregarCategoria = document.getElementById('modificarProducto__caracteristicas__input__categoria')! as HTMLInputElement
+    contenedorOpciones.onclick = ()=>{
+        const categoriaSeleccionada:string = contenedorOpciones.value
+
+        if(categoriaSeleccionada==='Agregar Categoria'){
+            // Si el usuario selecciona el boton "agregar categoria" muestra el input para ingresar una nueva categoria
+            inputAgregarCategoria.classList.remove('noActivo')
+        }else{
+            // Si el usuario selecciona otra opcion que no sea "agregar categoria" entonces esconde (si se encuentra activa) el input para agregar una nueva categoria y vacia el input
+            inputAgregarCategoria.classList.add('noActivo')
+            inputAgregarCategoria.value=''
+        }
+    }
+}   
+
+export const agregarCategoria = async(nombreCategoria:string)=>{
+    return fetch(
+        urlCategorias, { // Realiza la peticion GET para obtener un string[] con los nombres de las categorias validas
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'nombre': `${nombreCategoria}`})
+    })
+    .then(response => response.json()) // Parsear la respuesta como JSON
+    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor, maneja errores o agrega elementos al DOM
+        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
+            mostrarMensaje('',true);
+            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
+                console.log(error);
+            })
+        }else{ // Si el servidor no devuelve errores:
+            return 0
+        }
+    })
+    .catch(error => { // Si hay un error se manejan 
+        mostrarMensaje('2',true)
+        console.error(error);
+    })
 }

@@ -1,7 +1,8 @@
 
-import { producto } from "../../models/interfaces/producto.js";
-import {url} from "./header.js";
-import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+import { producto } from "../../models/interfaces/producto.js"
+import {url} from "../js/header.js"
+import { tokenAcceso } from "./global.js";
+import { mostrarMensaje } from "./helpers/mostrarMensaje.js"
 
 const cargarColoresTalles =(productoInformacion:producto)=>{
     // Carga los colores y talles
@@ -58,7 +59,7 @@ const verificarListaDeseados =(productoInformacion:producto)=>{
         fetch(url+`/api/usuarios/listaDeseados/${productoInformacion._id}`,{ // Envia el id del producto como un queryparam
             method: 'PUT',
             headers: { 'Content-Type': 'application/json',
-                'tokenAcceso':`${localStorage.getItem('tokenAcceso')}` // Envia el token de acceso del usuario
+                'tokenAcceso':`${tokenAcceso}` // Envia el token de acceso del usuario
             }
         })
         .then(response=>response.json())
@@ -78,7 +79,7 @@ const verificarListaDeseados =(productoInformacion:producto)=>{
     fetch(url+`/api/usuarios/listaDeseados`,{
         method: 'GET',
         headers: { 'Content-Type': 'application/json',
-                    'tokenAcceso':`${localStorage.getItem('tokenAcceso')}` // Envia el token de acceso del usuario
+                    'tokenAcceso':`${tokenAcceso}` // Envia el token de acceso del usuario
                 }
     })
     .then(response=>response.json())
