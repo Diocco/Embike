@@ -43,7 +43,7 @@ const verProductos = async(req: Request, res: Response)=>{
     }
 
     // Extrae los ObjectId de las categorías encontradas
-    const categoriasIds: mongoose.Types.ObjectId[] = categoriasEncontradas.map(categoria => categoria._id);
+    const categoriasIds: mongoose.Schema.Types.ObjectId[] = categoriasEncontradas.map(categoria => categoria._id);
 
 
     // Definir la expresión regular para buscar productos cuyo nombre, descripción, etc., contenga la palabra buscada
