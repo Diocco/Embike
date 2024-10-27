@@ -241,6 +241,7 @@ const actualizarProducto = async(req: Request, res: Response)=>{
             precio,
             precioViejo,
             especificaciones,
+            variantes,
             disponible,
             tags
         } = req.body
@@ -258,7 +259,10 @@ const actualizarProducto = async(req: Request, res: Response)=>{
             })
         }
         categoria = objetoCategoria._id
+    }
 
+    if(variantes){ // Si se envia un array de variantes entonces se parsea asi la base de datos lo entiende
+        variantes = JSON.parse(variantes)
     }
     // Estructura la informacion para enviarla correctamente al servidor
     const data={
@@ -271,6 +275,7 @@ const actualizarProducto = async(req: Request, res: Response)=>{
         precio,
         precioViejo,
         especificaciones,
+        variantes,
         disponible,
         tags
     }

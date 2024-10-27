@@ -29,8 +29,8 @@ const cargarColoresTalles =(productoInformacion:producto)=>{
     let fragmento = document.createDocumentFragment();
     coloresArray.forEach(color=>{
         const nuevocolor = document.createElement('div')
-        nuevocolor.style.backgroundColor=color;
         nuevocolor.classList.add('opcionesProductos__opcion');
+        nuevocolor.classList.add(color);
         fragmento.appendChild(nuevocolor)
     })
     contenedorColores.appendChild(fragmento)

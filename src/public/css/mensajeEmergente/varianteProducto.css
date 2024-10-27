@@ -1,0 +1,50 @@
+/*Contenedor general de la ventana de modificar variantes*/
+#variantesProducto{
+    display: flex;
+    background-color: var(--colorFondoVentana);
+    padding: 30px;
+    height: min-content;
+    width: min-content;
+    flex-direction: column;
+    align-items: center;
+}
+
+/*Indice para las variantes del producto*/
+#variantesProducto__indice,#variantesProducto__variantes{ 
+    margin: 1px 55px;
+    border-radius: 6px;
+    border: 1px solid black;
+    background-color: var(--colorVentana);
+    align-items: center;
+    font-size: 25px;
+    padding-left: 12px;
+    min-height: 52px;
+}
+
+/*Contenedor de vantiantes*/
+.variantesProducto__variantes__div,#variantesProducto__indice{
+    display: grid;
+    grid-template-columns: 300px 100px 100px 100px 199px;
+}
+
+/*Variantes del producto*/
+.variantesProducto__input{
+    font-size: 1vw;
+    padding: 6px;
+    width: 90%;
+    background-color: var(--colorVentana);
+    border: solid black 1px;
+    border-radius: 0.5vw;
+    color: var(--colorLetra);
+}
+
+/*Contenedor del contador de imagenes de una variante*/
+.variantesProducto__imagen{
+    width: 22px;
+    text-align: center;
+    padding: 1px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: var(--colorBotones);
+    cursor: pointer;
+}

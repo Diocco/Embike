@@ -29,7 +29,7 @@ export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTM
             let coloresHTML:string=''
             // Recorre el array de colores
             coloresArray.forEach(color=>{
-                const colorHTML = `<div style="background-color: ${color};" class="catalogo__div__color"></div>`
+                const colorHTML = `<div class="catalogo__div__color ${color}" ></div>`
                 coloresHTML=coloresHTML+colorHTML
             })
     

@@ -6,7 +6,9 @@
     <title>Registener</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener.css'>
-    <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/mensajeEmergente.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/modificarProducto.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/varianteProducto.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/ventanaProductos.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/normalize.css'>
     <script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
@@ -61,11 +63,33 @@
                     <option>Agregar Categoria</option>
                 </select>
                 <input class="modificarProducto__caracteristicas__input noActivo" name="categoria" placeholder="Ingrese una nueva categoria" id="modificarProducto__caracteristicas__input__categoria">
-
             </form>
+            <button id="modificarProducto__verVariantes" class="botonRegistener1" >Ver variantes</button>
             <div id="modificarProducto__aceptarRechazar">
-                <button id="modificarProducto__aceptarRechazar__aceptar" >Aceptar</button>
-                <button id="modificarProducto__aceptarRechazar__rechazar">Rechazar</button>
+                <button id="modificarProducto__aceptarRechazar__aceptar"  class="botonRegistener1" >Guardar</button>
+                <button id="modificarProducto__aceptarRechazar__rechazar" class="botonRegistener1" >Descargar</button>
+            </div>
+        </div>
+
+        {{!-- Ventana emergente para modificar las variantes de un producto --}}
+        <div id="variantesProducto" class="noActivo">
+            {{!-- Indice de categorias --}}
+            <div id="variantesProducto__indice">
+                <div>SKU</div>
+                <div>Color</div>
+                <div>Talle</div>
+                <div>Stock</div>
+                <div>Imagenes</div>
+            </div>
+            <div>
+                <div id="variantesProducto__variantes">
+                    <div class="variantesProducto__variantes__div">
+                    </div>
+                </div>
+            </div>
+            <div id="variantesProducto__aceptarRechazar">
+                <button id="variantesProducto__aceptarRechazar__aceptar"  class="botonRegistener1">Confirmar</button>
+                <button id="variantesProducto__aceptarRechazar__rechazar" class="botonRegistener1">Descartar</button>
             </div>
         </div>
 
@@ -108,6 +132,7 @@
             <div>Stock</div>
             <div>Opciones</div>
         </div>
+        
 
         {{!-- Contenedor de productos --}}
         <div id="contenedorConfiguracionProductos__contenido__productos" ></div>

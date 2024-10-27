@@ -18,6 +18,64 @@
   background-size: contain;
 }
 
+.botonRegistener1{
+  font-size: 1vw;
+  padding: 1vw;
+  height: min-content;
+  width: min-content;
+  background-color: var(--colorBotones);
+  color:var(--colorLetra)
+}
+
+.Rojo {
+  background-color: red;
+}
+
+.Azul {
+  background-color: blue;
+}
+
+.Verde {
+  background-color: green;
+}
+
+.Negro {
+  background-color: black;
+}
+
+.Blanco {
+  background-color: white;
+}
+
+.Amarillo {
+  background-color: yellow;
+}
+
+.Gris {
+  background-color: gray;
+}
+
+.Rosa {
+  background-color: pink;
+}
+
+.Naranja {
+  background-color: orange;
+}
+
+
+.Marron {
+  background-color: brown;
+}
+
+.Celeste {
+  background-color: skyblue;
+}
+
+.Violeta {
+  background-color: violet;
+}
+
 
 
 

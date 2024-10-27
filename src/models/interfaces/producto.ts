@@ -9,18 +9,7 @@ export interface producto {
     estado:boolean,
     usuario:mongoose.Schema.Types.ObjectId, 
     categoria:mongoose.Schema.Types.ObjectId|categoria,
-    variantes: [
-        {
-            color:string,
-            caracteristicas: [
-                {
-                    talle: string,
-                    SKU: string,
-                    stock: number,
-                    imagenes: [string],
-                }]
-        }
-    ],
+    variantes: variante[],
     descripcion: string
     precio:number,
     precioViejo:number,
@@ -29,3 +18,14 @@ export interface producto {
     tags:[string],
     save: () => Promise<void>
     }
+
+export interface variante {
+    color:string,
+    caracteristicas: [
+        {
+            talle: string,
+            SKU: string,
+            stock: number,
+            imagenes: string[],
+        }]
+}

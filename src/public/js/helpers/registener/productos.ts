@@ -2,9 +2,9 @@
 import { producto } from "../../../../models/interfaces/producto.js";
 import { tokenAcceso, urlProductos } from "../../global.js";
 import { mostrarMensaje, ventanaEmergenteModificarProducto } from "../mostrarMensaje.js";
+import { variante } from '../../../../models/interfaces/producto';
 
 export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTMLElement) => {
-
 
     new Promise<void>((resolve) => {
         contenedorProductos.innerHTML=''; // Reinicia el contenedor
@@ -102,7 +102,6 @@ export const buscarProductos = async(contenedorProductos:HTMLElement)=>{
     })
 }
 
-
 const botonesConfiguracionProducto =()=>{
     // Le da la funcion a los botones de alternar disponibilidad de un producto
     const botonesDisponibilidad: NodeListOf<HTMLDivElement> = document.querySelectorAll('.producto__disponibilidad')
@@ -158,8 +157,8 @@ const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,
     })
 }
 
-export const actualizarProducto= async(datosProducto:FormData,productoId:string)=>{
-
+export const actualizarProducto= async(datosProducto:FormData,productoId:string,variantes:variante[]=[])=>{
+    datosProducto.append('variantes',JSON.stringify(variantes))
     return fetch(urlProductos+`/${productoId}`, { 
         method: 'PUT',
         headers: { 'tokenAcceso': `${tokenAcceso}`},
