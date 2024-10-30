@@ -1,7 +1,7 @@
 
 import { urlCategorias } from "../global.js";
 import { mostrarMensaje } from "./mostrarMensaje.js"
-import { buscarProductos } from "./registener/productos.js";
+import { buscarProductos } from "../registener/productos.js";
 
 export const buscarCategorias = async(contenedor:HTMLElement|null=null,contenedorOpciones:HTMLSelectElement|null=null): Promise<string[]|undefined> =>{
     return fetch(

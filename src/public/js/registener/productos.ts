@@ -1,8 +1,9 @@
 
-import { producto } from "../../../../models/interfaces/producto.js";
-import { tokenAcceso, urlProductos } from "../../global.js";
-import { mostrarMensaje, ventanaEmergenteModificarProducto } from "../mostrarMensaje.js";
-import { variante } from '../../../../models/interfaces/producto';
+import { producto } from "../../../models/interfaces/producto.js";
+import { tokenAcceso, urlProductos } from "../global.js";
+import { mostrarMensaje } from "../helpers/mostrarMensaje.js";
+import { variante } from '../../../models/interfaces/producto.js';
+import { ventanaEmergenteModificarProducto } from "./ventanasEmergentes/modificarProducto.js";
 
 export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTMLElement) => {
 
@@ -33,9 +34,9 @@ export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTM
             <div class="producto__div__precio">${(Number(producto.precio)).toLocaleString('es-AR')}</div>
             <div class="producto__div__stock">${stockTotal}</div>
             <div class="producto__div__opciones">
-                <i class="fa-solid fa-check     producto__opciones producto__disponibilidad ${claseProductoDisponible}" ></i>
-                <i class="fa-solid fa-pencil    producto__opciones producto__modificar                                " ></i>
-                <i class="fa-solid fa-trash-can producto__opciones producto__eliminar       botonNegativo             " ></i>
+                <i class="fa-solid fa-check     producto__opciones botonRegistener3 producto__disponibilidad ${claseProductoDisponible}" ></i>
+                <i class="fa-solid fa-pencil    producto__opciones botonRegistener3 producto__modificar                                " ></i>
+                <i class="fa-solid fa-trash-can producto__opciones botonRegistener3 producto__eliminar       botonNegativo             " ></i>
             </div>
             `
             

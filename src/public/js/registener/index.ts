@@ -1,6 +1,6 @@
 
-import { buscarCategorias } from "./helpers/categorias.js"
-import { buscarProductos } from "./helpers/registener/productos.js"
+import { buscarCategorias } from "../helpers/categorias.js"
+import { buscarProductos } from "./productos.js"
 
 interface Producto {
     foto:string,
@@ -380,7 +380,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 
 
-    //botonesSeccionPago()
 
 
 

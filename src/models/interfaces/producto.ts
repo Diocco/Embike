@@ -16,6 +16,7 @@ export interface producto {
     especificaciones:mongoose.Schema.Types.Mixed
     disponible:boolean,
     tags:[string],
+    imagenes: string[],
     save: () => Promise<void>
     }
 
@@ -26,6 +27,5 @@ export interface variante {
             talle: string,
             SKU: string,
             stock: number,
-            imagenes: string[],
         }]
 }

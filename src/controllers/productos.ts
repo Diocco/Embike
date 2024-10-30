@@ -2,11 +2,17 @@ import { Request, Response } from 'express';
 import Producto from '../models/productos.js';
 import Categoria from '../models/categoria.js';
 import mongoose from 'mongoose';
-import { producto } from '../models/interfaces/producto.js';
+import { producto, variante } from '../models/interfaces/producto.js';
 import { usuario } from '../models/interfaces/usuario.js';
 import { categoria } from '../models/interfaces/categorias.js';
-
-
+import fileUpload from 'express-fileupload';
+import { v4 as uuidv4 } from 'uuid';
+// Directorio
+import path from 'path';
+import { fileURLToPath } from 'url'
+const __filename = fileURLToPath(import.meta.url); // Obtiene el nombre del archivo actual
+const __dirname = path.dirname(__filename); // Obtiene el directorio del archivo actual
+import fs from 'fs'
 
 // Devuelve todas las productos
 const verProductos = async(req: Request, res: Response)=>{
@@ -142,14 +148,12 @@ const agregarVariante = async(req: Request, res: Response)=>{
         color, 
         talle,
         SKU,
-        stock,
-        imagenes,
+        stock
     }:{
         color:string,
         talle:string,
         SKU:string,
         stock:number
-        imagenes:[string]
     } = req.body
     
 
@@ -164,7 +168,6 @@ const agregarVariante = async(req: Request, res: Response)=>{
                     // Solo cambia el valor de la variante si el valor de entrada no es nulo
                     caracteristicas.SKU = SKU?SKU:caracteristicas.SKU
                     caracteristicas.stock = stock?stock:caracteristicas.stock
-                    caracteristicas.imagenes=imagenes?imagenes:caracteristicas.imagenes
                     varianteActualizada=true; // Se especifica que se actualizo la variante
                     respuesta="Se actualizo la variante"
                 }
@@ -182,8 +185,7 @@ const agregarVariante = async(req: Request, res: Response)=>{
                 const nuevaVariante = {
                     talle,
                     SKU,
-                    stock,
-                    imagenes
+                    stock                  
                 }
                 variante.caracteristicas.push(nuevaVariante)
                 respuesta="Se agrego la variante con un nuevo talle"
@@ -199,21 +201,12 @@ const agregarVariante = async(req: Request, res: Response)=>{
                 })
             }
             // Estructura la informacion para enviarla correctamente al servidor
-            let varianteNueva: {
-                color: string;
-                caracteristicas: [{
-                    talle: string;
-                    SKU: string;
-                    stock: number;
-                    imagenes: [string];
-                }];
-            }= {
+            let varianteNueva: variante= {
                 color,
                 caracteristicas: [{
                     talle,
                     SKU,
-                    stock,
-                    imagenes,
+                    stock
                 },
                 ],
             }
@@ -232,7 +225,8 @@ const agregarVariante = async(req: Request, res: Response)=>{
 // Actualiza una producto con el id pasado como parametro
 const actualizarProducto = async(req: Request, res: Response)=>{
 
-    const { id } = req.params; 
+    const { id } = req.params;  // ID del producto
+    const usuario:usuario = req.body.usuario
     let { nombre, // Desestructura la informacion del body para utilizar solo la informacion requerida
             marca,
             modelo,
@@ -243,10 +237,13 @@ const actualizarProducto = async(req: Request, res: Response)=>{
             especificaciones,
             variantes,
             disponible,
-            tags
+            tags,
+            URLImagenVieja
         } = req.body
 
-    const usuario:usuario = req.body.usuario
+    // Verifica si se envio una nueva imagen y la obtiene
+    const  imgPura  = (req.files?req.files.img:undefined) as fileUpload.UploadedFile// Obtiene la imagen 
+    let imgURL:string // Se inicia la variable que va a contener el path de la foto de perfil del usuario
 
     if(categoria){ // Si se envia el nombre de una categoria entonces la busca en la base de datos y remplaza el nombre por su ObjectID
         const objetoCategoria:categoria|null = (await Categoria.findOne({'nombre':categoria}))!
@@ -264,6 +261,7 @@ const actualizarProducto = async(req: Request, res: Response)=>{
     if(variantes){ // Si se envia un array de variantes entonces se parsea asi la base de datos lo entiende
         variantes = JSON.parse(variantes)
     }
+
     // Estructura la informacion para enviarla correctamente al servidor
     const data={
         nombre,
@@ -281,13 +279,105 @@ const actualizarProducto = async(req: Request, res: Response)=>{
     }
 
     // Busca por id en la base de datos que actualiza las propiedades que esten en el segundo parametro. { new: true } devuelve el documento actualizado
-    const productoActualizado = await Producto.findByIdAndUpdate( id,data, { new: true }); 
+    let producto:producto = (await Producto.findByIdAndUpdate( id,data, { new: true }))!; 
+    let esProductoModificado:boolean = false // Indica si el usuario fue modificado luego este este punto
+
+    // Si se envia un URL de una imagen anterior entonces la elimina
+    if(URLImagenVieja) { 
+        try{
+            producto = await eliminarFotoProducto(producto,URLImagenVieja) // Elimina la foto y devuelve el producto modificado
+            esProductoModificado = true
+        }catch(error){
+            res.status(500).json({
+                errors:{
+                    msg:error,
+                    path:'Servidor'
+                }
+            })
+        }
+
+    }
+
+
+    // Si se envia una foto de perfil del usuario entonces la sube al servidor
+    if(imgPura){ 
+        try {
+            // Sube la foto al servidor
+            imgURL = await subirFotoProducto(imgPura)
+            // Agrega el url al array de imagenes del producto
+            producto.imagenes.push(imgURL) // Guarda la imagen en el array de imagenes
+            esProductoModificado = true
+        } catch (errors) {
+            if ((errors as any).path==='Servidor'){
+                return res.status(500).json({errors})
+            }
+            return res.status(400).json(errors)
+        }
+    }
+
+    // Verifica si el usuario se modifico nuevamente
+    if(esProductoModificado) producto.save() // Guarda los cambios en la base de datos
+
 
     res.status(200).json({ //Devuelve un mensaje y el producto agregado a la base de datos
         msg: "Producto actualizado en la base de datos",
-        productoActualizado
+        productoActualizado:producto
     })
+
+
+
+
+
+
 }
+
+// Procesa la foto recibida
+const subirFotoProducto = async(img:fileUpload.UploadedFile) =>{
+    // Recibe la foto de producto, la sube al servidor y devuelve el path de la imagen
+    // Verifica la extension del archivo
+    return new Promise<string>((resolve, reject) => {
+        const nombreArchivoDividido = img.name.split('.')
+
+
+        const extension = nombreArchivoDividido[nombreArchivoDividido.length - 1]
+        const extensionesPermitidas = [`jpg`,`png`,`jpeg`,'webp','gif']
+        if(!extensionesPermitidas.includes(extension)){
+            reject([{
+                    msg: `Extension no permitida, las extensiones permitidas son: ${extensionesPermitidas}`,
+                    path: "archivo"
+                }])
+        }
+        if(img.size > 5 * 1024 * 1024){
+            reject([{
+                    msg: `El archivo no debe superar los 5MB`,
+                    path: "archivo"
+                }])
+        }
+
+
+        // Define un nuevo nombre para el archivo
+        let nombreArchivo:string
+        nombreArchivo=uuidv4()+'.'+extension //Genera un nombre unico para la imagen
+
+
+        // Ruta donde se va a colocar el archivo
+        const uploadPath = path.join(__dirname,'../public/img/fotosProductos',nombreArchivo )
+        // Mueve el archivo a la ruta definida
+        img.mv(uploadPath,(err)=>{
+            if (err){
+                reject([{
+                        msg: `Error al guardar el archivo`,
+                        path: "Servidor"
+                    }])
+            }
+        })
+    
+        resolve('../img/fotosProductos/'+nombreArchivo)
+    })
+    
+
+}
+
 
 // Elimina un producto con el id pasado como parametro
 const eliminarProducto = async(req: Request, res: Response) =>{
@@ -302,6 +392,24 @@ const eliminarProducto = async(req: Request, res: Response) =>{
     })
 }
 
+const eliminarFotoProducto = async(producto:producto,URLImagenVieja:string)=>{
+    return new Promise<producto>((resolve, reject) => {
+        const pathImagenVieja = path.join(__dirname,URLImagenVieja.replace('../','../public/') )
+        fs.unlink(pathImagenVieja, (err) => {
+        if (err) reject('No se pudo eliminar la imagen en el servidor')
+        else {
+            const indiceImagen = producto.imagenes.indexOf(URLImagenVieja)
+            if(indiceImagen===-1) reject('No se encontro el URL en el array de imagenes')
+            else {
+                producto.imagenes.splice(indiceImagen) // Elimina el elemento del array de imagenes del producto
+                resolve(producto)
+            }
+        }
+    });
+    })
+    
+}
+
 
 
 
@@ -313,3 +421,4 @@ export {
     eliminarProducto,
     agregarVariante
 }
+

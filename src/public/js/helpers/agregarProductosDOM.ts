@@ -11,7 +11,7 @@ export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTM
         productos.forEach((producto) => { // Recorre los productos
             let agregarElemento = document.createElement('div'); // Crea un div para alojar el nuevo producto
             // Verifica que exista una imagen, sino muestra un icono de error
-            const imagenProducto = producto.variantes[0].caracteristicas[0].imagenes[0]?producto.variantes[0].caracteristicas[0].imagenes[0]:'../img/icons/sinFoto.webp' 
+            const imagenProducto = producto.imagenes[0]?producto.imagenes[0]:'../img/icons/sinFoto.webp' 
             const tieneDescuento:boolean = producto.precioViejo?true:false
             
             // Busca la distintas variedades de colores

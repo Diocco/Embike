@@ -100,22 +100,6 @@
     flex-wrap: nowrap;
 }
 
-/*Botones de opciones de producto*/
-.producto__opciones {
-    margin: 4px;
-    text-align: center;
-    padding: 10px;
-    border: solid 1px black;
-    border-radius: 10px;
-    font-size: 20px;
-    background-color: var(--colorBotones);
-}
-.producto__opciones:hover{
-    filter: brightness(1.05)
-}
-.producto__opciones:active{
-    filter: brightness(0.9)
-}
 
 
 

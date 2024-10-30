@@ -107,9 +107,7 @@ const verificarListaDeseados =(productoInformacion:producto)=>{
 }
 
 const cargarInformacionProducto =(productoInformacion:producto)=>{
-    // Carga la imagen del producto
-    const productoImagen = document.getElementById('catalogoProducto__imagen')!
-    productoImagen.style.backgroundImage=`url(${productoInformacion.variantes[0].caracteristicas[0].imagenes[0]})`;
+    cargarImagenesProducto(productoInformacion)
 
     // Carga el nombre del producto
     let productoNombre = document.getElementById('catalogoProducto__titulo')!
@@ -150,6 +148,41 @@ const cargarInformacionProducto =(productoInformacion:producto)=>{
     })
 }
 
+const cargarImagenesProducto=(productoInformacion:producto)=>{
+    // Carga la imagen principal del producto
+    const productoImagen = document.getElementById('catalogoProducto__imagen')!
+    let imagenPrincipal:String = productoInformacion.imagenes[0]
+    productoImagen.style.backgroundImage=`url(${imagenPrincipal})`;
+
+    // Carga la lista de imagenes
+    const listaImagenes = document.getElementById('catalogoProducto__listaImagenes')!
+    const fragmento = document.createDocumentFragment()
+    productoInformacion.imagenes.forEach((imagen)=>{
+        const nuevaImagen = document.createElement('img')
+        nuevaImagen.classList.add('catalogoProducto__listaImagenes__img')
+        nuevaImagen.id=imagen
+        nuevaImagen.style.backgroundImage=`url(${imagen})`
+        fragmento.appendChild(nuevaImagen)
+    })
+    listaImagenes.appendChild(fragmento)
+
+    // Les asigna una funcion a las imagenes creadas
+
+    const imagenesDOM = listaImagenes.querySelectorAll('.catalogoProducto__listaImagenes__img') as NodeListOf<HTMLImageElement>
+    imagenesDOM.forEach((imagenDOM)=>{
+        imagenDOM.onclick=()=>{ // Si se apreta una imagen de la lista de imagenes, la imagen presionada se colocara como imagen principal del producto
+            imagenPrincipal=imagenDOM.id
+            productoImagen.style.backgroundImage=`url(${imagenPrincipal})`;
+            
+        }
+        imagenDOM.onmouseover=()=>{ // Si el usuario pasa por encima el mouse entonces mostrara la imagen como imagen principal del producto
+            productoImagen.style.backgroundImage=`url(${imagenDOM.id})`;
+        }
+    })
+    listaImagenes.onmouseleave=()=>{ // Cuando el usuario quite el mouse de la lista de imagenes, volvera a colocar la imagen por default o la ultima imagen seleccionada como imagen principal
+        productoImagen.style.backgroundImage=`url(${imagenPrincipal})`;
+    }
+}
 
 document.addEventListener("DOMContentLoaded",async()=>{
 

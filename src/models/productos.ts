@@ -49,9 +49,6 @@ const productoSchema = new mongoose.Schema<producto>({
                         default: 0,
                         required: true
                     },
-                    imagenes: {
-                        type: [String]
-                    }
                 }]
         }
     ],
@@ -75,6 +72,9 @@ const productoSchema = new mongoose.Schema<producto>({
         required: true
     },
     tags:{
+        type: [String]
+    },
+    imagenes: {
         type: [String]
     }
 });

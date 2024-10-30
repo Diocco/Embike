@@ -24,7 +24,8 @@
 /*Contenedor de vantiantes*/
 .variantesProducto__variantes__div,#variantesProducto__indice{
     display: grid;
-    grid-template-columns: 300px 100px 100px 100px 199px;
+    grid-template-columns: 300px 100px 100px 100px;
+    align-items: center;
 }
 
 /*Variantes del producto*/
@@ -38,13 +39,4 @@
     color: var(--colorLetra);
 }
 
-/*Contenedor del contador de imagenes de una variante*/
-.variantesProducto__imagen{
-    width: 22px;
-    text-align: center;
-    padding: 1px;
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: var(--colorBotones);
-    cursor: pointer;
-}
+

@@ -13,6 +13,7 @@
 }
 
 .imagenProducto{
+  background-color: white;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -20,12 +21,37 @@
 
 .botonRegistener1{
   font-size: 1vw;
-  padding: 1vw;
-  height: min-content;
-  width: min-content;
+  padding: 10px;
+  margin: 10px;
+  height: max-content;
+  width: max-content;
   background-color: var(--colorBotones);
-  color:var(--colorLetra)
+  color: var(--colorLetra);
 }
+.botonRegistener2{
+  font-size: 20px;
+  height: 30px;
+  width: 30px;
+  background-color: var(--colorBotones);
+  color: var(--colorLetra);
+}
+
+.botonRegistener3{
+  margin: 4px;
+  text-align: center;
+  padding: 10px;
+  border: solid 1px black;
+  border-radius: 10px;
+  font-size: 20px;
+  background-color: var(--colorBotones);
+}
+.botonRegistener3:hover{
+  filter: brightness(1.05)
+}
+.botonRegistener3:active{
+  filter: brightness(0.9)
+}
+
 
 .Rojo {
   background-color: red;
@@ -63,8 +89,7 @@
   background-color: orange;
 }
 
-
-.Marron {
+.Marrón {
   background-color: brown;
 }
 

@@ -114,28 +114,6 @@ body{
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*Visualizacion ventanas emergentes */
-
 /*Contenedor general de las ventanas emergentes*/
 #ventanaEmergenteFondo{
     display: flex;
@@ -150,45 +128,10 @@ body{
     align-items: center;
 }
 
-/*Ventana caso 0, el caso de error o confirmacion*/
-#ventanaEmergente{
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 100vw;
-    height: 100vh;
-    z-index: 520;
-    font-size: 1vw;
-}
 
-.ventanaEmergente-active{
-    display: flex !important;
-    position: fixed !important;
-}
 
-#ventanaEmergente__contenido{
-    display: grid;
-    grid-template-columns: min-content min-content;
-    grid-template-rows: min-content min-content;
-    background-color: var(--colorFondoVentana);
-    border-radius: 2vw;
-    box-shadow: 0px 0px 7px black ;
-}
 
-#ventanaEmergente__contenido__mensaje{
-grid-column: 1/3;
-display: flex;
-margin: 2vw;
-font-size: 2vw;
-}
 
-#ventanaEmergente__contenido__aceptar__boton, #ventanaEmergente__contenido__rechazar__boton{
-    font-size: 1.5vw;
-    padding: 1vw;
-    margin: 2vw;
-    background-color: var(--colorBotones);
-    color: var(--colorLetra)
-}
 
 
 
