@@ -1,50 +1,53 @@
 
 import { producto } from "../../models/interfaces/producto.js"
+import { variante } from "../../models/interfaces/variante.js";
 import {url} from "../js/header.js"
 import { tokenAcceso } from "./global.js";
 import { mostrarMensaje } from "./helpers/mostrarMensaje.js"
 
 const cargarColoresTalles =(productoInformacion:producto)=>{
+
     // Carga los colores y talles
     const coloresUnicos: Set<string> = new Set(); // Usamos un Set para almacenar colores únicos
     const tallesUnicos: Set<string> = new Set(); // Usamos un Set para almacenar talles únicos
-    productoInformacion.variantes.forEach((variante: { color: string; caracteristicas: any[]; }) => {
+    (productoInformacion.variantes as variante[]).forEach(variante => {
         // Agregar el color al Set de colores únicos
         coloresUnicos.add(variante.color);
-        console.log("La variante con el color: " + variante.color + " tiene los talles:");
-
-        // Cargar talles
-        variante.caracteristicas.forEach(caracteristica => {
-            // Agregar el talle al Set de talles únicos
-            tallesUnicos.add(caracteristica.talle);
-        });
+        // Cargar talless
+        tallesUnicos.add(variante.talle);
     });
 
     // Convertir los Sets a arrays 
     const coloresArray = Array.from(coloresUnicos);
     const tallesArray = Array.from(tallesUnicos);
 
-    // Agrega los colores al DOM
-    const contenedorColores = document.getElementById('catalogoProducto__colores-contenedor')!
-    let fragmento = document.createDocumentFragment();
-    coloresArray.forEach(color=>{
-        const nuevocolor = document.createElement('div')
-        nuevocolor.classList.add('opcionesProductos__opcion');
-        nuevocolor.classList.add(color);
-        fragmento.appendChild(nuevocolor)
-    })
-    contenedorColores.appendChild(fragmento)
+    // Agrega los colores al DOM, si existe almenos uno.
+    if(coloresArray[0]){
+        const contenedorColores = document.getElementById('catalogoProducto__colores-contenedor')!
+        let fragmento = document.createDocumentFragment();
+        coloresArray.forEach(color=>{
+            const nuevocolor = document.createElement('div')
+            nuevocolor.classList.add('opcionesProductos__opcion');
+            nuevocolor.classList.add(color);
+            fragmento.appendChild(nuevocolor)
+        })
+        contenedorColores.appendChild(fragmento)
+        contenedorColores.parentElement!.classList.remove('noActivo') // Activa el contenedor
+    }
 
-    // Agrega los talles al DOM
-    const contenedorTalles = document.getElementById('catalogoProducto__talles-contenedor')!
-    fragmento = document.createDocumentFragment();
-    tallesArray.forEach(talle=>{
-        const nuevoTalle = document.createElement('div')
-        nuevoTalle.textContent=talle;
-        nuevoTalle.classList.add('opcionesProductos__opcion');
-        fragmento.appendChild(nuevoTalle)
-    })
-    contenedorTalles.appendChild(fragmento)
+    // Agrega los talles al DOM, si existe almenos uno.
+    if(tallesArray[0]){
+        const contenedorTalles = document.getElementById('catalogoProducto__talles-contenedor')!
+        let fragmento = document.createDocumentFragment();
+        tallesArray.forEach(talle=>{
+            const nuevoTalle = document.createElement('div')
+            nuevoTalle.textContent=talle;
+            nuevoTalle.classList.add('opcionesProductos__opcion');
+            fragmento.appendChild(nuevoTalle)
+        })
+        contenedorTalles.appendChild(fragmento)
+        contenedorTalles.parentElement!.classList.remove('noActivo') // Activa el contenedor
+    }
 }
 
 const verificarListaDeseados =(productoInformacion:producto)=>{
@@ -90,7 +93,7 @@ const verificarListaDeseados =(productoInformacion:producto)=>{
         }else{
             listaProductosDeseados=data
             // Busca el producto actual en la lista del usuario
-            const indice:number = listaProductosDeseados.indexOf(productoInformacion._id)
+            const indice:number = listaProductosDeseados.indexOf(productoInformacion._id.toString())
             if(indice===-1){
                 // Si no se encuentra el id del producto en la lista del usuario entonces no hace nada
             }else{
@@ -205,7 +208,7 @@ document.addEventListener("DOMContentLoaded",async()=>{
             }else{ // Si no hay errores:
                 const producto:producto = data
                 cargarInformacionProducto(producto) // Carga la informacion general del producto en el DOM
-                cargarColoresTalles(producto) // Carga las variantes de colores y talles del producto
+                if(producto.variantes) cargarColoresTalles(producto) // Si existen, carga las variantes de colores y talles del producto
                 verificarListaDeseados(producto) // Le define la funcion al boton de agregar el producto a la lista de deseados y verifica si el producto ya forma parte o no de la lista
             }
         })

@@ -27,31 +27,10 @@ const productoSchema = new mongoose.Schema<producto>({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Categoria'
     },
-    variantes: [
-        {
-            color: {
-                type: String,
-                default: '#000000',
-                required: true // Color es obligatorio
-            },
-            caracteristicas: [
-                {
-                    talle: {
-                        type: String,
-                        required: true // Talle es obligatorio
-                    },
-                    SKU: { 
-                        type: String,
-                        default: "0"
-                    },
-                    stock: {
-                        type: Number,
-                        default: 0,
-                        required: true
-                    },
-                }]
-        }
-    ],
+    variantes: [{ 
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Variante' 
+    }],
     descripcion:{
         type: String
     },

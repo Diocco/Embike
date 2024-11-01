@@ -43,15 +43,15 @@
                 <textarea id="modificarProducto__fotoDescripcion__textarea"></textarea>
             </div>
             <form id="modificarProducto__caracteristicas">
-                <h4>Nombre</h4>
+                <h4 class="modificarProducto__caracteristicas__h4" >Nombre</h4>
                 <input  class="modificarProducto__caracteristicas__input"  name="nombre"    id="modificarProducto__caracteristicas__input__nombre">
-                <h4>Precio Unitario</h4>
+                <h4 class="modificarProducto__caracteristicas__h4" >Precio Unitario</h4>
                 <input  class="modificarProducto__caracteristicas__input"  name="precio"    id="modificarProducto__caracteristicas__input__precio" type="number">
-                <h4>Marca</h4>
+                <h4 class="modificarProducto__caracteristicas__h4" >Marca</h4>
                 <input  class="modificarProducto__caracteristicas__input"  name="marca"     id="modificarProducto__caracteristicas__input__marca">
-                <h4>Modelo</h4>
+                <h4 class="modificarProducto__caracteristicas__h4" >Modelo</h4>
                 <input  class="modificarProducto__caracteristicas__input"  name="modelo"    id="modificarProducto__caracteristicas__input__modelo">
-                <h4>Categorias</h4>
+                <h4 class="modificarProducto__caracteristicas__h4" >Categorias</h4>
                 <select class="modificarProducto__caracteristicas__input" name="categoria"  id="modificarProducto__caracteristicas__select__categoria">
                     <option>BMX</option>
                     <option>MTB</option>
@@ -60,7 +60,7 @@
                     <option>Agregar Categoria</option>
                 </select>
                 <input  class="modificarProducto__caracteristicas__input noActivo" name="categoria" placeholder="Ingrese una nueva categoria" id="modificarProducto__caracteristicas__input__categoria">
-                <h4>Imagenes</h4>
+                <h4 class="modificarProducto__caracteristicas__h4" >Imagenes</h4>
                 <div    class="modificarProducto__caracteristicas__input"                   id="modificarProducto__caracteristicas__div-imagenes" ></div>
                 <button id="modificarProducto__verVariantes" class="botonRegistener1" >Ver variantes</button>
             </form>
@@ -244,9 +244,12 @@
     <script type="module" src="../../js/global.js"></script>
     <script type='module' src="../js/registener/index.js"></script>
     <script type='module' src="../js/registener/productos.js"></script>
+
+    <script type='module' src="../js/registener/ventanasEmergentes/modificarFoto.js"></script>
     <script type='module' src="../js/registener/ventanasEmergentes/modificarProducto.js"></script>
     <script type='module' src="../js/registener/ventanasEmergentes/modificarVariante.js"></script>
     <script type='module' src="../js/registener/ventanasEmergentes/preguntar.js"></script>
+
     <script type='module' src="../js/helpers/mostrarMensaje.js"></script>
 
 </body>

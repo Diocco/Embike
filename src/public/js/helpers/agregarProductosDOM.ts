@@ -1,4 +1,5 @@
 import { producto } from "../../../models/interfaces/producto.js";
+import { variante } from "../../../models/interfaces/variante.js";
 
 export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTMLElement) => {
 
@@ -14,27 +15,27 @@ export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTM
             const imagenProducto = producto.imagenes[0]?producto.imagenes[0]:'../img/icons/sinFoto.webp' 
             const tieneDescuento:boolean = producto.precioViejo?true:false
             
-            // Busca la distintas variedades de colores
+            // Verifica que exista al menos una variante, y si existe refleja sus caracteristicas
             const coloresUnicos: Set<string> = new Set(); // Usamos un Set para almacenar colores únicos
-    
-            producto.variantes.forEach((variante: { color: string; caracteristicas: any[]; }) => {
-                // Agregar el color al Set de colores únicos
-                coloresUnicos.add(variante.color);
-            });
-    
-            // Convertir los Sets a arrays 
-            const coloresArray = Array.from(coloresUnicos);
-    
-            // Prepara el HTML con los colores para luego cargarlo junto al producto
-            let coloresHTML:string=''
-            // Recorre el array de colores
-            coloresArray.forEach(color=>{
-                const colorHTML = `<div class="catalogo__div__color ${color}" ></div>`
-                coloresHTML=coloresHTML+colorHTML
-            })
+            let coloresHTML:string='' // Prepara el HTML con los colores para luego cargarlo junto al producto
+            if(producto.variantes){ // Si el producto tiene variantes entonces refleja sus caracteristicas
+                (producto.variantes as variante[]).forEach(variante => {
+                    // Agregar el color al Set de colores únicos
+                    coloresUnicos.add(variante.color);
+                });
+        
+                // Convertir los Sets a arrays 
+                const coloresArray = Array.from(coloresUnicos);
+        
+                // Recorre el array de colores
+                coloresArray.forEach(color=>{
+                    const colorHTML = `<div class="catalogo__div__color ${color}" ></div>`
+                    coloresHTML=coloresHTML+colorHTML
+                })
+            }
     
             
-            agregarElemento.id=producto._id
+            agregarElemento.id=producto._id.toString()
             agregarElemento.classList.add("catalogo__div")
             
             if(tieneDescuento){

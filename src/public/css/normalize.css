@@ -8,6 +8,22 @@
  * 2. Prevent adjustments of font size after orientation changes in iOS.
  */
 
+:root{
+  --colorFondo: rgba(40, 40, 40);
+  --colorBarraLateral:  rgba(50, 50, 50);
+  --colorFiltrosSeleccionProductos:  rgba(60, 60, 60);
+  --colorFondoVentana:  rgba(70, 70, 70);
+  --colorVentana:  rgba(80, 80, 80);
+  --colorBotones:  rgba(100, 100, 100);
+  --colorBotones-hover:  rgba(110, 110, 110);
+  --colorBotones-active:  rgba(120, 120, 120);
+  --colorBotones-positivo:  rgb(21, 105, 0);
+  --colorBotones-negativo:  rgb(134, 38, 38);
+  --colorLetra:  rgb(207, 207, 207);
+  --colorLetraTenue:  rgba(207, 207, 207, 0.5);
+}
+
+
 .noactivo{
   display: none !important;
 }
@@ -44,6 +60,7 @@
   border-radius: 10px;
   font-size: 20px;
   background-color: var(--colorBotones);
+  color: var(--colorLetra);
 }
 .botonRegistener3:hover{
   filter: brightness(1.05)
@@ -52,6 +69,14 @@
   filter: brightness(0.9)
 }
 
+.boton__enProceso{
+  filter: contrast(0.7);
+}
+
+.boton__enError{
+  border:2px solid !important;
+  border-color: red !important;
+}
 
 .Rojo {
   background-color: red;

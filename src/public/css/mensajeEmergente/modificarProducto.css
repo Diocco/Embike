@@ -41,8 +41,12 @@
 #modificarProducto__caracteristicas{
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
-
+/*Titulos de los elementos individuales*/
+.modificarProducto__caracteristicas__h4{
+    width: 100%;
+}
 /*Elemento individuales dentro de las caracteristicas del producto*/
 .modificarProducto__caracteristicas__input{
     display: flex;

@@ -45,7 +45,7 @@ export const mostrarMensaje=(codigoMensaje:string="sc",error:boolean=false)=>{
                 textoMensaje.textContent='';
                 break;
             default: 
-                textoMensaje.textContent=`Error desconocido (${codigoMensaje})`;
+                textoMensaje.textContent=`${codigoMensaje}`;
                 break;
         }
     }

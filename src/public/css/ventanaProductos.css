@@ -34,6 +34,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     align-self: start;
+    min-height: 70px;
 }
 
 
@@ -62,7 +63,7 @@
 .tipo__categoria__producto,.productos__div{
     display: grid;
     grid-template-columns: 700px 230px 70px 150px;
-    margin: 1px 55px;
+    margin: 1px;
     border-radius: 6px;
     border: 1px solid black;
     background-color: var(--colorVentana);

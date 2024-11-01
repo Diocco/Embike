@@ -73,14 +73,7 @@
     background-color: rgb(206, 206, 206);
     box-sizing: border-box;
 }
-.boton__enProceso{
-    filter: contrast(0.7);
-}
 
-.boton__enError{
-    border:2px solid !important;
-    border-color: red !important;
-}
 
 #inicioSesion__formulario__enviar,#registrarse__formulario__enviar{
     background-color: var(--azul-logo);

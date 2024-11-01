@@ -19,6 +19,7 @@
     font-size: 25px;
     padding-left: 12px;
     min-height: 52px;
+    min-width: 614px;
 }
 
 /*Contenedor de vantiantes*/
@@ -39,4 +40,11 @@
     color: var(--colorLetra);
 }
 
-
+/*Mensaje de advertencia al no haber variantes para mostrar*/
+#mensajeSinVariantes {
+    display: flex;
+    height: 52px;
+    justify-content: center;
+    align-items: center;
+    color: var(--colorLetraTenue);
+}

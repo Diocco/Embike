@@ -1,4 +1,4 @@
-import { producto, variante } from "../../../../models/interfaces/producto.js";
+import { producto } from "../../../../models/interfaces/producto.js";
 import { categoria } from "../../../../models/interfaces/categorias.js";
 import { tokenAcceso, urlProductos } from "../../global.js";
 import { mostrarMensaje } from "../../helpers/mostrarMensaje.js";
@@ -6,6 +6,8 @@ import { ventanaEmergenteModificarVarianteProducto } from "./modificarVariante.j
 import { agregarCategoria } from "../../helpers/categorias.js";
 import { actualizarProducto, buscarProductos } from "../productos.js";
 import { preguntar } from "./preguntar.js";
+import { ventanaEmergenteCargarImagenProducto } from "./modificarFoto.js";
+import { variante } from "../../../../models/interfaces/variante.js";
 
 // Contenedores de la ventana emergente
 const contenedorVentanaEmergente:HTMLElement = document.getElementById('ventanaEmergenteFondo')!
@@ -26,7 +28,7 @@ let rechazar:HTMLElement = document.getElementById("modificarProducto__aceptarRe
 let verVariantes:HTMLElement = document.getElementById('modificarProducto__verVariantes')!;
 
 // Variable que almacena la informacion del producto si todo sale bien
-let productoInformacion:producto // Almacena el producto devuelto por el servidor
+let productoInformacion:producto
 
 
 
@@ -56,7 +58,7 @@ export const ventanaEmergenteModificarProducto = async(productoID:string='') =>{
 
 
 }
-const agregarImagenesDOM = async(productoInformacion:producto)=>{
+export const agregarImagenesDOM = async(productoInformacion:producto)=>{
     // Imagen principal
     let imagen = document.getElementById("modificarProducto__fotoDescripcion__img")! as HTMLImageElement;
     imagen.style.backgroundImage=''
@@ -93,124 +95,7 @@ const agregarImagenesDOM = async(productoInformacion:producto)=>{
         ventanaEmergenteCargarImagenProducto(productoInformacion)
     })
 }
-const ventanaEmergenteCargarImagenProducto = (productoInformacion:producto,imagenActualURL:string='')=>{
-    const contenedorImagen = document.getElementById('imagenVariantesProducto__img')! as HTMLImageElement;
-    const cargarImagenInput = document.getElementById('imagenVariantesProducto__input')! as HTMLInputElement;
 
-
-    // Reinicia el contenedor de imagen y el input para subir imagenes
-    contenedorImagen.style.backgroundImage = ``;
-    cargarImagenInput.value=''
-
-    // Si se recibe, coloca la imagen presionada en el contenedor para visualizarla
-    if(imagenActualURL){
-        contenedorImagen.style.backgroundImage = `url(${imagenActualURL})`; // Establece la imagen como fondo del div
-    }
-
-    // Activa la ventana emergente de agregar o visualizar imagen a la variante
-    const ventanaImagenVariante:HTMLElement = document.getElementById('imagenVariantesProducto')!
-    ventanaImagenVariante.classList.remove('noActivo')
-    
-    // Desactiva la ventana de modificar producto
-    const contenedorVentanaModificar:HTMLElement = document.getElementById('modificarProducto')!
-    contenedorVentanaModificar.classList.add('noActivo')
-
-    // Escucha si el usuario presiona el boton de eliminar imagen
-    const botonEliminarImagen = document.getElementById('producto__eliminarImagen')!
-    botonEliminarImagen.onclick=async()=>{
-        ventanaImagenVariante.classList.add('noActivo') // Desactiva la ventana emergente de agregar o visualizar imagen a la variante
-        const respuesta:boolean = await preguntar('¿Estas seguro que desea eliminar la imagen?')
-        ventanaImagenVariante.classList.remove('noActivo') // Activa la ventana emergente de agregar o visualizar imagen a la variante
-    if(respuesta){
-        // Si el usuario confirma que quiere eliminar la foto entonces llama a la funcion para agregar una foto de perfil, pero no le envia ninguna foto y solo envia el URL que debe eliminar del servidor
-        const productoActualizado = await agregarFotoProducto(productoInformacion._id,undefined,imagenActualURL) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y recibe el producto actulizado
-        await agregarImagenesDOM(productoActualizado) // Refleja los cambios en la ventana de modificar producto
-        ventanaImagenVariante.classList.add('noActivo') // Desactiva la ventana emergente de agregar o visualizar imagen a la variante
-        contenedorVentanaModificar.classList.remove('noActivo') // Activa la ventana emergente de agregar o visualizar imagen a la variante
-    }
-    }
-
-    // Escucha si el usuario carga una nueva imagen
-    let imagenNueva:File
-    cargarImagenInput.addEventListener('change', () => {
-        try {
-            if(cargarImagenInput.files){ // Si hay un archivo cargado 
-                const imagenNueva = cargarImagenInput.files[0]; // Obtener el primer archivo
-    
-                const reader = new FileReader(); // Crear un objeto FileReader
-    
-                reader.onload = (e) => {
-                    contenedorImagen.style.backgroundImage = `url(${e.target!.result})`; // Establece la imagen como fondo del div
-                };
-        
-                reader.readAsDataURL(imagenNueva); // Leer el archivo como URL de datos
-            }
-        } catch (error) {
-            mostrarMensaje('Hubo un error al cargar la imagen',true)
-            console.log(error)
-        }
-        
-    })
-
-    // Espera la respuesta del usuario
-    new Promise<boolean>((resolve, reject) => {
-        const botonVolver = document.getElementById('imagenVariantesProducto__volver')! as HTMLButtonElement;
-        const botonGuardar = document.getElementById('imagenVariantesProducto__guardar')! as HTMLButtonElement;
-        botonGuardar.onclick=()=>resolve(true)
-        botonVolver.onclick=()=>resolve(false)
-    })
-    .then(async(guardar)=>{
-        if(guardar) {
-            const productoActualizado = await agregarFotoProducto(productoInformacion._id,imagenNueva,imagenActualURL) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y recibe el producto actulizado
-            await agregarImagenesDOM(productoActualizado) // Refleja los cambios en la ventana de modificar producto
-        }
-    })
-    .then(()=>{
-        // Desactiva la ventana emergente de agregar o visualizar imagen a la variante
-        const ventanaImagenVariante:HTMLElement = document.getElementById('imagenVariantesProducto')!
-        ventanaImagenVariante.classList.add('noActivo')
-        
-        // Activa la ventana de modificar variante de producto
-        const contenedorVentanaVariantes:HTMLElement = document.getElementById('modificarProducto')!
-        contenedorVentanaVariantes.classList.remove('noActivo')
-    })
-    .catch(error=>{
-        mostrarMensaje('2',true)
-        console.log(error)
-    })
-
-}
-const agregarFotoProducto = async(productoID:string,imagenNueva:File|undefined,URLImagenVieja:string='')=>{
-
-    const formData = new FormData()
-    if(imagenNueva) formData.append('img',imagenNueva) // Si se envia una imagen para agregar, la agrega al FormData
-    if(URLImagenVieja) formData.append('URLImagenVieja',URLImagenVieja) // Si se envia una imagen para eliminar la agrega al FormData
-
-    return fetch(urlProductos+`/${productoID}`, {
-        method: 'PUT',
-        headers: { 'tokenAcceso':`${tokenAcceso}`},
-        body: formData
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        console.log(data)
-        if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                mostrarMensaje(error.msg,true);
-            })
-        }else{ // Si el servidor devuelve un exitoso:
-            return data.productoActualizado
-        }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        console.error(error);
-        mostrarMensaje('2',true);
-        return -1
-    })
-    .finally(()=>{
-        return 0
-    })
-}
 const buscarProducto = async(productoID:string) =>{
 
     return new Promise<producto>((resolve) => {
@@ -255,9 +140,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     // Define las funciones de los botones
     verVariantes.addEventListener('click',async(event)=>{
         event.preventDefault()
-        const esVariantes = await ventanaEmergenteModificarVarianteProducto(productoInformacion) // Abre la ventana emergente de las variantes del producto, devuelve un array de variantes o undefined
-        if(esVariantes) productoInformacion.variantes = esVariantes // Si la funcion devolvio un array de variantes entonces las almacena
-        console.log(productoInformacion.variantes)
+        ventanaEmergenteModificarVarianteProducto(productoInformacion) // Abre la ventana emergente de las variantes del producto, devuelve un array de variantes o undefined
     })
 
     // Boton para guardar los cambios
@@ -279,7 +162,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                 resolve()
             })
             .then(async()=>{
-                await actualizarProducto(datosFormulario,productoInformacion._id,productoInformacion.variantes);
+                await actualizarProducto(datosFormulario,productoInformacion._id);
             })
             .then(()=>{
                 mostrarMensaje('5') 

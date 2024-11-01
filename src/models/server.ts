@@ -29,6 +29,8 @@ import usuariosRoutes from '../routes/usuarios.js';
 import authRoutes from '../routes/auth.js'; 
 import categoriasRoutes from '../routes/categorias.js'; 
 import productosRoutes from '../routes/productos.js'; 
+import variantesRoutes from '../routes/variantes.js'
+
 import fileUpload from 'express-fileupload';
 
 
@@ -39,6 +41,7 @@ class Server {
     authPath: string
     categoriasPath:string
     productosPath:string
+    variantesPath:string
 
     app: express.Application;
     port: string | number;
@@ -48,6 +51,7 @@ class Server {
         this.authPath = '/api/auth';
         this.categoriasPath = '/api/categorias';
         this.productosPath = '/api/productos';
+        this.variantesPath = '/api/variantes';
         
         this.app = express(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
@@ -95,6 +99,8 @@ class Server {
         this.app.use(this.authPath, authRoutes);
         this.app.use(this.categoriasPath, categoriasRoutes);
         this.app.use(this.productosPath, productosRoutes);
+        this.app.use(this.productosPath, productosRoutes);
+        this.app.use(this.variantesPath, variantesRoutes);
         
         // HTML
         this.app.get('/', cargarIndex); // Configura la ruta

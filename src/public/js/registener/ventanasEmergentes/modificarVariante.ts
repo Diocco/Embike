@@ -1,4 +1,7 @@
-import { producto, variante } from '../../../../models/interfaces/producto';
+import { producto } from '../../../../models/interfaces/producto';
+import { variante } from '../../../../models/interfaces/variante';
+import { ObjectId } from "mongoose";
+import { actualizarVariantes, crearVariante, verVariantes } from '../variantes.js';
 
 // Contenedores de ventanas emergentes
 const contenedorVentanaModificar:HTMLElement = document.getElementById('modificarProducto')!
@@ -8,8 +11,11 @@ const contenedorVentanaVariantes:HTMLElement = document.getElementById('variante
 const contenedorVariantes = document.getElementById('variantesProducto__variantes')! as HTMLDivElement;
 
 // Botones
-let aceptar:HTMLElement = document.getElementById("variantesProducto__aceptarRechazar__aceptar")!;
-let rechazar:HTMLElement = document.getElementById("variantesProducto__aceptarRechazar__rechazar")!;
+const botonAgregarVariante = document.getElementById('variantesProducto__agregarVariante')! as HTMLButtonElement
+const aceptar:HTMLElement = document.getElementById("variantesProducto__aceptarRechazar__aceptar")!;
+const rechazar:HTMLElement = document.getElementById("variantesProducto__aceptarRechazar__rechazar")!;
+
+let variantes:variante[]|undefined // Almacena las variantes del producto
 
 const alternarVentanaEmergente =(seActiva:boolean)=>{
     if(seActiva){
@@ -28,96 +34,121 @@ const alternarVentanaEmergente =(seActiva:boolean)=>{
 }
 
 // Ventana emergente para modificar o agregar una variante de un producto a la base de datos
-export function ventanaEmergenteModificarVarianteProducto(productoInformacion:producto):Promise<variante[] | undefined> {
+export const ventanaEmergenteModificarVarianteProducto=async(productoInformacion:producto):Promise<boolean> =>{
     alternarVentanaEmergente(true)
-    
-    // Carga las distintas variables del producto
-    contenedorVariantes.innerHTML='' // Vacia el contenedor con informacion previa
-    productoInformacion.variantes.forEach(variante => {
-        agregarVarianteDOM(contenedorVariantes,variante)
-    });
 
+    contenedorVariantes.innerHTML=''; // Vacia el contenedor con informacion previa
+
+    // Solicita al servidor las variantes del producto
+    variantes = await verVariantes(productoInformacion._id)
+    
+    // Carga las distintas variables del producto, si existen
+    if(variantes){ // Carga las variantes del producto
+        variantes.forEach(variante => {
+            agregarVarianteDOM(contenedorVariantes,variante)
+        });
+
+    }else{// Si el producto no tiene variantes entonces muestra un mensaje de error
+        // Contenedor de la variante
+        const contenedorVariante = document.createElement('div')
+        contenedorVariante.id='mensajeSinVariantes';
+        contenedorVariante.textContent='No hay ninguna variante para mostrar'
+    
+        contenedorVariantes.appendChild(contenedorVariante)
+    }
+
+    // Carga la funcion de agregar variante en la ventana de variantes de producto
+    botonAgregarVariante.onclick=async(event)=>{
+        event.preventDefault()
+
+        // Crea una variable nueva con variables por default
+        let varianteNueva:variante = {
+            producto: productoInformacion._id,
+            color: '',
+            talle: '',
+            SKU: (new Date().getTime()).toString(), // Crea un SKU por default, el usuario luego puede definir uno diferente
+            stock: 0
+        }
+
+        // La manda al servidor para crearla en la base de datos, espera a que el servidor responda con el id de la variante creada
+        const varianteId = await crearVariante(varianteNueva)
+        
+        if(varianteId){ // Si todo sale bien asigna el id de la variante a la variante nueva 
+            varianteNueva._id = varianteId
+            agregarVarianteDOM(contenedorVariantes,varianteNueva) // Crea la variante en el DOM
+        }
+    }
 
     // Espera la respuesta del usuario
-    return new Promise<variante[]|undefined>((resolve) => {
+    return new Promise<boolean>((resolve) => {
         
         rechazar.onclick=()=>{ //Si se apreta rechazar no se guardan los datos cambiados
     
             alternarVentanaEmergente(false)
-            resolve(undefined)
+            resolve(false)
         }
     
-        aceptar.onclick=()=>{ //Si se apreta aceptar se devuelve un array con todas las variables del producto
-    
-            const variantes = variantesDOM()
-            alternarVentanaEmergente(false)
-            resolve(variantes)
-        
+        aceptar.onclick=async ()=>{ //Si se apreta aceptar se devuelve un array con todas las variables del producto
+            
+            document.querySelectorAll('.boton__enError').forEach(contenedor=>contenedor.classList.remove('boton__enError')) // Elimina los estados de error, si los hay
+            
+            variantes = variantesDOM(productoInformacion._id) // Devuelve las variantes que hay en el DOM
+            if(variantes) { // Si hay almenos una variante entonces la envia al servidor para ser guardada
+                const respuesta = await actualizarVariantes(variantes,productoInformacion._id)
+                if(respuesta){ // Si el servidor devuelve errores entonces marca en error los inputs correspondientes.
+                    respuesta.forEach(error=>{
+                        const contenedorVarianteEnError = document.getElementById(`${error.value}`)
+                        if(error.path==='SKU') contenedorVarianteEnError?.querySelector('.variantesProducto__input-SKU')!.classList.add('boton__enError')
+                        if(error.path==='stock') contenedorVarianteEnError?.querySelector('.variantesProducto__input-stock')!.classList.add('boton__enError')
+                    })
+                }else alternarVentanaEmergente(false)
             }
+            
+            resolve(true)
+        
+        }
     })
 
 }
 
-export const agregarVarianteDOM =(contenedor:HTMLElement,variante:variante|undefined=undefined)=>{
-    // Si no recibe como argumento la variable "variante" entonces la inicia con valores genericos
-    if(!variante){
-        variante={
-            color:'Negro',
-            caracteristicas:[{
-                talle:'',
-                SKU:'',
-                stock:0
-            }]
-        }
-    }
+export const agregarVarianteDOM =(contenedor:HTMLElement,variante:variante)=>{
 
-    // Recorre la variante y las agrega al DOM
-    variante.caracteristicas.forEach(caracteristica =>{
-        // Contenedor de la variante
-        const contenedorVariante = document.createElement('div')
-        contenedorVariante.classList.add('variantesProducto__variantes__div');
+    // Agrega la variante al DOM
+    const contenedorVariante = document.createElement('div') // Contenedor de la variante
+    contenedorVariante.id = variante._id!.toString() // El id del contenedor es el mismo id que el de la variante
+    contenedorVariante.classList.add('variantesProducto__variantes__div');
 
-        let opcionesColores:string = `
-        <option>Rojo</option>
-        <option>Naranja</option>
-        <option>Azul</option>
-        <option>Verde</option>
-        <option>Negro</option>
-        <option>Blanco</option>
-        <option>Amarillo</option>
-        <option>Gris</option>
-        <option>Rosa</option>
-        <option>Marrón</option>
-        <option>Celeste</option>
-        <option>Violeta</option>
-        `
+    let opcionesColores:string = `
+    <option>Rojo</option>
+    <option>Naranja</option>
+    <option>Azul</option>
+    <option>Verde</option>
+    <option>Negro</option>
+    <option>Blanco</option>
+    <option>Amarillo</option>
+    <option>Gris</option>
+    <option>Rosa</option>
+    <option>Marrón</option>
+    <option>Celeste</option>
+    <option>Violeta</option>
+    `
 
-        // Define cual es el color seleccionado
+    // Define cual es el color seleccionado
 
-        opcionesColores = opcionesColores.replace(`>${variante.color}`,` selected>${variante.color}`)
+    opcionesColores = opcionesColores.replace(`>${variante.color}`,` selected>${variante.color}`)
 
-        contenedorVariante.innerHTML=`
-            <input class="variantesProducto__input variantesProducto__input-SKU" value="${caracteristica.SKU}">
-            <select class="variantesProducto__input variantesProducto__select-color" name="color"> ${opcionesColores}</select>
-            <input class="variantesProducto__input variantesProducto__input-talle" value="${caracteristica.talle}">
-            <input class="variantesProducto__input variantesProducto__input-stock" value="${caracteristica.stock}"  type="number">
-        `
-        contenedor.appendChild(contenedorVariante)
-    })
-
+    contenedorVariante.innerHTML=`
+        <input class="variantesProducto__input variantesProducto__input-SKU" value="${variante.SKU}">
+        <select class="variantesProducto__input variantesProducto__select-color" name="color"> ${opcionesColores}</select>
+        <input class="variantesProducto__input variantesProducto__input-talle" value="${variante.talle}">
+        <input class="variantesProducto__input variantesProducto__input-stock" value="${variante.stock}"  type="number">
+    `
+    contenedor.appendChild(contenedorVariante)
+    document.getElementById('mensajeSinVariantes')?.classList.add('noActivo') // Si el mensaje de "sin variantes" esta activo entonces lo desactiva
 }   
 
-const variantesDOM =():variante[]=>{
+const variantesDOM =(productoID:ObjectId):variante[]=>{
     // Devuelve un array con todas las variantes del producto que se encuetran en el DOM
-    const coloresVariables = document.querySelectorAll('.variantesProducto__select-color') as NodeListOf<HTMLSelectElement> // Almacena todos los contenedores de los colores de las variables
-    let setColoresVariables:Set<string> = new Set() // Almacena todos los colores de las variables
-
-    // Primero recorre las variantes para almacenar todos los diferentes colores
-    coloresVariables.forEach(selector=>{
-        setColoresVariables.add(selector.value)
-    })
-
-    const arrayColoresVariables = Array.from(setColoresVariables) // Convierte el set de la lista de colores a un array
 
     // Inicializa la variable que almacena todas las variantes del producto, el indice de los colores dentro de la variable "variantes" y "arrayColoresVariables" comparten el mismo orden
     let variantes:variante[]=[]
@@ -126,30 +157,25 @@ const variantesDOM =():variante[]=>{
 
     // Recorre todos los contenedores de variantes de un producto
     contenedoresVariantesProducto.forEach(contenedorVariante=>{
+
+
         const SKU:string = (contenedorVariante.querySelector('.variantesProducto__input-SKU')! as HTMLInputElement).value
         const color:string = (contenedorVariante.querySelector('.variantesProducto__select-color')! as HTMLSelectElement).value
         const talle:string = (contenedorVariante.querySelector('.variantesProducto__input-talle')! as HTMLInputElement).value
         const stock:number = Number((contenedorVariante.querySelector('.variantesProducto__input-stock')! as HTMLInputElement).value)
 
-        const indiceVariante = arrayColoresVariables.indexOf(color) // El indice que tiene el color de la variante dentro del array de colores es el mismo indice que tiene la variante actual dentro del array de variantes
-        const caracteristica={
-                SKU,
-                talle,
-                stock
-            }
-        
-        // Agrega las nueva variante
-
-        if(variantes[indiceVariante]){
-            // Si el color de la variable ya esta inicializado entonces solo agrega una nueva caracteristica
-            variantes[indiceVariante].caracteristicas.push(caracteristica)
-        }else{
-            // Si no esta inicializada la inicializa
-            variantes[indiceVariante]={
-                color,
-                caracteristicas:[caracteristica]
-            }
+        const varianteNueva:variante={
+            producto:productoID,
+            _id:contenedorVariante.id,
+            SKU,
+            color,
+            talle,
+            stock
         }
+
+        // Agrega las nueva variante
+        if(variantes[0]) variantes.push(varianteNueva) // Si el array de variantes no esta vacio entonces agrega la nueva variante
+        else variantes[0] = varianteNueva // Si esta vacio entonces lo inicia con la nueva variante
         
     })
     return variantes
@@ -158,12 +184,6 @@ const variantesDOM =():variante[]=>{
 
 document.addEventListener('DOMContentLoaded',()=>{
 
-    // Carga la funcion de agregar variante en la ventana de variantes de producto
-    const botonAgregarVariante = document.getElementById('variantesProducto__agregarVariante')! as HTMLButtonElement
-    const contenedorVariantes = document.getElementById('variantesProducto__variantes')! as HTMLDivElement;
-    botonAgregarVariante.addEventListener('click',(event)=>{
-        event.preventDefault()
-        agregarVarianteDOM(contenedorVariantes)
-    })
+
 
 })
