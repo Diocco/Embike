@@ -1,5 +1,5 @@
-import mongoose from "mongoose"
-import { categoria } from "./categorias"
+import mongoose, { ObjectId } from "mongoose"
+import { CategoriaI } from "./categorias"
 import { variante } from "./variante"
 
 export interface producto {
@@ -9,14 +9,19 @@ export interface producto {
     modelo:string,
     estado:boolean,
     usuario:mongoose.Schema.Types.ObjectId, 
-    categoria:mongoose.Schema.Types.ObjectId|categoria,
-    variantes: mongoose.Schema.Types.ObjectId|variante[],
+    categoria:mongoose.Schema.Types.ObjectId|CategoriaI,
+    variantes: mongoose.Schema.Types.ObjectId[]|variante[],
     descripcion: string
     precio:number,
     precioViejo:number,
-    especificaciones:mongoose.Schema.Types.Mixed
+    especificaciones:[EspecificacionI]
     disponible:boolean,
     tags:[string],
     imagenes: string[],
     save: () => Promise<void>
     }
+
+export interface EspecificacionI {
+    nombre:string,
+    descripcion:string
+}

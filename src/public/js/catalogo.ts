@@ -1,14 +1,15 @@
 import { producto } from "../../models/interfaces/producto.js";
 import { agregarProductosDOM } from "./helpers/agregarProductosDOM.js";
-import { categoria } from "../../models/interfaces/categorias.js";
+import { CategoriaI } from "../../models/interfaces/categorias.js";
 import { urlCategorias, urlProductos } from "./global.js";
 import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+import { buscarCategoriasValidas, obtenerProductos } from "./services/productosAPI.js";
 
 
 
 //Se agrega el comportamiento de cuando se hace click sobre cualquier producto
 
-export const buscarProductos = ()=>{
+export const buscarProductos = async()=>{
         // Vacia el contenedor de productos y coloca una barra de carga
     
         const contenedorProductos: HTMLElement = document.getElementById('catalogo')!; //Toma el catalogo como el contenedor de los productos a agregar
@@ -17,46 +18,30 @@ export const buscarProductos = ()=>{
         
         // Define los query params para enviarlos en el fetch y asi filtrar los productos
         const params = new URLSearchParams(window.location.search);
-        const desde = params.get('desde') || 0;
-        const hasta = params.get('hasta') || 20;
+        const desde = params.get('desde') || '0';
+        const hasta = params.get('hasta') || '20';
         const precioMin = params.get('precioMin') || '';
         const precioMax = params.get('precioMax') || '';
         const palabraBuscada = params.get('palabraBuscada') || '';
         const categorias = params.get('categorias') || '';
         const ordenar = params.get('ordenar') || '';
+
         // Realiza la peticion GET para obtener los productos
-        fetch(urlProductos+`?desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}`, { 
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(response => response.json()) // Parsear la respuesta como JSON
-        .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-            console.log(data)
-            if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
-                mostrarMensaje('',true);
-                (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                    console.log(error);
-                })
-            }else{ // Si el servidor no devuelve errores:
-                const productos:[producto]=data.productos
-                if(productos[0]){ // Si se encuentran productos para los parametros de busqueda entonces los agrega
-                    contenedorProductos.classList.remove('catalogo-conMensaje')
-                    agregarProductosDOM(productos,contenedorProductos)
-                }else{ // Si no se encontraron productos da aviso al usuario
-                    // Vacia el contenedor y muestra un mensaje de error
-                    contenedorProductos.innerHTML=`
-                    <div id="mensajeSinProductos">
-                        <i id="mensajeSinProductos__logo" class="fa-solid fa-triangle-exclamation"></i>
-                        <p id="mensajeSinProductos__mensaje" >No se encontraron productos para los parametros de busqueda</p>
-                    </div>
-                    `
-                }
-            }
-        })
-        .catch(error => { // Si hay un error se manejan 
-            mostrarMensaje('2',true);
-            console.error(error);
-        })
+        const productos = await obtenerProductos(desde,hasta,precioMin,precioMax,palabraBuscada,categorias,ordenar)
+
+        if (productos.length > 0){ // Si se encuentran productos para los parametros de busqueda entonces los agrega
+            contenedorProductos.classList.remove('catalogo-conMensaje')
+            agregarProductosDOM(productos,contenedorProductos)
+        }else{ // Si no se encontraron productos da aviso al usuario
+            // Vacia el contenedor y muestra un mensaje de error
+            contenedorProductos.innerHTML=`
+            <div id="mensajeSinProductos">
+                <i id="mensajeSinProductos__logo" class="fa-solid fa-triangle-exclamation"></i>
+                <p id="mensajeSinProductos__mensaje" >No se encontraron productos para los parametros de busqueda</p>
+            </div>
+            `
+        }
+
 }
 
 
@@ -258,33 +243,10 @@ const buscarPalabra=(input:HTMLInputElement)=>{
 //Alternar el active en los botones del indice
 document.addEventListener("DOMContentLoaded", async() => {
 
-    // Carga las categorias validas en el DOM
-    fetch(
-        urlCategorias+`?nombres=true`, { // Realiza la peticion GET para obtener un string[] con los nombres de las categorias validas
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor, maneja errores o agrega elementos al DOM
-        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error);
-            })
-        }else{ // Si el servidor no devuelve errores:
-            const nombreCategorias:string[] = data.categorias
-            agregarCategoriasDOM(nombreCategorias)
-        }
-    })
-    .then(()=>{ // Una vez que se agregaron los elementos al DOM o se manejaron los errores, verifica los estados activos de los parametros de busqueda, para reflejarlos visualmente
-        verificarActive(); // Verifica los estados de los input y los botones para reflejar los pararametros de filtrado
-
-    })
-    .catch(error => { // Si hay un error se manejan 
-        mostrarMensaje('2',true)
-        console.error(error);
-    })
-
+    
+    const nombresCategorias = await buscarCategoriasValidas() // Busca los nombres de las categorias validas
+    agregarCategoriasDOM(nombresCategorias) // Carga las categorias validas en el DOM
+    verificarActive() // Verifica los estados de los input y los botones para reflejar los pararametros de filtrado
     buscarProductos(); // Busca los productos filtrandolos segun los query params
     precioMinMax(); // Le da la funcionalidad a los input de precio maximo y minimo
     ordenarPrecios(); // Define el comportacion de el boton de ordenar productos por precio

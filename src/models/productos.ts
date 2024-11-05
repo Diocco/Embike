@@ -42,9 +42,14 @@ const productoSchema = new mongoose.Schema<producto>({
         type: Number,
         default: 0
     },
-    especificaciones: {
-        type: mongoose.Schema.Types.Mixed // Permite características dinámicas
-    },
+    especificaciones: [{
+        nombre:{
+            type:String
+        },
+        descripcion:{
+            type:String
+        }
+    }],
     disponible:{
         type: Boolean,
         default: true,

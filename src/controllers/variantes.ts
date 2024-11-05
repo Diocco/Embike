@@ -5,6 +5,7 @@ import Variante from '../models/variante.js';
 import { error } from "../interfaces/error.js";
 import { SKUUnico } from '../../database/variantesVerificaciones.js';
 import Producto from "../models/productos.js";
+import { producto } from "../models/interfaces/producto.js";
 
 
 
@@ -26,13 +27,28 @@ export const crearVariante = async(req: Request, res: Response)=>{
         producto,
         color,
         talle,
-        stock
+        'stock':Number(stock)
+    }
+    try {
+    
+        const varianteDB = new Variante( data ) // Crea una nueva variante
+        await Promise.all([
+            agregarVarianteProducto(producto,varianteDB._id as ObjectId),
+            varianteDB.save() // La guarda en la base de datos
+        ])
+
+        res.json(varianteDB)
+    } catch (error) {
+        const errors:error[] = [{
+            msg: 'Error al crear una nueva variante.' + (error as Error).message,
+            path: "Servidor",
+            value: JSON.stringify(data)
+        }]
+        res.status(500).json(errors)
     }
 
-    const varianteDB = new Variante( data ) // Crea una nueva producto
-    await varianteDB.save() // La guarda en la base de datos
     
-    res.json(varianteDB)
+
 }
 
 export const verVariantes = async(req: Request, res: Response)=>{
@@ -70,6 +86,7 @@ export const actualizarVariantes = async (req: Request, res: Response) => {
             }
 
             try { // Verifica si el SKU es unico
+                if(!variante.SKU) throw new Error("El SKU es obligatorio");
                 await SKUUnico(variante.SKU,variante._id as string); // Asegura que SKUUnico se complete antes de continuar
             } catch (error) {
                 errors.push({
@@ -101,3 +118,22 @@ export const actualizarVariantes = async (req: Request, res: Response) => {
         return res.status(500).json({ error: "Error al actualizar variantes" });
     }
 };
+
+const agregarVarianteProducto=async(productoId:string|ObjectId,varianteId:ObjectId)=>{
+
+
+    const producto:producto|null = await Producto.findById(productoId);
+    if(!producto) throw new Error("No se encontro el producto para agregar la variante");
+    
+    (producto.variantes as ObjectId[]).push(varianteId);
+    await producto.save();
+    
+
+}
+
+export const eliminarVariante = async(req: Request, res: Response) =>{
+    const {varianteId} = req.params; // Desestructura el id
+    // Busca la variante con ese id y cambia su estado de actividad
+    const variante = await Variante.findByIdAndDelete( varianteId ); 
+    return res.status(200).json(variante)
+}

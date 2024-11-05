@@ -2,9 +2,9 @@ import mongoose, { ObjectId } from "mongoose";
 
 export interface variante {
     _id?: ObjectId|string, 
-    producto: ObjectId, 
+    producto: ObjectId|string, 
     color: string,
     talle: string,
     SKU: string,
-    stock: number,
+    stock: number
     }

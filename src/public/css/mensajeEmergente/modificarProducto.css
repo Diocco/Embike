@@ -1,14 +1,15 @@
 /*Ventana de modificacion de productos*/
 #modificarProducto{
     display: grid;
-    grid-template-columns: min-content 300px;
-    grid-template-rows: min-content min-content;
+    grid-template-columns: 239px 300px 650px;
+    grid-template-rows: 300px 300px 60px;
     background-color: var(--colorFondoVentana);
     color: var(--colorLetra);
     padding: 20px;
     width: min-content;
     height: min-content;
     border-radius: 10px;
+    justify-items: center;
 }
 
 /*Contenedor de la imagen y la descripcion del producto*/
@@ -26,15 +27,15 @@
 
 /*Descripcion del producto*/
 #modificarProducto__fotoDescripcion__textarea{
-    margin: 1vw;
-    padding: 0.5vw;
-    width: 10vw;
-    height: 15vw;
+    margin: 10px;
+    padding: 5px;
+    width: 200px;
+    height: 250px;
     background-color: var(--colorVentana);
-    border: solid black 0.1vw ;
-    border-radius: 0.5vw;
+    border: solid black 0.1vw;
+    border-radius: 10px;
     resize: none;
-    color: var(--colorLetra)
+    color: var(--colorLetra);
 }
 
 /*Contenedor de caracteristicas del producto*/
@@ -42,6 +43,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    grid-row: 1/3;
 }
 /*Titulos de los elementos individuales*/
 .modificarProducto__caracteristicas__h4{
@@ -58,6 +60,10 @@
     border: solid black 1px;
     border-radius: 0.5vw;
     color: var(--colorLetra);
+}
+/*Input donde se coloca el ID del producto*/
+#modificarProducto__caracteristicas__input__id{
+    filter: brightness(0.8);
 }
 
 /*Contenedor del contador de imagenes de una variante*/
@@ -109,11 +115,67 @@
     padding: 5px;
 }
 
-/*Contenedor de botones "aceptar" y "rechazar"*/
-#modificarProducto__aceptarRechazar{
+
+/*Ventana de variaste de productos*/
+/*Contenedor general de la ventana de modificar variantes*/
+#variantesProducto,#especificacionesProducto{
     display: flex;
-    grid-column: 2/3;
-    flex-direction: row;
-    justify-content: space-around;
+    background-color: var(--colorFondoVentana);
+    flex-direction: column;
     align-items: center;
+}
+
+/*Indice para las variantes del producto*/
+#variantesProducto__indice,
+#especificacionesProducto__indice,
+#variantesProducto__variantes,
+#especificacionesProducto__especificaciones{ 
+    margin: 3px;
+    border-radius: 6px;
+    border: 1px solid black;
+    background-color: var(--colorVentana);
+    align-items: center;
+    font-size: 25px;
+    min-width: 614px;
+    max-width: 614px;
+    padding: 5px 0px;
+}
+
+#variantesProducto__variantes,
+#especificacionesProducto__especificaciones{ 
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/*Contenedor de vantiantes*/
+.variantesProducto__variantes__div,#variantesProducto__indice{
+    display: grid;
+    grid-template-columns: 235px 150px 100px 50px 50px;
+    align-items: center;
+    padding-left: 5px;
+}
+
+
+
+/*Mensaje de advertencia al no haber variantes para mostrar*/
+#mensajeSinVariantes,#mensajeSinEspecificaciones {
+    display: flex;
+    height: 52px;
+    justify-content: center;
+    align-items: center;
+    color: var(--colorLetraTenue);
+}
+
+
+/*Ventana de especificaciones de producto*/
+#especificacionesProducto__indice,.especificacionesProducto__especificacion{
+    display: grid;
+    grid-template-columns: 200px 334px 50px;
+    align-items: center;
+    padding-left: 5px;
+}
+
+/*Boton para volver*/
+#modificarProducto__respuesta{
+    grid-column: 1/4;
 }

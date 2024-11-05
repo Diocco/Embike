@@ -12,5 +12,9 @@ export const SKUUnico = async(SKU:String,id?:string) =>{
         }
 
     };
+}
 
+export const varianteExiste=async(varianteId:string)=>{
+    const existe = await Variante.findById(varianteId) // Verifica si en la base de datos haya un objeto que tenga una SKU "parametro" con el mismo valor pasado como argumento en el body
+    if(!existe) throw new Error("Id de la variable invalido");
 }

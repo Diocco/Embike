@@ -3,15 +3,24 @@ import { producto } from "../../../models/interfaces/producto.js";
 import { variante } from "../../../models/interfaces/variante.js";
 import { tokenAcceso, urlProductos } from "../global.js";
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js";
-import { ventanaEmergenteModificarProducto } from "./ventanasEmergentes/modificarProducto.js";
-import { preguntar } from "./ventanasEmergentes/preguntar.js";
-import { ObjectId } from "mongoose";
-
-// Contenedor de productos
-const contenedorProductos: HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__productos')!
+import { buscarCargarProductos } from "./index.js";
 
 
-export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTMLElement) => {
+
+
+export const agregarProductosDOM = async(productos:producto[],contenedorProductos:HTMLElement) => {
+
+
+    if(productos.length<0){ // Si no se encontraron productos da aviso al usuario
+        // Vacia el contenedor y muestra un mensaje de error
+        contenedorProductos.innerHTML=`
+        <div id="mensajeSinProductos">
+            <i id="mensajeSinProductos__logo" class="fa-solid fa-triangle-exclamation"></i>
+            <p id="mensajeSinProductos__mensaje" >No se encontraron productos para los parametros de busqueda</p>
+        </div>
+        `
+        return 
+    }
 
     new Promise<void>((resolve) => {
         contenedorProductos.innerHTML=''; // Reinicia el contenedor
@@ -44,7 +53,6 @@ export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTM
             <div class="producto__div__stock">${stockTotal}</div>
             <div class="producto__div__opciones">
                 <button class="fa-solid fa-check     producto__opciones botonRegistener3 producto__disponibilidad ${claseProductoDisponible}" ></button>
-                <button class="fa-solid fa-pencil    producto__opciones botonRegistener3 producto__modificar                                " ></button>
                 <button class="fa-solid fa-trash-can producto__opciones botonRegistener3 producto__eliminar       botonNegativo             " ></button>
             </div>
             `
@@ -55,95 +63,13 @@ export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTM
         contenedorProductos.appendChild(fragmento); //Agrega el fragmento con todos los productos al catalogo
         resolve()
     })
-    .then(()=>{
-        botonesConfiguracionProducto() // Le asigna las funciones correspondientes a los botones de configuracion de cada producto
-    })
+
 }
 
-export const buscarProductos = async(contenedorProductos:HTMLElement)=>{
-    // Vacia el contenedor de productos y coloca una barra de carga
-
-    contenedorProductos.innerHTML=`<div id="cargandoProductos"></div>` // Muestra el icono de carga 
-    //contenedorProductos.classList.add('catalogo-conMensaje') // Centra el icono de carga
-    
-    // Define los query params para enviarlos en el fetch y asi filtrar los productos
-    const params = new URLSearchParams(window.location.search);
-    const desde = params.get('desde') || 0;
-    const hasta = params.get('hasta') || 20;
-    const precioMin = params.get('precioMin') || '';
-    const precioMax = params.get('precioMax') || '';
-    const palabraBuscada = params.get('palabraBuscada') || '';
-    const categorias = params.get('categorias') || '';
-    const ordenar = params.get('ordenar') || '';
 
 
-    // Realiza la peticion GET para obtener los productos
 
-    fetch(urlProductos+`?variantes=true&disponible=true&desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}`, { 
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error);
-            })
-        }else{ // Si el servidor no devuelve errores:
-            console.log(data)
-            const productos:[producto]=data.productos
-            if(productos[0]){ // Si se encuentran productos para los parametros de busqueda entonces los agrega
-                contenedorProductos.classList.remove('catalogo-conMensaje')
-                agregarProductosDOM(productos,contenedorProductos)
-            }else{ // Si no se encontraron productos da aviso al usuario
-                // Vacia el contenedor y muestra un mensaje de error
-                contenedorProductos.innerHTML=`
-                <div id="mensajeSinProductos">
-                    <i id="mensajeSinProductos__logo" class="fa-solid fa-triangle-exclamation"></i>
-                    <p id="mensajeSinProductos__mensaje" >No se encontraron productos para los parametros de busqueda</p>
-                </div>
-                `
-            }
-        }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        mostrarMensaje('2',true);
-        console.error(error);
-    })
-}
-
-const botonesConfiguracionProducto =()=>{
-    // Le da la funcion a los botones de alternar disponibilidad de un producto
-    const botonesDisponibilidad: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.producto__disponibilidad')
-    botonesDisponibilidad.forEach((boton)=>{
-        boton.onclick =()=>{
-            const idProducto = boton.parentElement!.parentElement!.id!
-            const estaDisponible = boton.classList.contains('botonPositivo')
-            alternarDisponibilidadProducto(idProducto,estaDisponible,boton)
-        }
-    })
-
-    // Le da la funcion a los botones de modificar un producto
-    const botonesModificar: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.producto__modificar')
-    botonesModificar.forEach((boton)=>{
-        boton.onclick =()=>{
-            const idProducto = boton.parentElement!.parentElement!.id!
-            ventanaEmergenteModificarProducto(idProducto)
-        }
-    })
-
-    const botonesEliminar: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.producto__eliminar')
-    botonesEliminar.forEach((boton)=>{
-        boton.onclick =async()=>{
-            const idProducto = boton.parentElement!.parentElement!.id!
-            const respuesta:boolean = await preguntar('¿Estas seguro que quieres eliminar este producto?')
-            if(respuesta) eliminarProducto(idProducto)
-        }
-    })
-}
-
-function eliminarProducto(idProducto: string) {
+export function eliminarProducto(idProducto: string) {
     fetch(urlProductos+`/${idProducto}`, { 
         method: 'DELETE',
         headers: {  'Content-Type': 'application/json' ,
@@ -157,8 +83,7 @@ function eliminarProducto(idProducto: string) {
                 console.log(error);
             })
         }else{ // Si el servidor no devuelve errores:
-            mostrarMensaje('Producto eliminado con exito')
-            buscarProductos(contenedorProductos)
+            buscarCargarProductos()
         }
     })
     .catch(error => { // Si hay un error se manejan 
@@ -168,7 +93,7 @@ function eliminarProducto(idProducto: string) {
 }
 
 
-const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,boton:HTMLElement)=>{
+export const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,boton:HTMLElement)=>{
     // Realiza la peticion PUT para modificar el producto
     const data={
         disponible:!estaDisponible // Envia el opuesto a la disponibilidad actual del producto
@@ -198,34 +123,7 @@ const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,
     })
 }
 
-export const actualizarProducto= async(datosProducto:FormData,productoId:ObjectId)=>{
-
-    
-    return fetch(urlProductos+`/${productoId}`, { 
-        method: 'PUT',
-        headers: { 'tokenAcceso': `${tokenAcceso}`},
-        body:datosProducto
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error);
-            })
-        }else{ // Si el servidor no devuelve errores:
-            return 0
-        }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        mostrarMensaje('2',true);
-        console.error(error);
-    })
-}
 
 
 
-document.addEventListener('DOMContentLoaded',()=>{
-
-})
 

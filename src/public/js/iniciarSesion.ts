@@ -6,7 +6,6 @@ import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
     const botonRegistrarse:HTMLElement = document.getElementById('inicioSesion__formulario__registrarse')!;
     const volverIniciarSesion:HTMLElement = document.getElementById('volverIniciarSesion')!;
     const formularioRegistrarse:HTMLElement = document.getElementById('registrarse__formulario')!;

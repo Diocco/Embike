@@ -1,10 +1,11 @@
 import { producto } from "../../../models/interfaces/producto.js";
 import { variante } from "../../../models/interfaces/variante.js";
 
-export const agregarProductosDOM = (productos:[producto],contenedorProductos:HTMLElement) => {
+export const agregarProductosDOM = (productos:producto[],contenedorProductos:HTMLElement) => {
 
 
     new Promise<void>((resolve) => {
+        contenedorProductos.classList.remove('catalogo-conMensaje') // Elimina el mensaje de "sin productos"
         contenedorProductos.innerHTML=''; // Reinicia el contenedor
         const fragmento: DocumentFragment = document.createDocumentFragment(); //Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
     

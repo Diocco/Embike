@@ -2,17 +2,19 @@ import { Request, Response } from 'express';
 import Producto from '../models/productos.js';
 import Categoria from '../models/categoria.js';
 import mongoose from 'mongoose';
-import { producto } from '../models/interfaces/producto.js';
+import { EspecificacionI, producto } from '../models/interfaces/producto.js';
 import { usuario } from '../models/interfaces/usuario.js';
-import { categoria } from '../models/interfaces/categorias.js';
+import { CategoriaI } from '../models/interfaces/categorias.js';
 import fileUpload from 'express-fileupload';
 import { v4 as uuidv4 } from 'uuid';
+
 // Directorio
 import path from 'path';
 import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url); // Obtiene el nombre del archivo actual
 const __dirname = path.dirname(__filename); // Obtiene el directorio del archivo actual
 import fs from 'fs'
+import { error } from '../interfaces/error.js';
 
 // Devuelve todas las productos
 const verProductos = async(req: Request, res: Response)=>{
@@ -109,7 +111,7 @@ const crearProducto = async(req: Request, res: Response)=>{
         descripcion,
         precio,
         precioViejo,
-        especificaciones,
+        //especificaciones,
         disponible,
         tags
     } = req.body
@@ -125,7 +127,7 @@ const crearProducto = async(req: Request, res: Response)=>{
         descripcion,
         precio,
         precioViejo,
-        especificaciones,
+        //especificaciones,
         disponible,
         tags
     }
@@ -133,7 +135,7 @@ const crearProducto = async(req: Request, res: Response)=>{
     const producto = new Producto( data ) // Crea una nueva producto
     await producto.save() // La guarda en la base de datos
     
-    res.json(`Se creo la producto ${nombre}`)
+    res.json(producto)
 }
 
 // Actualiza una producto con el id pasado como parametro
@@ -148,7 +150,7 @@ const actualizarProducto = async(req: Request, res: Response)=>{
             descripcion,
             precio,
             precioViejo,
-            especificaciones,
+            especificacionesJSON,
             disponible,
             tags,
             URLImagenVieja
@@ -160,18 +162,19 @@ const actualizarProducto = async(req: Request, res: Response)=>{
             descripcion:string,
             precio:number,
             precioViejo:number,
-            especificaciones:string[],
+            especificacionesJSON:string,
             disponible:boolean,
             tags:string[],
             URLImagenVieja:string
         } = req.body
 
-    // Verifica si se envio una nueva imagen y la obtiene
+    try {
+        // Verifica si se envio una nueva imagen y la obtiene
     const  imgPura  = (req.files?req.files.img:undefined) as fileUpload.UploadedFile// Obtiene la imagen 
     let imgURL:string // Se inicia la variable que va a contener el path de la foto de perfil del usuario
 
     if(categoria){ // Si se envia el nombre de una categoria entonces la busca en la base de datos y remplaza el nombre por su ObjectID
-        const objetoCategoria:categoria|null = (await Categoria.findOne({'nombre':categoria}))!
+        const objetoCategoria:CategoriaI|null = (await Categoria.findOne({'nombre':categoria}))!
         if(!objetoCategoria) {
             return res.status(400).json({
                 errors:[{
@@ -181,6 +184,12 @@ const actualizarProducto = async(req: Request, res: Response)=>{
             })
         }
         categoria = objetoCategoria._id.toString()
+    }
+
+    // Si se reciben especificaciones entonces le da el formato correcto
+    let especificaciones:EspecificacionI[] = []
+    if(especificacionesJSON){ 
+        especificaciones=JSON.parse(especificacionesJSON)
     }
 
     // Estructura la informacion para enviarla correctamente al servidor
@@ -208,12 +217,13 @@ const actualizarProducto = async(req: Request, res: Response)=>{
             producto = await eliminarFotoProducto(producto,URLImagenVieja) // Elimina la foto y devuelve el producto modificado
             esProductoModificado = true
         }catch(error){
-            return res.status(500).json({
+            console.log(error)
+            return res.status(500).json([{
                 errors:{
-                    msg:error,
+                    msg:(error as Error).message,
                     path:'Servidor'
                 }
-            })
+            }])
         }
 
     }
@@ -227,11 +237,12 @@ const actualizarProducto = async(req: Request, res: Response)=>{
             // Agrega el url al array de imagenes del producto
             producto.imagenes.push(imgURL) // Guarda la imagen en el array de imagenes
             esProductoModificado = true
-        } catch (errors) {
-            if ((errors as any).path==='Servidor'){
-                return res.status(500).json({errors})
+        } catch (error) {
+            console.log(error)
+            if ((error as error).path==='Servidor'){
+                return res.status(500).json({error})
             }
-            return res.status(400).json(errors)
+            return res.status(400).json(error)
         }
     }
 
@@ -240,15 +251,17 @@ const actualizarProducto = async(req: Request, res: Response)=>{
 
 
     res.status(200).json({ //Devuelve un mensaje y el producto agregado a la base de datos
-        msg: "Producto actualizado en la base de datos",
         productoActualizado:producto
     })
-
-
-
-
-
-
+    } catch (error) {
+    const errors:error[]=[{
+        msg: (error as Error).message,
+        path: 'Servidor',
+        value: ''
+    }]
+    console.log(error)
+    res.status(500).json(errors)
+    }
 }
 
 // Procesa la foto recibida
@@ -258,17 +271,16 @@ const subirFotoProducto = async(img:fileUpload.UploadedFile) =>{
     return new Promise<string>((resolve, reject) => {
         const nombreArchivoDividido = img.name.split('.')
 
-
         const extension = nombreArchivoDividido[nombreArchivoDividido.length - 1]
         const extensionesPermitidas = [`jpg`,`png`,`jpeg`,'webp','gif']
         if(!extensionesPermitidas.includes(extension)){
-            reject([{
+            return reject([{
                     msg: `Extension no permitida, las extensiones permitidas son: ${extensionesPermitidas}`,
                     path: "archivo"
                 }])
         }
         if(img.size > 5 * 1024 * 1024){
-            reject([{
+            return reject([{
                     msg: `El archivo no debe superar los 5MB`,
                     path: "archivo"
                 }])
@@ -285,7 +297,7 @@ const subirFotoProducto = async(img:fileUpload.UploadedFile) =>{
         // Mueve el archivo a la ruta definida
         img.mv(uploadPath,(err)=>{
             if (err){
-                reject([{
+                return reject([{
                         msg: `Error al guardar el archivo`,
                         path: "Servidor"
                     }])
@@ -297,7 +309,6 @@ const subirFotoProducto = async(img:fileUpload.UploadedFile) =>{
     
 
 }
-
 
 // Elimina un producto con el id pasado como parametro
 const eliminarProducto = async(req: Request, res: Response) =>{
@@ -313,23 +324,34 @@ const eliminarProducto = async(req: Request, res: Response) =>{
 }
 
 const eliminarFotoProducto = async(producto:producto,URLImagenVieja:string)=>{
-    return new Promise<producto>((resolve, reject) => {
-        const pathImagenVieja = path.join(__dirname,URLImagenVieja.replace('../','../public/') )
-        fs.unlink(pathImagenVieja, (err) => {
-        if (err) reject('No se pudo eliminar la imagen en el servidor')
-        else {
-            const indiceImagen = producto.imagenes.indexOf(URLImagenVieja)
-            if(indiceImagen===-1) reject('No se encontro el URL en el array de imagenes')
-            else {
-                producto.imagenes.splice(indiceImagen) // Elimina el elemento del array de imagenes del producto
-                resolve(producto)
-            }
+    return new Promise<producto>(async (resolve, reject) => {
+        const pathImagenVieja = path.join(__dirname, URLImagenVieja.replace('../', '../public/'));
+        
+        // Elimina el URL del array de imagenes del producto
+        const indiceImagen = producto.imagenes.indexOf(URLImagenVieja);
+        if (indiceImagen === -1) {
+            reject(new Error('No se encontró el URL en el array de imágenes'));
+        } else {
+            producto.imagenes.splice(indiceImagen, 1); // Elimina el elemento del array de imágenes del producto
+            resolve(producto);
+        }
+
+        try {
+            // Verifica si el archivo existe antes de intentar eliminarlo, si no existe entonces lanza un error 
+            await fs.promises.access(pathImagenVieja, fs.constants.F_OK);
+            
+            // Si existe, procede a eliminarlo
+            fs.unlink(pathImagenVieja, (err) => {
+                if (err) reject(new Error('No se pudo eliminar la imagen en el servidor'));
+            });
+
+        } catch {
+            // Si el archivo no existe, simplemente resuelve sin hacer nada
+            resolve(producto);
         }
     });
-    })
     
 }
-
 
 
 

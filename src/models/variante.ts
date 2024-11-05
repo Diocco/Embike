@@ -20,8 +20,8 @@ const varianteSchema = new mongoose.Schema<variante>({
     },
     stock: { // Se puede estructurar de esta forma para que sea mas legible
         type: Number,
-    },
-    })
+    }
+})
 
     const Variante:Model<variante> = mongoose.model<variante>('Variante', varianteSchema);
 

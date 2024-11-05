@@ -36,13 +36,17 @@
 
         {{!-- Ventana emergente para modificar un producto --}}
         <div id="modificarProducto" class="noActivo">
+
             <div id="modificarProducto__fotoDescripcion">
                 <h4>Foto</h4>
                 <img id="modificarProducto__fotoDescripcion__img" class="imagenProducto"></img>
                 <h4>Descripcion</h4>
                 <textarea id="modificarProducto__fotoDescripcion__textarea"></textarea>
             </div>
+
             <form id="modificarProducto__caracteristicas">
+                <h4 class="modificarProducto__caracteristicas__h4" >ID</h4>
+                <input  class="modificarProducto__caracteristicas__input"  name="_id"    id="modificarProducto__caracteristicas__input__id" readonly>
                 <h4 class="modificarProducto__caracteristicas__h4" >Nombre</h4>
                 <input  class="modificarProducto__caracteristicas__input"  name="nombre"    id="modificarProducto__caracteristicas__input__nombre">
                 <h4 class="modificarProducto__caracteristicas__h4" >Precio Unitario</h4>
@@ -51,7 +55,7 @@
                 <input  class="modificarProducto__caracteristicas__input"  name="marca"     id="modificarProducto__caracteristicas__input__marca">
                 <h4 class="modificarProducto__caracteristicas__h4" >Modelo</h4>
                 <input  class="modificarProducto__caracteristicas__input"  name="modelo"    id="modificarProducto__caracteristicas__input__modelo">
-                <h4 class="modificarProducto__caracteristicas__h4" >Categorias</h4>
+                <h4 class="modificarProducto__caracteristicas__h4" >Categoria</h4>
                 <select class="modificarProducto__caracteristicas__input" name="categoria"  id="modificarProducto__caracteristicas__select__categoria">
                     <option>BMX</option>
                     <option>MTB</option>
@@ -62,28 +66,35 @@
                 <input  class="modificarProducto__caracteristicas__input noActivo" name="categoria" placeholder="Ingrese una nueva categoria" id="modificarProducto__caracteristicas__input__categoria">
                 <h4 class="modificarProducto__caracteristicas__h4" >Imagenes</h4>
                 <div    class="modificarProducto__caracteristicas__input"                   id="modificarProducto__caracteristicas__div-imagenes" ></div>
-                <button id="modificarProducto__verVariantes" class="botonRegistener1" >Ver variantes</button>
             </form>
-            <div id="modificarProducto__aceptarRechazar">
-                <button id="modificarProducto__aceptarRechazar__aceptar"  class="botonRegistener1" >Guardar</button>
-                <button id="modificarProducto__aceptarRechazar__rechazar" class="botonRegistener1" >Cancelar</button>
-            </div>
-        </div>
 
-        {{!-- Ventana emergente para modificar las variantes de un producto --}}
-        <div id="variantesProducto" class="noActivo">
-            {{!-- Indice de categorias --}}
-            <div id="variantesProducto__indice">
-                <div>SKU</div>
-                <div>Color</div>
-                <div>Talle</div>
-                <div>Stock</div>
+            <div id="variantesProducto">
+                <h4 class="modificarProducto__caracteristicas__h4" >Variantes</h4>
+                {{!-- Indice de categorias --}}
+                <div id="variantesProducto__indice">
+                    <h5>SKU</h5>
+                    <h5>Color</h5>
+                    <h5>Talle</h5>
+                    <h5>Stock</h5>
+                </div>
+                <div id="variantesProducto__variantes"></div>
+                <button id="variantesProducto__agregarVariante" class="botonRegistener3" >Agregar Variante</button>
             </div>
-            <div id="variantesProducto__variantes"></div>
-            <button id="variantesProducto__agregarVariante" class="botonRegistener1" >Agregar Variante</button>
-            <div id="variantesProducto__aceptarRechazar">
-                <button id="variantesProducto__aceptarRechazar__aceptar"  class="botonRegistener1">Confirmar</button>
-                <button id="variantesProducto__aceptarRechazar__rechazar" class="botonRegistener1">Descartar</button>
+
+            <div id="especificacionesProducto">
+                <h4 class="modificarProducto__caracteristicas__h4" >Especficaciones</h4>
+                {{!-- Indice de categorias --}}
+                <div id="especificacionesProducto__indice">
+                    <h5>Nombre</h5>
+                    <h5>Descripcion</h5>
+                </div>
+                <div id="especificacionesProducto__especificaciones"></div>
+                <button id="especificacionesProducto__button" class="botonRegistener3" >Agregar especificacion</button>
+            </div>
+
+            <div id="modificarProducto__respuesta">
+                <button id="modificarProducto__aceptar" class="botonRegistener3">Aceptar</button>
+                <button id="modificarProducto__cancelar" class="botonRegistener3 noActivo">Cancelar</button>
             </div>
         </div>
 
@@ -92,7 +103,7 @@
             {{!-- Contenedor de la imagen --}}
             <img id="imagenVariantesProducto__img" class="imagenProducto">
             {{!-- Boton para eliminar la imagen actual --}}
-            <i class="fa-solid fa-trash-can producto__eliminar botonNegativo botonRegistener3" id="producto__eliminarImagen" aria-hidden="true"></i>
+            <i class="fa-solid fa-trash-can botonNegativo botonRegistener3" id="producto__eliminarImagen" aria-hidden="true"></i>
             {{!-- Input para agregar una nueva imagen --}}
             <input id="imagenVariantesProducto__input" class="botonRegistener1" type="file">
             {{!-- Botones para guardar o volver --}}
@@ -135,12 +146,14 @@
         {{!-- Contenedor de categorias --}}
         <div id="contenedorConfiguracionProductos__contenido__categorias"></div>
 
+        {{!-- Boton para agregar un producto --}}
+        <button id="contenedorConfiguracionProductos__contenido__agregarProducto" class="botonRegistener3">Agregar producto</button>
+
         {{!-- Indice de categorias --}}
         <div class="tipo__categoria__producto">
             <div>Nombre</div>
             <div>Precio</div>
             <div>Stock</div>
-            <div>Opciones</div>
         </div>
         
 

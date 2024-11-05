@@ -4,6 +4,8 @@ import { tokenAcceso, urlProductos } from "../../global.js";
 import { mostrarMensaje } from "../../helpers/mostrarMensaje.js";
 import { agregarImagenesDOM } from "./modificarProducto.js";
 import { preguntar } from "./preguntar.js";
+import { error } from "../../../../interfaces/error.js";
+import { subirFotoProducto } from "../../services/productosAPI.js";
 
 const contenedorVentanaModificar:HTMLElement = document.getElementById('modificarProducto')! // Ventana emergente para modificar el producto
 const ventanaImagenVariante:HTMLElement = document.getElementById('imagenVariantesProducto')! // Ventana emergente para modificar o visualizar una imagen del producto
@@ -51,8 +53,8 @@ export const ventanaEmergenteCargarImagenProducto = (productoInformacion:product
     })
     .then(async(guardar)=>{
         if(guardar) {
-            const productoActualizado = await agregarFotoProducto(productoInformacion._id,imagenNueva,imagenActualURL) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y recibe el producto actulizado
-            await agregarImagenesDOM(productoActualizado) // Refleja los cambios en la ventana de modificar producto
+            const productoActualizado = await subirFotoProducto(productoInformacion._id.toString(),imagenNueva,imagenActualURL) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y si todo sale bien recibe el producto actualizado
+            if(productoActualizado) await agregarImagenesDOM(productoActualizado) // Si todo sale bien refleja los cambios en el DOM
         }
     })
     .then(()=>{
@@ -68,50 +70,20 @@ export const ventanaEmergenteCargarImagenProducto = (productoInformacion:product
     })
 
 }
-const agregarFotoProducto = async(productoID:ObjectId,imagenNueva:File|undefined,URLImagenVieja:string='')=>{
-
-    const formData = new FormData()
-    if(imagenNueva) formData.append('img',imagenNueva) // Si se envia una imagen para agregar, la agrega al FormData
-    if(URLImagenVieja) formData.append('URLImagenVieja',URLImagenVieja) // Si se envia una imagen para eliminar la agrega al FormData
-
-    return fetch(urlProductos+`/${productoID}`, {
-        method: 'PUT',
-        headers: { 'tokenAcceso':`${tokenAcceso}`},
-        body: formData
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-            console.log(data.errors);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                mostrarMensaje(error.msg,true);
-            })
-        }else{ // Si el servidor devuelve un exitoso:
-            return data.productoActualizado
-        }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        console.error(error);
-        mostrarMensaje('2',true);
-        return -1
-    })
-    .finally(()=>{
-        return 0
-    })
-}
 
 document.addEventListener('DOMContentLoaded',()=>{
     // Escucha si el usuario presiona el boton de eliminar imagen
     botonEliminarImagen.onclick=async()=>{
+        const ventanaImagenVariante:HTMLElement = document.getElementById('imagenVariantesProducto')! // Ventana emergente para modificar o visualizar una imagen del producto
         ventanaImagenVariante.classList.add('noActivo') // Desactiva la ventana emergente de agregar o visualizar imagen a la variante
         const respuesta:boolean = await preguntar('¿Estas seguro que desea eliminar la imagen?')
-        ventanaImagenVariante.classList.remove('noActivo') // Activa la ventana emergente de agregar o visualizar imagen a la variante
         if(respuesta){
+            ventanaImagenVariante.classList.remove('noActivo') // Activa la ventana emergente de agregar o visualizar imagen a la variante
             // Si el usuario confirma que quiere eliminar la foto entonces llama a la funcion para agregar una foto de perfil, pero no le envia ninguna foto y solo envia el URL que debe eliminar del servidor
-            const productoActualizado = await agregarFotoProducto(productoInformacionGlobal._id,undefined,imagenActualURLGlobal) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y recibe el producto actulizado
-            await agregarImagenesDOM(productoActualizado) // Refleja los cambios en la ventana de modificar producto
+            const productoActualizado = await subirFotoProducto(productoInformacionGlobal._id.toString(),undefined,imagenActualURLGlobal) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y recibe el producto actulizado
+            if(productoActualizado) await agregarImagenesDOM(productoActualizado) // Refleja los cambios en la ventana de modificar producto
             ventanaImagenVariante.classList.add('noActivo') // Desactiva la ventana emergente de agregar o visualizar imagen a la variante
-            contenedorVentanaModificar.classList.remove('noActivo') // Activa la ventana emergente de agregar o visualizar imagen a la variante
+            contenedorVentanaModificar.classList.remove('noActivo') // Activa la ventana emergente para modificar el producto 
         }
     }
 

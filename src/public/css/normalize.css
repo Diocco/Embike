@@ -43,6 +43,8 @@
   width: max-content;
   background-color: var(--colorBotones);
   color: var(--colorLetra);
+  cursor: pointer;
+  user-select: none;
 }
 .botonRegistener2{
   font-size: 20px;
@@ -50,17 +52,23 @@
   width: 30px;
   background-color: var(--colorBotones);
   color: var(--colorLetra);
+  cursor: pointer;
+  user-select: none;
 }
 
 .botonRegistener3{
-  margin: 4px;
+  margin: 2px;
   text-align: center;
   padding: 10px;
+  height: min-content;
   border: solid 1px black;
   border-radius: 10px;
   font-size: 20px;
   background-color: var(--colorBotones);
   color: var(--colorLetra);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
 }
 .botonRegistener3:hover{
   filter: brightness(1.05)
@@ -76,6 +84,17 @@
 .boton__enError{
   border:2px solid !important;
   border-color: red !important;
+}
+
+
+.inputRegistener1{
+  font-size: 19px;
+  padding: 9px;
+  background-color: var(--colorVentana);
+  border: solid black 1px;
+  border-radius: 0.5vw;
+  color: var(--colorLetra);
+  margin: 1px 2px
 }
 
 .Rojo {
@@ -153,8 +172,18 @@
 
 
 
+/*Inputs*/
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+  -webkit-appearance: none; /* Safari y Chrome */
+  appearance: none; /* Estándar */
+}
 
-
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none; /* Chrome y Safari */
+  margin: 0; /* Asegura que no haya margen */
+}
 
 *{
   box-sizing: border-box;

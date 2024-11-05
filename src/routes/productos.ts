@@ -47,7 +47,6 @@ router.post('/', // Crear producto - Admin
     check('modelo', 'El modelo es obligatorio check').notEmpty(),
     check('categoria', 'La categoria es obligatoria').notEmpty(),
     check('categoria').custom(categoriaValida),
-    check('variantes', 'Las variantes son obligatorias').notEmpty(),
     validarCampos,
     crearProducto) 
 

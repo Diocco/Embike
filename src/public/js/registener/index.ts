@@ -1,22 +1,12 @@
 
+import { CategoriaI } from "../../../models/interfaces/categorias.js"
+import { producto } from "../../../models/interfaces/producto.js"
 import { buscarCategorias } from "../helpers/categorias.js"
-import { buscarProductos } from "./productos.js"
+import { obtenerProductos } from "../services/productosAPI.js"
+import { agregarProductosDOM, alternarDisponibilidadProducto, eliminarProducto } from "./productos.js"
+import { ventanaEmergenteModificarProducto } from "./ventanasEmergentes/modificarProducto.js"
+import { preguntar } from "./ventanasEmergentes/preguntar.js"
 
-interface Producto {
-    foto:string,
-    nombre:string,
-    precio:number,
-    stock:number,
-    id:string,
-    color:string,
-    codigoBarra:number,
-    promocionable:string,
-    descripcion:string,
-    tipo:string,
-    categoria:string,
-    seleccionado:string,
-    orden:number
-}
 
 
 class carrito{
@@ -101,145 +91,70 @@ let posicionUsuario:number = 0 //Indica en que ventana esta el usuario, se usa p
 
 
 
+const contenedorProductos: HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__productos')!
+export let productos:producto[]
+export let categorias:CategoriaI[]|undefined
 
+export const buscarCargarProductos =async()=>{ 
+    // Define los query params para enviarlos en el fetch y asi filtrar los productos
+    const params = new URLSearchParams(window.location.search);
+    const desde = params.get('desde') || '0';
+    const hasta = params.get('hasta') || '20';
+    const precioMin = params.get('precioMin') || '';
+    const precioMax = params.get('precioMax') || '';
+    const palabraBuscada = params.get('palabraBuscada') || '';
+    const categorias = params.get('categorias') || '';
+    const ordenar = params.get('ordenar') || '';
 
+    productos = await obtenerProductos(desde,hasta,precioMin,precioMax,palabraBuscada,categorias,ordenar),
+    await agregarProductosDOM(productos,contenedorProductos) // Si se encuentran productos para los parametros de busqueda entonces los agrega
+    botonesConfiguracionProducto() // Le da la funcion a los botones de cada producto
+}
+
+const botonesConfiguracionProducto =()=>{
+    // Le da la funcion a los botones de alternar disponibilidad de un producto
+    const botonesDisponibilidad: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.producto__disponibilidad')
+    botonesDisponibilidad.forEach((boton)=>{
+        boton.onclick =()=>{
+            const idProducto = boton.parentElement!.parentElement!.id!
+            const estaDisponible = boton.classList.contains('botonPositivo')
+            alternarDisponibilidadProducto(idProducto,estaDisponible,boton)
+        }
+    })
+
+    // Le da la funcion a los botones de modificar un producto
+    const productosDOM: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.productos__div')
+    productosDOM.forEach((productoDOM)=>{
+        productoDOM.onclick =(event)=>{
+            event.stopPropagation()
+            const idProducto = productoDOM.id! // Obtiene el id del producto que se desea modificar
+            const productoInformacion = productos.find(producto => producto._id.toString() === idProducto)! // Busca el id en el array de productos previamente buscado
+            ventanaEmergenteModificarProducto(productoInformacion) // Envia la informacion del producto a la ventana emergente para modificar el producto
+        }
+    })
+
+    const botonesEliminar: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.producto__eliminar')
+    botonesEliminar.forEach((boton)=>{
+        boton.onclick =async()=>{
+            const idProducto = boton.parentElement!.parentElement!.id!
+            const respuesta:boolean = await preguntar('¿Estas seguro que quieres eliminar este producto?')
+            if(respuesta) eliminarProducto(idProducto)
+        }
+    })
+}
 
 
 
 
 
 //Carga la seccion de seleccion de productos, se ejecuta cada vez que se hace click sobre la barra lateral para desplazarse a este mismo
-function cargarSeleccionProductos() {
-    let contenedorIndiceTipos:HTMLElement = document.getElementById("seleccionProductos")!;
-    contenedorIndiceTipos.innerHTML=`` //Vacia la seccion por si habia elementos cargados previamente
-    buscarTiposSeleccionados().then(tiposSeleccionados=>{ //Primero busca los tipos que tengan almenos un producto seleccionado
-        const fragmento:DocumentFragment = document.createDocumentFragment();
-        let numeroTipo:number = 1;
-
-        tiposSeleccionados.forEach(tipo => { //Recorre los tipos seleccionados
-            const titulo:HTMLDivElement = document.createElement("div");
-            titulo.classList.add("seleccionProductos__indiceTitulo");
-            titulo.textContent=tipo;
-
-            const indiceTipo:HTMLDivElement = document.createElement("div"); //Y crea un div para cada tipo
-            indiceTipo.appendChild(titulo);
-            indiceTipo.classList.add("seleccionProductos__indice");
-            indiceTipo.id=`seleccionProductos__indiceTipo${numeroTipo}`
-
-            numeroTipo++;
-            buscarProductosSeleccionados(tipo).then(productosSeleccionados =>{ //Se busca los productos seleccionados que tiene ese tipo
-                productosSeleccionados.forEach(producto => {
-                    let productoCreado:HTMLDivElement = document.createElement("div");
-                    productoCreado.classList.add("seleccionProducto");
-                    productoCreado.innerHTML=`
-                    <button title="${producto.precio}" class="seleccionSumarProducto">${producto.nombre}</button>
-                    <button class="seleccionRestarProducto">-</button>
-                    <div class="seleccionCantidad">0</div>
-                    <div class="seleccionStock">${producto.stock}</div>
-                    `
-
-                    indiceTipo.appendChild(productoCreado); //Agrega el producto encontrado al contenedor del mismo tipo
-                });
-            })
-            fragmento.appendChild(indiceTipo); //Agrega el tipo, con todos los productos que cumplen dicho tipo, al fragmento
-        });
-
-        contenedorIndiceTipos.appendChild(fragmento); //Agrega todos los elementos cargados al DOM
-        //A continuacion se les da las funciones a todos los botones
-        setTimeout(() => { //Se coloca un retraso para darle tiempo a que los elementos se carguen en el DOM
-            document.querySelectorAll(".seleccionProducto").forEach(conjuntoBotones => {
-                let botonSumar = conjuntoBotones.children[0] as HTMLElement
-                let botonRestar = conjuntoBotones.children[1] as HTMLElement
-                let cantidad = conjuntoBotones.children[2] as HTMLElement
-                let stock = conjuntoBotones.children[3] as HTMLElement
-
-                botonSumar.addEventListener("click",()=>{
-                    cantidad.textContent=`${Number(cantidad.textContent)+1}`;
-                    stock.textContent=`${Number(stock.textContent)-1}`;
-                    if(Number(cantidad.textContent)==0){
-                        cantidad.classList.remove("seleccionCantidad-active");
-                        cantidad.classList.remove("seleccionCantidad-active2");
-                    }else if(Number(cantidad.textContent)<0){
-                        cantidad.classList.remove("seleccionCantidad-active");
-                        cantidad.classList.remove("seleccionCantidad-active2");
-                        cantidad.classList.add("seleccionCantidad-active2");
-                    }else{
-                        cantidad.classList.add("seleccionCantidad-active");
-                        cantidad.classList.remove("seleccionCantidad-active2");
-                    }
-                    carrito1.sumarCarrito(botonSumar.textContent!,1,Number(botonSumar.title))
-                })
-                botonRestar.addEventListener("click",()=>{
-                    cantidad.textContent=`${Number(cantidad.textContent)-1}`;
-                    stock.textContent=`${Number(stock.textContent)+1}`;
-                    if(Number(cantidad.textContent)==0){
-                        cantidad.classList.remove("seleccionCantidad-active");
-                        cantidad.classList.remove("seleccionCantidad-active2");
-                    }else if(Number(cantidad.textContent)<0){
-                        cantidad.classList.remove("seleccionCantidad-active");
-                        cantidad.classList.add("seleccionCantidad-active2");
-                    }else{
-                        cantidad.classList.add("seleccionCantidad-active");
-                        cantidad.classList.remove("seleccionCantidad-active2");
-                    }
-                    carrito1.sumarCarrito(botonSumar.textContent!,-1,Number(botonSumar.title))
-                })
-            });
-        }, 10);
-    })
+function cargarSeccionProductos() {
+    const botonAgregarProductos = document.getElementById('contenedorConfiguracionProductos__contenido__agregarProducto')! as HTMLButtonElement
+    botonAgregarProductos.onclick=()=>{
+        ventanaEmergenteModificarProducto() // Abre la ventana emergente para modificar un producto, al no pasarle ningun ID la funcion crea un producto nuevo.
+    }
 }
 
-//Busca los tipos que tengan productos seleccionados
-function buscarTiposSeleccionados():Promise<string[]> {
-    //Se busca los diferentes "tipos" que hay en la base de datos que esten seleccionados
-    return new Promise((resolve) => {
-        let tiposSeleccionadosEncontrados:string[]=["Vacio"]; //Crea un array vacio para guardar todos los tipos encontrados
-
-        let peticionCursor:IDBRequest<IDBCursorWithValue | null>= db.transaction([`productos`],`readonly`).objectStore(`productos`).index(`porSeleccion`).openCursor(IDBKeyRange.only("true")); //Abre el almacen filtrado por los productos seleccionado
-        peticionCursor.onsuccess=(event)=>{ //El filtro se aplico con exito
-            let cursorTiposSeleccionados:IDBCursorWithValue = (event.target as IDBRequest).result;
-            if(cursorTiposSeleccionados){ //Recorre el cursor 
-                let tipoEncontrado:boolean=false; 
-                if(tiposSeleccionadosEncontrados[0]==="Vacio"){tiposSeleccionadosEncontrados[0]=cursorTiposSeleccionados.value.tipo;} //Si el array esta vacio entonces coloca como primer elemento el primer tipo del primer producto encontrado
-                else{ //Si tiene tipos encontrados entonces los recorre para buscar nuevos y agregarlos
-                    tiposSeleccionadosEncontrados.forEach(tipoSeleccionado => { 
-                        if (tipoSeleccionado===cursorTiposSeleccionados.value.tipo) {//Verifica si el tipo actual se encuentra en el array de tipos encontrados
-                            tipoEncontrado=true; //Si lo encuentra se deja constancia
-                        }
-                    });
-                    if(!tipoEncontrado){tiposSeleccionadosEncontrados.push(cursorTiposSeleccionados.value.tipo);} //Si despues de recorrer el array de tipos encontrados no se encontro el tipo que se esta evaluando entonces lo agrega
-                }
-                cursorTiposSeleccionados.continue(); //Se sigue con el siguiente tipo
-            }else{ //Una vez que se termina de buscar...
-                resolve(tiposSeleccionadosEncontrados);
-            }
-        }
-    })
-
-}
-
-//Funcion que se le pasa como parametro el "tipo" y busca los productos con ese "tipo" y que esten seleccionados para mostrarse
-function buscarProductosSeleccionados(tipo:string):Promise<Producto[]> {
-    //Se busca los diferentes productos que esten seleccionados para un tipo especifico
-    return new Promise((resolve) => {
-        let productosSeleccionadosEncontrados:Producto[]=[]; //Crea un array para guardar todos los productos encontrados
-
-        let peticionCursor = db.transaction([`productos`],`readonly`).objectStore(`productos`).index(`porTipo`).openCursor(IDBKeyRange.only(tipo)); //Abre una peticion para abrir un cursor para recorrer el almacen filtrado por el tipo recibido como parametro
-
-        peticionCursor.onsuccess=(event)=>{ //Si el cursor se abrio con exito...
-            let cursorProductosFiltrados:IDBCursorWithValue = (event.target as IDBRequest).result;
-            if(cursorProductosFiltrados){ //Recorre el cursor  
-                if(cursorProductosFiltrados.value.seleccionado==="true"){//Almacena el producto filtrado que este seleccionado
-                    if(productosSeleccionadosEncontrados===undefined){productosSeleccionadosEncontrados=cursorProductosFiltrados.value;} //Si el array esta vacio coloca el primer producto como el primer elemento 
-                    else{productosSeleccionadosEncontrados.push(cursorProductosFiltrados.value);}
-                }
-                cursorProductosFiltrados.continue(); //Se sigue con el siguiente tipo
-            }else{ //Una vez que se termina de buscar...
-                resolve(productosSeleccionadosEncontrados);
-            }
-        }
-    })
-}
 
 
 
@@ -367,15 +282,23 @@ function calcularPrecioFinal():void{
 document.addEventListener("DOMContentLoaded", async function() {
 
     // Busca y carga los productos en el contenedor pasado como argumento
-    const contenedorProductos: HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__productos')!
     const contenedorCategorias:HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__categorias')!
     const contenedorOpcionesCategorias = document.getElementById('modificarProducto__caracteristicas__select__categoria')! as HTMLSelectElement
+    
 
-    Promise.all([
-        buscarProductos(contenedorProductos), // Busca y carga los productos
+
+    [,,categorias] = await Promise.all([
+        cargarSeccionProductos(), // Le da la funcionalidad a los botones de la seccion de modificar productos
+        buscarCargarProductos(),
         buscarCategorias(contenedorCategorias,contenedorOpcionesCategorias) // Busca y carga las categorias
     ]);
+
+
+
+
     
+    
+
 
 
 
@@ -413,13 +336,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         posicionUsuario=2;
     });
     
-    //Carga el area de seleccion de productos
-    document.getElementById("barraLateral_B__icono")!.onclick=()=>{
-        if(!seleccionProductoCargada){cargarSeleccionProductos();seleccionProductoCargada=true;}
-    }
-    document.getElementById("barraLateral_B__nombre")!.onclick=()=>{
-        if(!seleccionProductoCargada){cargarSeleccionProductos();seleccionProductoCargada=true;}
-    }
+
 
     //Carga el area de pago
     document.getElementById("barraLateral_C__icono")!.onclick=()=>{

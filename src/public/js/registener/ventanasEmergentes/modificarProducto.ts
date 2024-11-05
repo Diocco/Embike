@@ -1,48 +1,57 @@
-import { producto } from "../../../../models/interfaces/producto.js";
-import { categoria } from "../../../../models/interfaces/categorias.js";
-import { tokenAcceso, urlProductos } from "../../global.js";
+import { EspecificacionI, producto } from "../../../../models/interfaces/producto.js";
+import { CategoriaI } from "../../../../models/interfaces/categorias.js";
+import { urlProductos } from "../../global.js";
 import { mostrarMensaje } from "../../helpers/mostrarMensaje.js";
-import { ventanaEmergenteModificarVarianteProducto } from "./modificarVariante.js";
 import { agregarCategoria } from "../../helpers/categorias.js";
-import { actualizarProducto, buscarProductos } from "../productos.js";
-import { preguntar } from "./preguntar.js";
+
+
 import { ventanaEmergenteCargarImagenProducto } from "./modificarFoto.js";
+import { actualizarProducto, crearProducto } from "../../services/productosAPI.js";
+import { buscarCargarProductos, categorias } from "../index.js";
+
+import { error } from "../../../../interfaces/error.js";
 import { variante } from "../../../../models/interfaces/variante.js";
+import { actualizarVariantes, crearVariante, eliminarVariante } from "../../services/variantesAPI.js";
+import { eliminarProducto } from "../productos.js";
+
 
 // Contenedores de la ventana emergente
 const contenedorVentanaEmergente:HTMLElement = document.getElementById('ventanaEmergenteFondo')!
 const ventanaEmergente:HTMLElement = document.getElementById('modificarProducto')!
 
+// Contenedor de variantes de producto
+const contenedorVariantes = document.getElementById('variantesProducto__variantes')! as HTMLDivElement;
+
+// Contenedor de las especificaciones de producto
+const contenedorEspecificaciones = document.getElementById('especificacionesProducto__especificaciones')! as HTMLDivElement;
+
 // Input en donde el usuario agregara las diferentes caracteristicas del producto
-let nombre = document.getElementById("modificarProducto__caracteristicas__input__nombre")! as HTMLInputElement ;
-let precio = document.getElementById("modificarProducto__caracteristicas__input__precio")! as HTMLInputElement;
-let marca = document.getElementById("modificarProducto__caracteristicas__input__marca")! as HTMLInputElement;
-let modelo = document.getElementById("modificarProducto__caracteristicas__input__modelo")! as HTMLInputElement;
-let categoria = document.getElementById("modificarProducto__caracteristicas__select__categoria")! as HTMLSelectElement;
-let categoriaIngresada = document.getElementById("modificarProducto__caracteristicas__input__categoria")! as HTMLInputElement;
-let descripcion = document.getElementById("modificarProducto__fotoDescripcion__textarea")! as HTMLTextAreaElement;
+const id = document.getElementById("modificarProducto__caracteristicas__input__id")! as HTMLInputElement ;
+const nombre = document.getElementById("modificarProducto__caracteristicas__input__nombre")! as HTMLInputElement ;
+const precio = document.getElementById("modificarProducto__caracteristicas__input__precio")! as HTMLInputElement;
+const marca = document.getElementById("modificarProducto__caracteristicas__input__marca")! as HTMLInputElement;
+const modelo = document.getElementById("modificarProducto__caracteristicas__input__modelo")! as HTMLInputElement;
+const categoria = document.getElementById("modificarProducto__caracteristicas__select__categoria")! as HTMLSelectElement;
+const categoriaIngresada = document.getElementById("modificarProducto__caracteristicas__input__categoria")! as HTMLInputElement;
+const descripcion = document.getElementById("modificarProducto__fotoDescripcion__textarea")! as HTMLTextAreaElement;
 
 // Botones
-let aceptar:HTMLElement = document.getElementById("modificarProducto__aceptarRechazar__aceptar")!;
-let rechazar:HTMLElement = document.getElementById("modificarProducto__aceptarRechazar__rechazar")!;
-let verVariantes:HTMLElement = document.getElementById('modificarProducto__verVariantes')!;
-
-// Variable que almacena la informacion del producto si todo sale bien
-let productoInformacion:producto
+const aceptar:HTMLElement = document.getElementById("modificarProducto__aceptar")!;
+const cancelar:HTMLElement = document.getElementById("modificarProducto__cancelar")!;
+const botonAgregarVariante = document.getElementById('variantesProducto__agregarVariante')! as HTMLButtonElement
+const botonAgregarEspecificacion = document.getElementById('especificacionesProducto__button')! as HTMLButtonElement
 
 
 
 
-
-
-
-// Ventana emergente para modificar o agregar un producto de la base de datos
-export const ventanaEmergenteModificarProducto = async(productoID:string='') =>{
+// Ventana general
+export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
     // Activa la ventana emergente
     contenedorVentanaEmergente.classList.remove('noActivo')
     ventanaEmergente.classList.remove('noActivo')
 
     //Les da un valor inicial, borrando cualquier valor viejo que tenga
+    id.value="";
     nombre.value="";
     precio.value="";
     marca.value="";
@@ -50,14 +59,78 @@ export const ventanaEmergenteModificarProducto = async(productoID:string='') =>{
     categoriaIngresada.value=''
     descripcion.textContent=''
 
-    if((productoID)){ // Si a la funcion se le paso un ID de un producto entonces la funcion es para modificarlo un producto
 
-        productoInformacion = await buscarProducto(productoID);
-        cargarProductoDOM()
-    }   
+    if(!producto) {
+        producto = await crearProducto() // Crea un nuevo producto
+        cancelar.classList.remove('noActivo') // Activa el boton "cancelar"
+    
+    }; // Si a la funcion no se le pasa la informacion de un producto entonces crea uno nuevo
+    if(!producto) return // Si fallo la creacion del producto entonces resulta en un error fatal
 
+    cargarProductoDOM(producto) // Carga en el DOM toda la informacion del producto
+    cargarVariantesDOM(producto) // Carga la informacion de las variantes
+    cargarEspecificacionesDOM(producto) // Carga la informacion de las variantes
+    
+
+    // Espera que el usuario aprete el boton "volver" antes de guardar todos los cambios, el bucle se repite hasta que el usuario introduzca todos los datos necesarios correctamente
+    let nodosEnError:NodeListOf<HTMLInputElement>
+    const formularioProducto = document.getElementById('modificarProducto__caracteristicas')! as HTMLFormElement
+    const datosFormulario = new FormData(formularioProducto)
+
+    do {
+
+        // Espera la respuesta del usuario
+        let esCancelar:boolean=false
+        await new Promise<void>((resolve) => {
+            aceptar.onclick=()=>resolve();
+            cancelar.onclick=()=>{
+                esCancelar=true;
+                resolve()
+            };
+        })
+
+        if(esCancelar) {// Si el usuario selecciono "cancelar" entonces elimina el producto antes creado y
+            eliminarProducto(producto._id.toString())
+            cancelar.classList.add('noActivo') // Desactiva el boton "cancelar"
+            // Desactiva la ventana emergente
+            contenedorVentanaEmergente.classList.add('noActivo')
+            ventanaEmergente.classList.add('noActivo')
+            return 
+        }
+
+        // Toma los datos del producto en el formulario
+        const especificaciones:EspecificacionI[] = obtenerEspecificacionesDOM()
+        datosFormulario.set('especificacionesJSON',JSON.stringify(especificaciones))
+
+
+        // Si los hay, elimina los estados de error en la ventana emergente
+        contenedorVentanaEmergente.querySelectorAll('.boton__enError').forEach(contenedor=>contenedor.classList.remove('boton__enError')) 
+
+        await Promise.all([
+            validarVariantesDOM(producto._id.toString()), // Verifica que las variantes ingresadas sean validas
+            validarCaracteristicasDOM(datosFormulario) // Verifica que las caracteristicas del producto sean validas
+        ])
+
+        // Busca estados de error
+        nodosEnError = contenedorVentanaEmergente.querySelectorAll('.boton__enError')
+
+    } while (nodosEnError.length>0);
+
+    
+    // Desactiva la ventana emergente
+    contenedorVentanaEmergente.classList.add('noActivo')
+    ventanaEmergente.classList.add('noActivo')
+    
+    // Vuelve a cargar los productos actualizados
+    cancelar.classList.add('noActivo') // Desactiva el boton "cancelar"
+    await actualizarProducto(datosFormulario,producto._id.toString()); // Actualiza los datos del producto en la base de datos
+    buscarCargarProductos()
+    return
 
 }
+
+
+// Informacion del producto
 export const agregarImagenesDOM = async(productoInformacion:producto)=>{
     // Imagen principal
     let imagen = document.getElementById("modificarProducto__fotoDescripcion__img")! as HTMLImageElement;
@@ -96,118 +169,277 @@ export const agregarImagenesDOM = async(productoInformacion:producto)=>{
     })
 }
 
-const buscarProducto = async(productoID:string) =>{
+const cargarProductoDOM =(producto:producto)=>{
 
-    return new Promise<producto>((resolve) => {
-        // Busca el producto en la base de datos
-        fetch(urlProductos + `/${productoID}`, {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(response => response.json()) // Parsear la respuesta como JSON
-        .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error);
-            })
-        }else{ // Si el servidor no devuelve errores:
-            resolve(data) // Almacena el producto devuelto por el servidor
-        }
-        })
-        .catch(error => { // Si hay un error se manejan 
-            mostrarMensaje('2',true);
-            console.error(error);
-        })
-        
-    })
-}
-const cargarProductoDOM =()=>{
+    const categoriaCompleta = categorias!.find(categoria=>categoria._id===producto.categoria)!
+
     // Coloca la informacion en los inputs correspondientes
-    nombre.value = productoInformacion.nombre;
-    precio.value = `${productoInformacion.precio}`;
-    marca.value = `${productoInformacion.marca}`;
-    modelo.value = productoInformacion.modelo;
-    categoria.value = (productoInformacion.categoria as categoria).nombre;
-    descripcion.textContent = productoInformacion.descripcion;
+    id.value = producto._id.toString();
+    nombre.value = producto.nombre==="Sin nombre"?'':producto.nombre;
+    precio.value = `${producto.precio===0?'':producto.precio}`;
+    marca.value = producto.marca==="Sin marca"?'':producto.marca;
+    modelo.value = producto.modelo==="Sin modelo"?'':producto.modelo;
+    categoria.value = categoriaCompleta.nombre==="Sin categoria"?'':categoriaCompleta.nombre;
+    descripcion.textContent = producto.descripcion;
 
     // Carga las imagenes del producto en el DOM
-    agregarImagenesDOM(productoInformacion);
+    agregarImagenesDOM(producto);
 }
 
+const validarCaracteristicasDOM = async(datosFormulario:FormData)=>{
 
-document.addEventListener('DOMContentLoaded',()=>{
-    // Define las funciones de los botones
-    verVariantes.addEventListener('click',async(event)=>{
+    // Si el usuario ingreso una nueva categoria entonces la agrega
+    const categoriaNueva:string|undefined = categoriaIngresada.value
+    if (categoriaNueva) {
+        const categoriaNuevaCompleta = await agregarCategoria(categoriaNueva) // La agrega a la base de datos
+        if(categoriaNuevaCompleta) {
+            categorias?.push(categoriaNuevaCompleta) // Si todo sale bien agrega la nueva categoria a la lista de categorias dentro del programa
+            datosFormulario.set('categoria',categoriaNueva) // Agrega la categoria al FormData para enviarlo junto con la demas informacion del producto
+        }
+    }
+    // Verifica que no esten vacias
+    if(!nombre.value) nombre.classList.add('boton__enError')
+    if(!precio.value) precio.classList.add('boton__enError')
+    if(!marca.value) marca.classList.add('boton__enError')
+    if(!modelo.value) modelo.classList.add('boton__enError')
+    if(!categoria.value) categoria.classList.add('boton__enError')
+    
+}
+
+// Variantes
+export const cargarVariantesDOM=async(productoInformacion:producto) =>{
+
+
+    contenedorVariantes.innerHTML=''; // Vacia el contenedor con informacion previa
+    
+    // Carga las distintas variables del producto, si existen
+    if(productoInformacion.variantes.length>0){ // Carga las variantes del producto
+        (productoInformacion.variantes as variante[]).forEach(variante => {
+            agregarVarianteDOM(contenedorVariantes,variante)
+        });
+    }else{// Si el producto no tiene variantes entonces muestra un mensaje de error
+        // Contenedor de la variante
+        const contenedorVariante = document.createElement('div')
+        contenedorVariante.id='mensajeSinVariantes';
+        contenedorVariante.textContent='No hay ninguna variante para mostrar'
+    
+        contenedorVariantes.appendChild(contenedorVariante)
+    }
+
+    // Carga la funcion de agregar variante en la ventana de variantes de producto
+    botonAgregarVariante.onclick=async(event)=>{
         event.preventDefault()
-        ventanaEmergenteModificarVarianteProducto(productoInformacion) // Abre la ventana emergente de las variantes del producto, devuelve un array de variantes o undefined
-    })
 
-    // Boton para guardar los cambios
-    aceptar.onclick=():void=>{ 
-
-        if(productoInformacion._id){ // Si a la funcion se le paso un ID de un producto entonces la funcion es para modificarlo
-
-            const formularioProducto = document.getElementById('modificarProducto__caracteristicas')! as HTMLFormElement
-            const datosFormulario = new FormData(formularioProducto)
-
-
-            // Si el usuario ingreso una nueva categoria entonces la crea en la base de datos y en el formulario
-            new Promise<void>(async(resolve) => {
-                if(categoriaIngresada.value){
-                    datosFormulario.set('categoria',categoriaIngresada.value)
-                    await agregarCategoria(categoriaIngresada.value)
-                    resolve()
-                }
-                resolve()
-            })
-            .then(async()=>{
-                await actualizarProducto(datosFormulario,productoInformacion._id);
-            })
-            .then(()=>{
-                mostrarMensaje('5') 
-                const contenedorProductos: HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__productos')!
-                buscarProductos(contenedorProductos);
-            })
-
-        }else{ //Si la funcion es para agregar producto entonces...
-            // productoNuevo={
-            //     foto: ``,
-            //     nombre: `${nombre.value}`,
-            //     id: `${id.value}`,
-            //     precio: Number(precio.value),
-            //     stock: Number(stock.value),
-            //     tipo: `${tipo.value}`,
-            //     categoria: `${categoria.value}`,
-            //     color:color.value,
-            //     codigoBarra: Number(codigoBarra.value),
-            //     promocionable: `${promocionable.value}`,
-            //     descripcion: `${descripcion.value}`,
-            //     orden: 0,
-            //     seleccionado: "true"
-            // }
-
-            // let peticionModificar: IDBRequest = db.transaction([`productos`],`readwrite`).objectStore(`productos`).put(productoNuevo); // Remplaza el producto en la base de datos o lo crea si no existe
-            // peticionModificar.onsuccess=()=>{
-            //     alternarFondoVentanaEmergente();
-            //     cargarproductosdb();
-            //     resolve(true);
-            // }
-            // peticionModificar.onerror=()=>{
-            //     ventanaEmergente("Error al modificar");
-            // }
-            
+        // Crea una variable nueva con variables por default
+        let varianteNueva:variante = {
+            producto: productoInformacion._id,
+            color: '',
+            talle: '',
+            SKU: (new Date().getTime()).toString(), // Crea un SKU por default, el usuario luego puede definir uno diferente
+            stock: 0
         }
 
-        // Desactiva la ventana emergente
-        contenedorVentanaEmergente.classList.add('noActivo')
-        ventanaEmergente.classList.add('noActivo')
+        // La manda al servidor para crearla en la base de datos, espera a que el servidor responda con el id de la variante creada
+        const varianteId = await crearVariante(varianteNueva)
+        
+        if(varianteId){ // Si todo sale bien asigna el id de la variante a la variante nueva 
+            varianteNueva._id = varianteId
+            agregarVarianteDOM(contenedorVariantes,varianteNueva) // Crea la variante en el DOM
+        }
+    }
 
 
+}
+
+export const agregarVarianteDOM =(contenedor:HTMLElement,variante:variante)=>{
+
+    // Agrega la variante al DOM
+    const contenedorVariante = document.createElement('div') // Contenedor de la variante
+    contenedorVariante.id = variante._id!.toString() // El id del contenedor es el mismo id que el de la variante
+    contenedorVariante.classList.add('variantesProducto__variantes__div');
+
+    let opcionesColores:string = `
+    <option>Rojo</option>
+    <option>Naranja</option>
+    <option>Azul</option>
+    <option>Verde</option>
+    <option>Negro</option>
+    <option>Blanco</option>
+    <option>Amarillo</option>
+    <option>Gris</option>
+    <option>Rosa</option>
+    <option>Marrón</option>
+    <option>Celeste</option>
+    <option>Violeta</option>
+    `
+
+    // Define cual es el color seleccionado
+    opcionesColores = opcionesColores.replace(`>${variante.color}`,` selected>${variante.color}`)
+    contenedorVariante.innerHTML=`
+        <input class="inputRegistener1 variantesProducto__input-SKU" value="${variante.SKU}">
+        <select class="inputRegistener1 variantesProducto__select-color" name="color"> ${opcionesColores}</select>
+        <input class="inputRegistener1 variantesProducto__input-talle" value="${variante.talle}">
+        <input class="inputRegistener1 variantesProducto__input-stock" value="${variante.stock}"  type="number">
+    `
+
+    // Crea el boton para eliminar la variante
+    const botonEliminarVariante = document.createElement('button')
+    botonEliminarVariante.classList.add('fa-solid')
+    botonEliminarVariante.classList.add('fa-trash')
+    botonEliminarVariante.classList.add('botonRegistener3')
+    botonEliminarVariante.classList.add('variante__eliminar')
+    botonEliminarVariante.classList.add('botonNegativo')
+
+    
+    contenedorVariante.appendChild(botonEliminarVariante) // Agrega el boton al contenedor
+    contenedor.appendChild(contenedorVariante) // Agrega el contenedor al DOM
+    botonEliminarVariante.onclick=async()=>{
+        const varianteId:string = botonEliminarVariante.parentElement!.id;
+        const respuesta = await eliminarVariante(varianteId);
+        if(respuesta===0) botonEliminarVariante.parentElement!.classList.add('noActivo'); // Si la variante se elimino de forma exitosa oculta la variante
     }
-    rechazar.onclick=()=>{ //Si se apreta rechazar no se guardan los datos cambiados
-        // Desactiva la ventana emergente
-        contenedorVentanaEmergente.classList.add('noActivo')
-        ventanaEmergente.classList.add('noActivo')
+    
+
+    document.getElementById('mensajeSinVariantes')?.classList.add('noActivo') // Si el mensaje de "sin variantes" esta activo entonces lo desactiva
+}
+
+const obtenerVariantesDOM =(productoID:string):variante[]=>{
+    // Devuelve un array con todas las variantes del producto que se encuetran en el DOM
+
+    // Inicializa la variable que almacena todas las variantes del producto, el indice de los colores dentro de la variable "variantes" y "arrayColoresVariables" comparten el mismo orden
+    let variantes:variante[]=[]
+
+    const contenedoresVariantesProducto = document.querySelectorAll('.variantesProducto__variantes__div') as NodeListOf<HTMLDivElement> // Almacena todos los contenedores de las variantes del producto
+
+    // Recorre todos los contenedores de variantes de un producto
+    contenedoresVariantesProducto.forEach(contenedorVariante=>{
+
+
+        const SKU:string = (contenedorVariante.querySelector('.variantesProducto__input-SKU')! as HTMLInputElement).value
+        const color:string = (contenedorVariante.querySelector('.variantesProducto__select-color')! as HTMLSelectElement).value
+        const talle:string = (contenedorVariante.querySelector('.variantesProducto__input-talle')! as HTMLInputElement).value
+        const stock:number = Number((contenedorVariante.querySelector('.variantesProducto__input-stock')! as HTMLInputElement).value)
+
+        const varianteNueva:variante={
+            producto:productoID,
+            _id:contenedorVariante.id,
+            SKU,
+            color,
+            talle,
+            stock
+        }
+
+        // Agrega las nueva variante
+        if(variantes[0]) variantes.push(varianteNueva) // Si el array de variantes no esta vacio entonces agrega la nueva variante
+        else variantes[0] = varianteNueva // Si esta vacio entonces lo inicia con la nueva variante
+        
+    })
+    return variantes
+}
+
+const validarVariantesDOM =async(productoId:string)=>{
+    // Verifica las variantes
+
+    const variantes = obtenerVariantesDOM(productoId) // Devuelve las variantes que hay en el DOM
+    if(!variantes) return // Si no hay variantes entonces termina la ejecucion de la funcion
+
+    // Si hay almenos una variante entonces la envia al servidor para ser guardada
+    const errores = await actualizarVariantes(variantes,productoId)
+    if(!errores) return // Si no hay errores entonces entonces termina la ejecucion de la funcion
+
+    // Marca en error los inputs correspondientes.
+    errores.forEach(error=>{
+        const contenedorVarianteEnError = document.getElementById(`${error.value}`)
+        if(error.path==='SKU') contenedorVarianteEnError?.querySelector('.variantesProducto__input-SKU')!.classList.add('boton__enError')
+        if(error.path==='stock') contenedorVarianteEnError?.querySelector('.variantesProducto__input-stock')!.classList.add('boton__enError')
+    })
+}
+
+// Especificaciones
+const cargarEspecificacionesDOM =(productoInformacion:producto)=>{
+    
+    contenedorEspecificaciones.innerHTML=''; // Vacia el contenedor con informacion previa
+    
+    // Carga las distintas variables del producto, si existen
+    if(productoInformacion.especificaciones.length>0){ // Carga las variantes del producto
+        productoInformacion.especificaciones.forEach(especificacion => {
+            agregarEspecificacionDOM(especificacion)
+        });
+    }else{// Si el producto no tiene especificaciones entonces muestra un mensaje de error
+        // Contenedor de la variante
+        const contenedorEspecificacion = document.createElement('div')
+        contenedorEspecificacion.id='mensajeSinEspecificaciones';
+        contenedorEspecificacion.textContent='No hay ninguna especificacion para mostrar'
+    
+        contenedorEspecificaciones.appendChild(contenedorEspecificacion)
     }
-})
+
+    // Carga la funcion de agregar una especificacion en la ventana de especificaciones de producto
+    botonAgregarEspecificacion.onclick=async(event)=>{
+        event.preventDefault()
+
+        // Crea una nueva especificacion por default
+        let especificacionNueva:EspecificacionI = {
+            nombre:'',
+            descripcion:''
+        }
+        agregarEspecificacionDOM(especificacionNueva)
+    }
+}
+
+const agregarEspecificacionDOM=(especificacion:EspecificacionI)=>{
+    // Agrega la especificacion al DOM
+    const contenedorEspecificacion = document.createElement('div') // Contenedor de la variante
+    contenedorEspecificacion.classList.add('especificacionesProducto__especificacion');
+
+    contenedorEspecificacion.innerHTML=`
+        <input class="inputRegistener1 especificacion__input-nombre" value='${especificacion.nombre?especificacion.nombre:''}'>
+        <input class="inputRegistener1 especificacion__input-descripcion" value='${especificacion.descripcion?especificacion.descripcion:''}'>
+    `
+
+    // Boton para eliminar una especificacion
+    const botonEliminarEspecificacion = document.createElement('button')
+    botonEliminarEspecificacion.classList.add('fa-solid')
+    botonEliminarEspecificacion.classList.add('fa-trash-can')
+    botonEliminarEspecificacion.classList.add('botonRegistener3')
+    botonEliminarEspecificacion.classList.add('especificacion__eliminar')
+    botonEliminarEspecificacion.classList.add('botonNegativo')
+    botonEliminarEspecificacion.onclick=()=>{
+        botonEliminarEspecificacion.parentElement!.classList.add('noActivo')
+        botonEliminarEspecificacion.parentElement!.classList.remove('especificacionesProducto__especificacion')
+    }
+
+    contenedorEspecificacion.appendChild(botonEliminarEspecificacion) // Agrega el boton al contenedor de la especificacion
+    contenedorEspecificaciones.appendChild(contenedorEspecificacion) // Agrega la especificacion al DOM
+
+
+
+    document.getElementById('mensajeSinEspecificaciones')?.classList.add('noActivo') // Si el mensaje de "sin variantes" esta activo entonces lo desactiva
+}
+
+const obtenerEspecificacionesDOM=()=>{
+    // Devuelve un array con todas las especificaciones del producto que se encuentren en el DOM
+
+    // Inicializa la variable que almacena todas las especificaciones del producto
+    let especificaciones:EspecificacionI[]=[]
+
+    const contenedoresEspecificacionesProducto = document.querySelectorAll('.especificacionesProducto__especificacion') as NodeListOf<HTMLDivElement> // Almacena todos los contenedores de las variantes del producto
+
+    // Recorre todos los contenedores de variantes de un producto
+    contenedoresEspecificacionesProducto.forEach(contenedorEspecificacion=>{
+
+
+        const nombre:string = (contenedorEspecificacion.querySelector('.especificacion__input-nombre')! as HTMLInputElement).value
+        const descripcion:string = (contenedorEspecificacion.querySelector('.especificacion__input-descripcion')! as HTMLSelectElement).value
+
+        const especificacion:EspecificacionI={
+            nombre,
+            descripcion
+        }
+
+        // Agrega las nueva especificacion
+        especificaciones.push(especificacion) 
+        
+    })
+    return especificaciones
+}

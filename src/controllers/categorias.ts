@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Categoria from '../models/categoria.js';
-import { categoria } from '../models/interfaces/categorias.js';
+import { CategoriaI } from '../models/interfaces/categorias.js';
 import { usuario } from '../models/interfaces/usuario.js';
 
 
@@ -14,7 +14,7 @@ const verCategorias = async(req: Request, res: Response)=>{
     const condicion = {estado:true}; // Condicion/es que debe cumplir la busqueda
 
     // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
-    let [categorias, categoriasCantidad]:[ categoria[] | string[] , number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
+    let [categorias, categoriasCantidad]:[ CategoriaI[] | string[] , number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
         Categoria.find(condicion).populate('usuario')  // Busca a todos los categorias en la base de datos que cumplen la condicion
             .skip(desde).limit(cantidad),
         Categoria.countDocuments(condicion) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
@@ -71,7 +71,7 @@ const crearCategoria = async(req: Request, res: Response)=>{
     const categoria = new Categoria( data ) // Crea una nueva categoria
     await categoria.save() // La guarda en la base de datos
     
-    res.json(`Se creo la categoria ${nombre}`)
+    res.json(categoria)
 }
 
 // Actualiza una categoria con el id pasado como parametro
