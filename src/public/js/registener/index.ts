@@ -1,9 +1,9 @@
 
 import { CategoriaI } from "../../../models/interfaces/categorias.js"
 import { producto } from "../../../models/interfaces/producto.js"
-import { buscarCategorias } from "../helpers/categorias.js"
-import { obtenerProductos } from "../services/productosAPI.js"
-import { agregarProductosDOM, alternarDisponibilidadProducto, eliminarProducto } from "./productos.js"
+import { buscarCargarCategorias } from "../helpers/categorias.js"
+import { obtenerProductos, solicitudEliminarProducto } from "../services/productosAPI.js"
+import { agregarProductosDOM, alternarDisponibilidadProducto } from "./productos.js"
 import { ventanaEmergenteModificarProducto } from "./ventanasEmergentes/modificarProducto.js"
 import { preguntar } from "./ventanasEmergentes/preguntar.js"
 
@@ -138,7 +138,10 @@ const botonesConfiguracionProducto =()=>{
         boton.onclick =async()=>{
             const idProducto = boton.parentElement!.parentElement!.id!
             const respuesta:boolean = await preguntar('¿Estas seguro que quieres eliminar este producto?')
-            if(respuesta) eliminarProducto(idProducto)
+            if(respuesta) {
+                const productoEliminado = await solicitudEliminarProducto(idProducto)
+                if(productoEliminado) buscarCargarProductos() // Si el servidor no devuelve errores vuelve a cargar los productos            
+            }
         }
     })
 }
@@ -290,7 +293,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     [,,categorias] = await Promise.all([
         cargarSeccionProductos(), // Le da la funcionalidad a los botones de la seccion de modificar productos
         buscarCargarProductos(),
-        buscarCategorias(contenedorCategorias,contenedorOpcionesCategorias) // Busca y carga las categorias
+        buscarCargarCategorias(contenedorCategorias,contenedorOpcionesCategorias) // Busca y carga las categorias
     ]);
 
 

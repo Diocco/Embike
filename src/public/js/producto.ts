@@ -1,9 +1,9 @@
 
 import { producto } from "../../models/interfaces/producto.js"
 import { variante } from "../../models/interfaces/variante.js";
-import {url} from "../js/header.js"
-import { tokenAcceso } from "./global.js";
-import { mostrarMensaje } from "./helpers/mostrarMensaje.js"
+import { obtenerProducto } from "./services/productosAPI.js";
+import { obtenerListaDeseados, solicitudAlternarProductoDeseado } from "./services/usuariosAPI.js";
+
 
 const cargarColoresTalles =(productoInformacion:producto)=>{
 
@@ -50,63 +50,25 @@ const cargarColoresTalles =(productoInformacion:producto)=>{
     }
 }
 
-const verificarListaDeseados =(productoInformacion:producto)=>{
+const verificarListaDeseados =async (productoInformacion:producto)=>{
     // Refleja si el producto esta o no en la lista de deseados
 
-    // Le da funcion al boton de agregar a la lista de deseados
-    const botonAgregarDeseados:HTMLElement = document.getElementById("botonAgregarDeseados")!
-    botonAgregarDeseados.addEventListener('click',()=>{
-        botonAgregarDeseados.classList.toggle('botonAgregarDeseados-push')
-        botonAgregarDeseados.classList.toggle('botonAgregarDeseados-active')
-
-        fetch(url+`/api/usuarios/listaDeseados/${productoInformacion._id}`,{ // Envia el id del producto como un queryparam
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json',
-                'tokenAcceso':`${tokenAcceso}` // Envia el token de acceso del usuario
-            }
-        })
-        .then(response=>response.json())
-        .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-            if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-                (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                    console.log(error.msg)})
-            }else{// No se espera una respuesta del servidor que no sean errores en este caso
-            }})
-        .catch(error => { // Si hay un error se manejan 
-            console.error(error);
-        })
-    })
-
     // Manda una solicitud al servidor para saber la lista de deseados del usuario
-    let listaProductosDeseados:string[]
-    fetch(url+`/api/usuarios/listaDeseados`,{
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json',
-                    'tokenAcceso':`${tokenAcceso}` // Envia el token de acceso del usuario
-                }
-    })
-    .then(response=>response.json())
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error.msg)})
-        }else{
-            listaProductosDeseados=data
-            // Busca el producto actual en la lista del usuario
-            const indice:number = listaProductosDeseados.indexOf(productoInformacion._id.toString())
-            if(indice===-1){
-                // Si no se encuentra el id del producto en la lista del usuario entonces no hace nada
-            }else{
-                // Si se encuentra entonces lo refleja visualmente
-                const botonAgregarDeseados:HTMLElement = document.getElementById("botonAgregarDeseados")!
-                botonAgregarDeseados.classList.add('botonAgregarDeseados-active')
-                botonAgregarDeseados.classList.add('botonAgregarDeseados-push')
-            }
+    const respuesta = await obtenerListaDeseados(false)
+
+    if(respuesta.errors) // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
+        (respuesta.errors).forEach(error=> {console.log(error.msg)}) // Recorre los errores
+    else{
+        // Busca el producto actual en la lista del usuario
+        const indice:number = (respuesta.productos as string[]).indexOf(productoInformacion._id.toString())
+        if(indice!==-1){
+            // Si se encuentra entonces lo refleja visualmente
+            const botonAgregarDeseados:HTMLElement = document.getElementById("botonAgregarDeseados")!
+            botonAgregarDeseados.classList.add('botonAgregarDeseados-active')
+            botonAgregarDeseados.classList.add('botonAgregarDeseados-push')
         }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        console.error(error);
-    })
+    }
+
 }
 
 const cargarInformacionProducto =(productoInformacion:producto)=>{
@@ -190,56 +152,37 @@ const cargarImagenesProducto=(productoInformacion:producto)=>{
 document.addEventListener("DOMContentLoaded",async()=>{
 
     // Extrae el id del URL
-    const idProducto = window.location.pathname.split('/').pop(); 
+    const productoId = window.location.pathname.split('/').pop(); 
+    const producto = await obtenerProducto(productoId!) // Si el id es "undefined" el servidor devolvera un error
+    if(producto){ // Si no hay errores:
+        cargarInformacionProducto(producto) // Carga la informacion general del producto en el DOM
+        if(producto.variantes) cargarColoresTalles(producto) // Si existen, carga las variantes de colores y talles del producto
+        verificarListaDeseados(producto) // Le define la funcion al boton de agregar el producto a la lista de deseados y verifica si el producto ya forma parte o no de la lista
+    }else return // Si no se devolvio un producto entonces termina la ejecucion de la funcion
+    
 
-    if(!idProducto){ // Si el URL no tiene el id entonces lanza un error
-        console.log('Id no valido')
-    }else{// Si el URL tiene un id entonces realiza un fetch
-        fetch(url+`/api/productos/${idProducto}`, { 
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json'},
-        })
-        .then(response => response.json()) // Parsea la respuesta 
-        .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-            if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-                mostrarMensaje('',true);
-                (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                    console.log(error.msg)})
-            }else{ // Si no hay errores:
-                const producto:producto = data
-                cargarInformacionProducto(producto) // Carga la informacion general del producto en el DOM
-                if(producto.variantes) cargarColoresTalles(producto) // Si existen, carga las variantes de colores y talles del producto
-                verificarListaDeseados(producto) // Le define la funcion al boton de agregar el producto a la lista de deseados y verifica si el producto ya forma parte o no de la lista
-            }
-        })
-        .catch(error=>{
-            mostrarMensaje('2',true);
-            console.error(error)
-        })
-    }
+    // Le da funcion al boton de agregar a la lista de deseados
+    const botonAgregarDeseados:HTMLElement = document.getElementById("botonAgregarDeseados")!
+    botonAgregarDeseados.addEventListener('click',async ()=>{
+        // Cambia el estilo del boton
+        botonAgregarDeseados.classList.toggle('botonAgregarDeseados-push')
+        botonAgregarDeseados.classList.toggle('botonAgregarDeseados-active') 
+
+        // Envia la solicitud al servidor
+        const respuesta = await solicitudAlternarProductoDeseado(producto?._id.toString())
+        
+        // Si la solicitud devuelve un problema vuelve a dejar los estilos de los botones como antes
+        if(!respuesta.errors){
+            botonAgregarDeseados.classList.toggle('botonAgregarDeseados-push')
+            botonAgregarDeseados.classList.toggle('botonAgregarDeseados-active') 
+        }
+    
+    })
 
     // Le da la funcion al boton de volver
     const botonVolver:HTMLElement = document.getElementById("catalogoProducto__volver")!
     botonVolver.addEventListener('click',()=>{
             window.history.back() // Retrocede a la pagina anterior
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 })

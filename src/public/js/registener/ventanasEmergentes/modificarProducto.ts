@@ -1,18 +1,16 @@
 import { EspecificacionI, producto } from "../../../../models/interfaces/producto.js";
-import { CategoriaI } from "../../../../models/interfaces/categorias.js";
-import { urlProductos } from "../../global.js";
-import { mostrarMensaje } from "../../helpers/mostrarMensaje.js";
-import { agregarCategoria } from "../../helpers/categorias.js";
 
 
 import { ventanaEmergenteCargarImagenProducto } from "./modificarFoto.js";
-import { actualizarProducto, crearProducto } from "../../services/productosAPI.js";
+import { actualizarProducto, crearProducto, solicitudEliminarProducto } from "../../services/productosAPI.js";
 import { buscarCargarProductos, categorias } from "../index.js";
 
-import { error } from "../../../../interfaces/error.js";
+
 import { variante } from "../../../../models/interfaces/variante.js";
 import { actualizarVariantes, crearVariante, eliminarVariante } from "../../services/variantesAPI.js";
-import { eliminarProducto } from "../productos.js";
+import { solicitudAgregarCategoria } from "../../services/categoriasAPI.js";
+import { buscarCargarCategorias } from "../../helpers/categorias.js";
+
 
 
 // Contenedores de la ventana emergente
@@ -90,7 +88,7 @@ export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
         })
 
         if(esCancelar) {// Si el usuario selecciono "cancelar" entonces elimina el producto antes creado y
-            eliminarProducto(producto._id.toString())
+            await solicitudEliminarProducto(producto._id.toString())
             cancelar.classList.add('noActivo') // Desactiva el boton "cancelar"
             // Desactiva la ventana emergente
             contenedorVentanaEmergente.classList.add('noActivo')
@@ -191,10 +189,15 @@ const validarCaracteristicasDOM = async(datosFormulario:FormData)=>{
     // Si el usuario ingreso una nueva categoria entonces la agrega
     const categoriaNueva:string|undefined = categoriaIngresada.value
     if (categoriaNueva) {
-        const categoriaNuevaCompleta = await agregarCategoria(categoriaNueva) // La agrega a la base de datos
+        const categoriaNuevaCompleta = await solicitudAgregarCategoria(categoriaNueva) // La agrega a la base de datos
         if(categoriaNuevaCompleta) {
             categorias?.push(categoriaNuevaCompleta) // Si todo sale bien agrega la nueva categoria a la lista de categorias dentro del programa
             datosFormulario.set('categoria',categoriaNueva) // Agrega la categoria al FormData para enviarlo junto con la demas informacion del producto
+            
+            // Vuelve a cargar las categorias para reflejar los cambios TODO la categoria no aparece hasta recien que se actualiza la pagina, lo cual es un error
+            const contenedorCategorias:HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__categorias')!
+            const contenedorOpcionesCategorias = document.getElementById('modificarProducto__caracteristicas__select__categoria')! as HTMLSelectElement
+            buscarCargarCategorias(contenedorCategorias,contenedorOpcionesCategorias) 
         }
     }
     // Verifica que no esten vacias

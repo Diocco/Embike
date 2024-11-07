@@ -1,8 +1,7 @@
 import { ObjectId } from "mongoose"
 import { variante } from "../../../models/interfaces/variante.js"
-import { tokenAcceso, urlVariantes } from "../global.js"
+import { mostrarErroresConsola, tokenAcceso, urlVariantes } from "../global.js"
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js"
-import { mostrarErroresConsola } from "./productosAPI.js"
 import { error } from "../../../interfaces/error.js"
 
 export const crearVariante = async(variante:variante)=>{

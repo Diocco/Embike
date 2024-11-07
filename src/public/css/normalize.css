@@ -20,7 +20,12 @@
   --colorBotones-positivo:  rgb(21, 105, 0);
   --colorBotones-negativo:  rgb(134, 38, 38);
   --colorLetra:  rgb(207, 207, 207);
+  --colorLetra-invertida:  rgb(0, 0, 0);
   --colorLetraTenue:  rgba(207, 207, 207, 0.5);
+
+  --crema-logo: #DFC5B4; 
+  --azul-logo: #033452;
+
 }
 
 

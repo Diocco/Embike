@@ -27,6 +27,7 @@ import {
     correoUnico, 
     nombreUnico, 
     usuarioExiste } from '../../database/usuariosVerificaciones.js';
+import { productoExiste } from '../../database/productosVerificaciones.js';
 
 
 const router = express.Router();
@@ -36,13 +37,13 @@ router.post('/', // Crea un nuevo usuario
     check('password', 'La contraseña es debe tener entre 8 y 20 caracteres').isLength({min:8,max:20}), 
     check('correo', 'El correo no es valido').isEmail(), // Verifica que el email sea valido
     check('correo').custom( correoUnico ), 
-    check('rol').custom( esRolValido ), 
     validarCampos, // Devuelve un error al usuario si algun check fallo
     agregarUsuario) // Agrega un nuevo usuario a la base de datos
 
 // Actualiza la lista de productos deseados del usuario
 router.put('/listaDeseados/:idProducto', 
     validarJWT,
+    check('idProducto').custom(productoExiste),
     validarCampos, // Devuelve un error al usuario si algun check fallo
     modificarDeseado)
 

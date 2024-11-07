@@ -1,5 +1,17 @@
+import { error } from "../../interfaces/error.js";
 import { usuario } from "../../models/interfaces/usuario.js";
 import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+import { obtenerUsuarioVerificado } from "./services/usuariosAPI.js";
+
+
+// Antes de todo revisa si hay que recargar la pagina
+window.addEventListener("pageshow", () => {
+    if (sessionStorage.getItem('recargarPagina')) {
+        sessionStorage.removeItem('recargarPagina'); // Elimina la señal para evitar recargas repetidas
+        location.reload(); // Recarga la página para reflejar cambios
+    }
+});
+
 
 // Define el entorno
 export let url:string
@@ -25,37 +37,33 @@ export let usuarioVerificado: Promise<usuario | undefined>
 export const tokenAcceso: string | null = localStorage.getItem('tokenAcceso') // Recupera el token de acceso desde el localStorage
 
 if(tokenAcceso){ // Si el token existe entonces quiere decir que el usuario tiene una sesion activa
-
-    usuarioVerificado = fetch(url+'/api/usuarios/token', {  // Solicita la informacion del usuario
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json',
-                    'tokenAcceso':`${tokenAcceso}`},
-    })
-    .then(response => response.json())
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error.msg)})
-                // Borra el token con problemas
-                localStorage.removeItem('tokenAcceso') // Elimina el token de acceso
-                window.location.assign(url+'/inicioSesion?error=1') // Redirije al usuario al inicio de sesion
-                return undefined
-        }else{
-            const usuarioVerificado:usuario = data.usuarioVerificado
-            return usuarioVerificado
-        };
-    })
-    .catch(error =>{
-        // Borra el token con problemas
-        localStorage.removeItem('tokenAcceso') // Elimina el token de acceso
-        mostrarMensaje('3',true)
-        console.error(error)
-        setTimeout(() => {
-            window.location.assign(url+'/inicioSesion') // Redirije al usuario al inicio de sesion
-        }, 6000);
-        return undefined
-    }) 
+    usuarioVerificado = obtenerUsuarioVerificado(tokenAcceso)
+    if(!usuarioVerificado) {
+        localStorage.setItem('mostrarMensajeError',"La sesion ha caducado") // Define un mensaje de error para que sea mostrado al usuario una vez que carge la pagina a la que se redirige
+        localStorage.removeItem('tokenAcceso') // Elimina el token de acceso con problemas
+        window.location.assign(url+'/inicioSesion') // Redirije al usuario al inicio de sesion
+    }
 }
 
+export const mostrarErroresConsola =(errores:error[])=>{
+    mostrarMensaje('',true);
+    errores.forEach((error:error) => { // Recorre los errores
+        if(error.path==='accesoToken') localStorage.removeItem('tokenAcceso') // Elimina el token de acceso con problemas
+        console.log(error);
+    })
+}
+
+// Revisa si hay que mostrarle un mensaje al usuario
+document.addEventListener('DOMContentLoaded',()=>{
+    const mensaje:string|null = sessionStorage.getItem('mostrarMensaje')
+    if (mensaje) {
+        sessionStorage.removeItem('mostrarMensaje'); 
+        mostrarMensaje(mensaje)
+    }
+    const mensajeError:string|null = sessionStorage.getItem('mostrarMensajeError')
+    if (mensajeError) {
+        sessionStorage.removeItem('mostrarMensajeError'); 
+        mostrarMensaje(mensajeError,true)
+    }
+})
 

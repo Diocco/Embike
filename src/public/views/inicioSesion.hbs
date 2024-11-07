@@ -3,7 +3,7 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="../css/normalize.css">
 		<link rel="stylesheet" type="text/css" href="../css/inicioSesion.css">
-        <link rel="stylesheet" type="text/css" href="../../css/mensajeEmergente.css">
+        <link rel="stylesheet" type="text/css" href="../css/mensajeEmergente/mensajeEmergente.css">
 		<meta charset="utf-8">
 		<title>Embike</title>
 		<meta name="keywords" content="Bicicletas,MontainBike,Ñiños,Ruedas,Cubiertas,Frenos,Disco,Acientos">
@@ -20,39 +20,45 @@
 
     <div id="inicioSesion">
         <div id="inicioSesion__imagenFondo">
-            <a id="volver" href="index"></a>
-            <form id="inicioSesion__formulario" class="inicioSesion__formulario-active" autocomplete="off">
+            <a id="volver" class="botonVolver"></a>
+            <form id="inicioSesion__formulario" autocomplete="off">
                 <div id="titulo">Iniciar sesion</div>
-                <input required="" type="email"id="inicioSesion__formulario__ingresarCorreo" class="inicioSesion__formulario__botones" placeholder="Correo">
+                <input required="" type="email"id="inicioSesion__formulario__ingresarCorreo" class="iniciarSesion-input " placeholder="Correo">
                 <div id="errorEmail" class="errorText"></div>
-                <input required="" type="Password" id="inicioSesion__formulario__ingresarPassword" class="inicioSesion__formulario__botones" placeholder="Contraseña">
+                <input required="" type="Password" id="inicioSesion__formulario__ingresarPassword" class="iniciarSesion-input" placeholder="Contraseña">
                 <div id="errorPassword" class="errorText"></div>
-                <button id="inicioSesion__formulario__enviar" class="inicioSesion__formulario__botones" type="submit"> Enviar </button>
+                <button id="inicioSesion__formulario__enviar" class="iniciarSesion-boton" type="submit"> Enviar </button>
 
-                <div id="inicioSesion__formulario__registrarse" class="inicioSesion__formulario__botones"> Registrarse </div>
+                <button id="inicioSesion__formulario__registrarse" class="iniciarSesion-boton"> Registrarse </button>
                 <div id="pregunta">¿Olvidaste la contraseña?
                     <a href="recuperarPassword">Recuperar contraseña</a>
                 </div>
             </form>
-            <form id="registrarse__formulario" autocomplete="off">
+            <form id="registrarse__formulario" class="noActivo" autocomplete="off">
                 <div id="titulo">Registrarse</div>
-                <input required="" id="registrarse__formulario__ingresarNombre" class="registrarse__formulario__botones" placeholder="Nombre completo">
+                <input required="" id="registrarse__formulario__ingresarNombre" class="iniciarSesion-input" placeholder="Nombre completo">
                 <div id="errorNombreRegistro" class="errorText"></div>
-                <input required="" type="email" id="registrarse__formulario__ingresarCorreo" class="registrarse__formulario__botones" placeholder="Correo">
+                <input required="" type="email" id="registrarse__formulario__ingresarCorreo" class="iniciarSesion-input" placeholder="Correo">
                 <div id="errorEmailRegistro" class="errorText"></div>
-                <input required="" type="Password" id="registrarse__formulario__ingresarPassword" class="registrarse__formulario__botones" placeholder="Contraseña">
+                <input required="" type="Password" id="registrarse__formulario__ingresarPassword" class="iniciarSesion-input" placeholder="Contraseña">
                 <div id="errorPasswordRegistro" class="errorText"></div>
-                <input required="" type="Password" id="registrarse__formulario__repetirPassword" class="registrarse__formulario__botones" placeholder="Repetir contraseña">
+                <input required="" type="Password" id="registrarse__formulario__repetirPassword" class="iniciarSesion-input" placeholder="Repetir contraseña">
                 <div id="errorRepetirPasswordRegistro" class="errorText"></div>
-                <button id="registrarse__formulario__enviar" class="registrarse__formulario__botones" type="submit"> Enviar </button>
+                <button id="registrarse__formulario__enviar" class="iniciarSesion-boton" type="submit"> Enviar </button>
 
                 <div id="pregunta">¿Ya tenes una cuenta?
                     <a id="volverIniciarSesion">Iniciar sesion</a>
                 </div>
             </form>
+            <div id="registrarse__exito" class="noActivo">
+                <i id="registrarse__exito__i" class="fa-solid fa-check"></i>
+                <p id="registrarse__exito__p">Usuario registrado con exito</p>
+                <button class="iniciarSesion-boton botonVolver">Volver</button>
+            </div>
         </div>
     </div>
 
+    <script type="module" src="../../js/global.js"></script>
     <script type="module" src="../js/iniciarSesion.js"></script>
     <script type="module" src="../js/helpers/mostrarMensaje.js"></script>
 </body>

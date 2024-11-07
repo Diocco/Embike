@@ -1,9 +1,9 @@
 
 import { producto } from "../../../models/interfaces/producto.js";
 import { variante } from "../../../models/interfaces/variante.js";
-import { tokenAcceso, urlProductos } from "../global.js";
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js";
-import { buscarCargarProductos } from "./index.js";
+import { actualizarProducto } from "../services/productosAPI.js";
+
 
 
 
@@ -67,60 +67,12 @@ export const agregarProductosDOM = async(productos:producto[],contenedorProducto
 }
 
 
-
-
-export function eliminarProducto(idProducto: string) {
-    fetch(urlProductos+`/${idProducto}`, { 
-        method: 'DELETE',
-        headers: {  'Content-Type': 'application/json' ,
-                    'tokenAcceso' : `${tokenAcceso}`  },
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error);
-            })
-        }else{ // Si el servidor no devuelve errores:
-            buscarCargarProductos()
-        }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        mostrarMensaje('2',true);
-        console.error(error);
-    })
-}
-
-
-export const alternarDisponibilidadProducto =(idProducto:string,estaDisponible:boolean,boton:HTMLElement)=>{
+export const alternarDisponibilidadProducto =async (idProducto:string,estaDisponible:boolean,boton:HTMLElement)=>{
     // Realiza la peticion PUT para modificar el producto
-    const data={
-        disponible:!estaDisponible // Envia el opuesto a la disponibilidad actual del producto
-    }
-
-    fetch(urlProductos+`/${idProducto}`, { 
-        method: 'PUT',
-        headers: {  'Content-Type': 'application/json' ,
-                    'tokenAcceso' : `${tokenAcceso}`  },
-        body: JSON.stringify(data)
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error);
-            })
-        }else{ // Si el servidor no devuelve errores:
-            console.log(data)
-            boton.classList.toggle('botonPositivo') // Alterna visualmente la disponibilidad del producto para reflejar los cambios efectuados
-        }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        mostrarMensaje('2',true);
-        console.error(error);
-    })
+    const formData = new FormData
+    formData.append('disponible',JSON.stringify(!estaDisponible))
+    const productoActualizado = await actualizarProducto(formData,idProducto)
+    if(productoActualizado) boton.classList.toggle('botonPositivo') // Alterna visualmente la disponibilidad del producto para reflejar los cambios efectuados
 }
 
 

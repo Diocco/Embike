@@ -1,15 +1,10 @@
-import { ObjectId } from "mongoose";
-import { error } from "../../../interfaces/error.js";
+
 import { producto } from "../../../models/interfaces/producto.js";
-import { tokenAcceso, urlCategorias, urlProductos } from "../global.js";
+import { mostrarErroresConsola, tokenAcceso, urlCategorias, urlProductos } from "../global.js";
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js";
 
-export const mostrarErroresConsola =(errores:error[])=>{
-        mostrarMensaje('',true);
-        errores.forEach((error:error) => { // Recorre los errores
-            console.log(error.msg);
-        })
-}
+
+
 
 // Realiza la peticion GET para obtener los productos
 export const obtenerProductos=async(desde:string,hasta:string,precioMin:string,precioMax:string,palabraBuscada:string,categorias:string,ordenar:string)=>{
@@ -111,4 +106,46 @@ export const crearProducto= async(datosProducto?:FormData):Promise<producto | un
     })
 
     return productoCreado
+}
+
+export const obtenerProducto =async (productoId:string)=>{
+    let producto:producto|undefined
+    
+    await fetch(urlProductos+`/${productoId}`, { 
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json'},
+        })
+    .then(response => response.json()) // Parsea la respuesta 
+    .then(data=> { // Maneja la respuesta del servidor
+        if(data.errors) mostrarErroresConsola (data.errors) // Si hay errores de tipeo los muestra en consola 
+        else producto = data // Si el servidor no devuelve errores guarda la respuesta
+    })
+    .catch(error => { // Si hay un error se manejan 
+        console.error(error);
+        mostrarMensaje('2',true);
+    })
+
+    return producto
+}
+
+export const solicitudEliminarProducto =async (productoId:string)=>{
+
+    let productoEliminado:producto|undefined
+
+    await fetch(urlProductos+`/${productoId}`, { 
+        method: 'DELETE',
+        headers: {  'Content-Type': 'application/json' ,
+                    'tokenAcceso' : `${tokenAcceso}`  },
+    })
+    .then(response => response.json()) // Parsear la respuesta como JSON
+    .then(data=> { // Maneja la respuesta del servidor
+        if(data.errors) mostrarErroresConsola (data.errors) // Si hay errores de tipeo los muestra en consola 
+        else productoEliminado = data.productoEliminado // Si el servidor no devuelve errores guarda la respuesta
+    })
+    .catch(error => { // Si hay un error se manejan 
+        console.error(error);
+        mostrarMensaje('2',true);
+    })
+
+    return productoEliminado
 }

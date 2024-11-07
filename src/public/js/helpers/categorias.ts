@@ -1,36 +1,19 @@
 
 import { CategoriaI } from "../../../models/interfaces/categorias.js";
-import { tokenAcceso, urlCategorias } from "../global.js";
 import { buscarCargarProductos } from "../registener/index.js";
-import { mostrarMensaje } from "./mostrarMensaje.js"
+import { obtenerCategorias } from "../services/categoriasAPI.js";
 
 
-export const buscarCategorias = async(contenedor:HTMLElement|null=null,contenedorOpciones:HTMLSelectElement|null=null) =>{
-    return fetch(
-        urlCategorias , { // Realiza la peticion GET para obtener un string[] con los nombres de las categorias validas
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor, maneja errores o agrega elementos al DOM
-        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error);
-            })
-            return undefined
-        }else{ // Si el servidor no devuelve errores:
-            const categorias:CategoriaI[] = data.categorias
-            if(contenedor)          cargarCategorias(categorias,contenedor)                         // Si se paso un contenedor como argumento entonces llama a la funcion para cargar las categorias en el DOM
-            if(contenedorOpciones)  cargarCategoriasVentanaModificar(categorias,contenedorOpciones) // Si se paso un contenedor del tipo "select" entonces le agrega como opciones las categorias encontradas
-            return categorias
-        }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        mostrarMensaje('2',true)
-        console.error(error);
-        return undefined
-    })
+
+export const buscarCargarCategorias = async(contenedor:HTMLElement|null=null,contenedorOpciones:HTMLSelectElement|null=null) =>{
+    
+    const categorias = await obtenerCategorias()
+    if(categorias.length>0){ // Si el servidor devuelve al menos una categoria
+        if(contenedor)          cargarCategorias(categorias,contenedor)                         // Si se paso un contenedor como argumento entonces llama a la funcion para cargar las categorias en el DOM
+        if(contenedorOpciones)  cargarCategoriasVentanaModificar(categorias,contenedorOpciones) // Si se paso un contenedor del tipo "select" entonces le agrega como opciones las categorias encontradas
+    }
+
+    return categorias
 }
 
 export function cargarCategorias(categorias:CategoriaI[],contenedorCategorias:HTMLElement) {
@@ -123,29 +106,3 @@ const cargarCategoriasVentanaModificar =(categorias:CategoriaI[],contenedorOpcio
     }
 }   
 
-export const agregarCategoria = async(nombreCategoria:string)=>{
-    return fetch(
-        urlCategorias, { // Realiza la peticion GET para obtener un string[] con los nombres de las categorias validas
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json',
-            'tokenAcceso':`${tokenAcceso}`},
-        body: JSON.stringify({ 'nombre': `${nombreCategoria}`})
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor, maneja errores o agrega elementos al DOM
-        if(data.errors){ // Si el servidor devuelve errores los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                console.log(error);
-            })
-            return undefined
-        }else{ // Si el servidor no devuelve errores:
-            return data.categoriaNueva as CategoriaI
-        }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        mostrarMensaje('2',true)
-        console.error(error);
-        return undefined
-    })
-}

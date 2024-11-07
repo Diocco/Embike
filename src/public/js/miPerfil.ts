@@ -2,6 +2,7 @@ import { usuario } from "../../models/interfaces/usuario.js";
 import { tokenAcceso } from "./global.js";
 import {url,usuarioVerificado} from "./header.js";
 import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+import { solicitudActualizarUsuario } from "./services/usuariosAPI.js";
 
 
 // Inputs con la informacion del usuario 
@@ -23,63 +24,28 @@ const enviarFormulario:HTMLElement = document.getElementById('form__button-envia
 
 
 const actualizarUsuario = async(datosFormulario:FormData)=>{
-    return fetch(url+`/api/usuarios`, {
-        method: 'PUT',
-        headers: { 'tokenAcceso':`${tokenAcceso}`},
-        body: datosFormulario
-    })
-    .then(response => response.json()) // Parsear la respuesta como JSON
-    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-        if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-            mostrarMensaje('',true);
-            (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
 
-                if(error.path==='correo'){ // Si el error es del correo:
-                    const mensajeErrorCorreo:HTMLElement = document.getElementById('form__a-correo')! as HTMLParagraphElement;
-                    correoInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
-                    if(!mensajeErrorCorreo.textContent){ // Verifica si tenia un mensaje de error previo
-                        mensajeErrorCorreo.textContent=error.msg; // Si no tenia, le coloca 
-                    }
+    const respuesta = await solicitudActualizarUsuario(datosFormulario)
+    if(respuesta.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
+        mostrarMensaje('',true);
+        (respuesta.errors).forEach(error => { // Recorre los errores
+            let inputEnError:HTMLInputElement|undefined // Variable que almacena el input que esta en estado de error
+            // Define el input en error mediante el "path" del error
+            if(error.path==='correo') inputEnError=correoInput 
+            else if(error.path==='nombre')inputEnError=correoInput
+            else if(error.path==='telefono')inputEnError=correoInput
+            else if(error.path==='archivo')inputEnError=imgInput
+            else if(error.path==='password')inputEnError=passwordInput
 
-                }else if(error.path==='nombre'){
-                    const mensajeErrorNombre:HTMLElement = document.getElementById('form__a-nombre')! as HTMLParagraphElement;
-                    nombreInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
-                    if(!mensajeErrorNombre.textContent){ // Verifica si tenia un mensaje de error previo
-                        mensajeErrorNombre.textContent=error.msg; // Si no tenia, le coloca 
-                    }
-                }else if(error.path==='telefono'){
-                    const mensajeErrorTelefono:HTMLElement = document.getElementById('form__a-telefono')! as HTMLParagraphElement;
-                    telefonoInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
-                    if(!mensajeErrorTelefono.textContent){ // Verifica si tenia un mensaje de error previo
-                        mensajeErrorTelefono.textContent=error.msg; // Si no tenia, le coloca 
-                    }
-                    
-                }else if(error.path==='archivo'){
-                    const mensajeErrorImg:HTMLElement = document.getElementById('form__a-subirFoto')! as HTMLParagraphElement;
-                    imgInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
-                    if(!mensajeErrorImg.textContent){ // Verifica si tenia un mensaje de error previo
-                        mensajeErrorImg.textContent=error.msg; // Si no tenia, le coloca 
-                    }
-                    
-                }else if(error.path==='password'){ 
-                    const mensajeErrorPassword:HTMLElement = document.getElementById('form__a-contraseña')! as HTMLParagraphElement;
-                    passwordInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo 
-                    if(!mensajeErrorPassword.textContent){ // Verifica si tenia un mensaje de error previo
-                        mensajeErrorPassword.textContent=error.msg; // Si no tenia, le coloca 
-                    }
-                }
-            })
-        }else{ // Si el servidor devuelve un  exitoso:
-            mostrarMensaje('4');
-        }
-    })
-    .catch(error => { // Si hay un error se manejan 
-        console.error(error);
-        mostrarMensaje('2',true);
-    })
-    .finally( ()=>{
-        enviarFormulario.classList.remove('form__button-enviarFormulario-enProceso') // Modifica el estilo del boton para aclarar que la solicitud termino
-    });
+            if(inputEnError){ // Define el estilo del input en error
+                inputEnError.classList.add('boton__enError');
+                const errorTexto=inputEnError.nextElementSibling;
+                if(errorTexto) errorTexto.textContent=error.msg;
+            }
+        })
+    }else mostrarMensaje('4');// Si el servidor devuelve un  exitoso:
+
+    enviarFormulario.classList.remove('form__button-enviarFormulario-enProceso') // Modifica el estilo del boton para aclarar que la solicitud termino
 }
 
 const mostrarInformacionUsuario =(usuario:usuario)=>{
@@ -129,12 +95,8 @@ const informacionFormulario=(usuario:usuario)=>{
         enviarFormulario.classList.add('form__button-enviarFormulario-enProceso') 
 
         // Elimina, si esta presente, los estados de error
-        document.querySelectorAll(".form__input-enError")?.forEach((input)=>{
-            input.classList.remove('form__input-enError');
-        })
-        document.querySelectorAll(".form__error")?.forEach((textoError)=>{
-            textoError.textContent='';
-        })
+        document.querySelectorAll(".form__input-enError")?.forEach((input)=>input.classList.remove('form__input-enError'))
+        document.querySelectorAll(".form__error")?.forEach((textoError)=>textoError.textContent='')
 
         
         // Compara si las contraseñas introducidas son iguales
@@ -149,34 +111,26 @@ const informacionFormulario=(usuario:usuario)=>{
         
         
         // Elimina de los datos del formulario los inputs vacios o que no fueron modificados
+
         // Imagen: Si el input esta vacio no lo envia
-        if(!(imgInput.files![0])){
-            datosFormulario.delete('img')
-        }
+        if(!(imgInput.files![0]))datosFormulario.delete('img')
+        
         // Nombre: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        if(nombreInput.value===''||nombreInput.value===usuario.nombre){
-            datosFormulario.delete('nombre')
-        }
+        if(nombreInput.value===''||nombreInput.value===usuario.nombre)datosFormulario.delete('nombre')
+        
         // Correo: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        if(correoInput.value===''||correoInput.value===usuario.correo){
-            datosFormulario.delete('correo')
-        }
+        if(correoInput.value===''||correoInput.value===usuario.correo)datosFormulario.delete('correo')
+        
         // Password: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        if(passwordInput.value===''||passwordInput.value===usuario.password){
-            datosFormulario.delete('password')
-        }
+        if(passwordInput.value===''||passwordInput.value===usuario.password)datosFormulario.delete('password')
+        
         // Telefono: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        if(telefonoInput.value===''||telefonoInput.value===usuario.telefono){
-            datosFormulario.delete('telefono')
-        }else{
-            // Le da un formato correcto al telefono
-            const telConFormato = '549' + datosFormulario.get('telefono') 
-            datosFormulario.set('telefono',telConFormato)
-        }
+        if(telefonoInput.value===''||telefonoInput.value===usuario.telefono)datosFormulario.delete('telefono')
+        else datosFormulario.set('telefono','549' + datosFormulario.get('telefono'))// Le da un formato correcto al telefono
+        
         // Password: Si el input esta vacio o tiene el mismo valor que el almacenado en la base de datos entonces no lo envia
-        if(passwordInput.value===''||passwordInput.value===usuario.password){
-            datosFormulario.delete('password')
-        }
+        if(passwordInput.value===''||passwordInput.value===usuario.password)datosFormulario.delete('password')
+        
         resolve(datosFormulario)
     })
 }

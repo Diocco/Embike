@@ -1,8 +1,4 @@
-:root {
-    --fondo: white;
-    --crema-logo: #DFC5B4; 
-    --azul-logo: #033452;
-    }/*Variables*/
+
 
 #inicioSesion{
     display: flex;
@@ -34,9 +30,9 @@
     margin: 10px;
 }
 
-
-#inicioSesion__formulario,#registrarse__formulario{
-    display: none;
+/*Distintas contenedores de ventanas, iniciar sesion, registrarse y registro exitoso*/
+#inicioSesion__formulario,#registrarse__formulario,#registrarse__exito{
+    display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: center;
@@ -47,19 +43,10 @@
     padding: 30px;
     margin: 80px;
     border-radius: 20px;
-}
-.inicioSesion__formulario-active{
-    display: flex !important;
+
 }
 
-#registrarse__formulario{
-    display: none;
-}
-.registrarse__formulario-active{
-    display: flex !important;
-}
-
-.inicioSesion__formulario__botones,.registrarse__formulario__botones{
+.iniciarSesion-boton,.iniciarSesion-input{
     height: 45px;
     width: 400px;
     margin-top: 20px;
@@ -70,18 +57,20 @@
     border-color: black;
     transition: border-color 1s;
     outline: none;
-    background-color: rgb(206, 206, 206);
     box-sizing: border-box;
-}
-
-
-#inicioSesion__formulario__enviar,#registrarse__formulario__enviar{
     background-color: var(--azul-logo);
-    color:white
+    color:var(--colorLetra);
+    cursor: pointer;
+}
+.iniciarSesion-input{
+    background-color: rgb(206, 206, 206);
+    color:var(--colorLetra-invertida);
+    cursor:initial
 }
 
 #inicioSesion__formulario__registrarse,#registrarse__formulario__registrarse{
     background-color: var(--crema-logo);
+    color:var(--colorLetra-invertida);
     text-align: center;
 }
 
@@ -115,6 +104,21 @@
 #volverIniciarSesion{
     color: #0000EE;   /* Azul predeterminado */
     cursor: pointer;  /* El cursor cambia a una mano cuando se pasa por encima */
+}
+
+/*Logo "check" de la ventana de registro de sesion exitoso*/
+#registrarse__exito__i{
+    font-size: 200px;
+    text-align: center;
+    padding: 20px calc(20px + 12.5px);
+    color: white;
+    background-color: lightgreen;
+    border-radius: 120px;
+}
+/*Mensaje de registro exitoso*/
+#registrarse__exito__p{
+    margin: 30px;
+    font-size: 25px;
 }
 
 

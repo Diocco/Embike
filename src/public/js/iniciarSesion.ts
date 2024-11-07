@@ -1,35 +1,49 @@
-import { url, urlInicioSesion, urlRegistro } from "./global.js";
+import { error } from "../../interfaces/error.js";
 import { mostrarMensaje } from "./helpers/mostrarMensaje.js";
+import { solicitudIniciarSesion, solicitudRegistrarUsuario } from "./services/usuariosAPI.js";
 
+// Botones
+const botonRegistrarse = document.getElementById('inicioSesion__formulario__registrarse')! as HTMLButtonElement;
+const volverIniciarSesion:HTMLElement = document.getElementById('volverIniciarSesion')!;
+const botonesVolver: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.botonVolver')!;
 
+// Formularios
+const formularioRegistrarse:HTMLElement = document.getElementById('registrarse__formulario')!;
+const formularioIniciarSesion:HTMLElement = document.getElementById('inicioSesion__formulario')!;
 
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    const botonRegistrarse:HTMLElement = document.getElementById('inicioSesion__formulario__registrarse')!;
-    const volverIniciarSesion:HTMLElement = document.getElementById('volverIniciarSesion')!;
-    const formularioRegistrarse:HTMLElement = document.getElementById('registrarse__formulario')!;
-    const formularioIniciarSesion:HTMLElement = document.getElementById('inicioSesion__formulario')!;
-
-
-
-    // Verifica si hay que mostrar algun mensaje
-    const params = new URLSearchParams(window.location.search);
-    const codigoMensaje:string|null = params.get('error')
-    if(codigoMensaje!==null) mostrarMensaje(codigoMensaje,true);
-
-
-
+    // Le asigna las funciones a los botones
     // Si se hace click en "Registrarse" se muestra el formulario para registrarse
-    botonRegistrarse.addEventListener('click', ()=>{
-        formularioRegistrarse.classList.add('registrarse__formulario-active');
-        formularioIniciarSesion.classList.remove('inicioSesion__formulario-active');
+    botonRegistrarse.addEventListener('click', (event)=>{
+        event.preventDefault()
+        formularioRegistrarse.classList.remove('noActivo');
+        formularioIniciarSesion.classList.add('noActivo');
     })
 
     // Si se hace click en "Iniciar sesion" se muestra el formulario para iniciar sesion
     volverIniciarSesion.addEventListener('click', ()=>{
-        formularioRegistrarse.classList.remove('registrarse__formulario-active');
-        formularioIniciarSesion.classList.add('inicioSesion__formulario-active');
+        formularioRegistrarse.classList.add('noActivo');
+        formularioIniciarSesion.classList.remove('noActivo');
+    })
+
+    // Si se hace click en el boton de volver, reedirije al usuario a la ultima pagina visitada
+    botonesVolver.forEach((botonVolver)=>{
+        botonVolver.onclick=()=>{
+            window.history.back()
+        }
+    })
+
+    // Si se hace click en un input entonces quita su estado de error
+    document.querySelectorAll('.iniciarSesion-input').forEach(input=>{
+        input.addEventListener('click', () => {
+            input.classList.remove('boton__enError');
+            const errorText = input.nextElementSibling;
+            if (errorText) {
+                errorText.textContent = '';
+            }
+        });
     })
 
 
@@ -41,72 +55,42 @@ document.addEventListener("DOMContentLoaded", function() {
     const mensajeErrorPassword: HTMLElement = document.getElementById('errorPassword')!;
     const botonEnviar: HTMLElement = document.getElementById('inicioSesion__formulario__enviar')!;
 
-    formularioIniciarSesion.addEventListener('submit',(event)=>{
+    formularioIniciarSesion.addEventListener('submit',async (event)=>{
         event.preventDefault(); // Evita que el formulario recargue la página
 
         botonEnviar.classList.add('boton__enProceso') // Modifica el estilo del boton para aclarar que se esta procesando la solicitud
 
         // Elimina, si esta presente, los estados de error
-        emailInput.classList.remove('boton__enError')
-        passwordInput.classList.remove('boton__enError')
-        mensajeErrorEmail.textContent=''
-        mensajeErrorPassword.textContent=''
+        formularioIniciarSesion.querySelectorAll('.iniciarSesion-input').forEach(input=>input.classList.remove('boton__enError'))
+        formularioIniciarSesion.querySelectorAll('.errorText').forEach(textError=>textError.textContent='')
 
-        const data={ // Define los parametros inputs por el usuario para enviarlos al servidor
-            correo:emailInput.value,
-            password:passwordInput.value
-        }
-        
-        fetch(urlInicioSesion, { // Realiza el post
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data) // Convertir los datos a JSON
-        })
 
-        .then(response => response.json()) // Parsear la respuesta como JSON
-        .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-            if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-                mostrarMensaje('',true);
-                (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
-                    if(error.path==='correo'){ // Si el error es del correo:
-                        emailInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
-                        if(!mensajeErrorEmail.textContent){ // Verifica si tenia un mensaje de error previo
-                            mensajeErrorEmail.textContent=error.msg; // Si no tenia, le coloca 
-                        }
-                    }else{ // Si el error no es del correo, entonces deberia ser de la password
-                        passwordInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo 
-                        if(!mensajeErrorPassword.textContent){ // Verifica si tenia un mensaje de error previo
-                            mensajeErrorPassword.textContent=error.msg; // Si no tenia, le coloca 
-                        }
+        const respuesta = await solicitudIniciarSesion(emailInput.value,passwordInput.value)
+        if(respuesta.errors.length>0){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
+            mostrarMensaje('',true);
+            (respuesta.errors).forEach((error:error) => { // Recorre los errores
+                if(error.path==='correo'){ // Si el error es del correo:
+                    emailInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
+                    if(!mensajeErrorEmail.textContent){ // Verifica si tenia un mensaje de error previo
+                        mensajeErrorEmail.textContent=error.msg; // Si no tenia, le coloca 
                     }
-                })
-            }else{ // Si el servidor devuelve un inicio de sesion exitoso:
-                const tokenAcceso = data.token; // Define el token de acceso devuelto por el servidor
-                localStorage.setItem('tokenAcceso',tokenAcceso); // Guarda el token en el navegador del usuario para usarlo cuando se requiera
-                window.location.assign(url) // Redirije al usuario al inicio de la pagina
-            }
-        })
-        .catch(error => { // Si hay un error se manejan 
-            mostrarMensaje('2',true);
-            console.error(error);
-        })
-        .finally(()=>{
-            botonEnviar.classList.remove('boton__enProceso') // Modifica el estilo del boton para aclarar que la solicitud termino
-        });
-        
+                }else{ // Si el error no es del correo, entonces deberia ser de la password
+                    passwordInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo 
+                    if(!mensajeErrorPassword.textContent){ // Verifica si tenia un mensaje de error previo
+                        mensajeErrorPassword.textContent=error.msg; // Si no tenia, le coloca 
+                    }
+                }
+            })
+        }else if(respuesta.token){ // Si el servidor devuelve el token entonces lo almacena
+            localStorage.setItem('tokenAcceso',respuesta.token); // Guarda el token en el navegador del usuario para usarlo cuando se requiera
+            sessionStorage.setItem('recargarPagina', 'true'); // Marca para recargar la página anterior
+            sessionStorage.setItem('mostrarMensaje', 'Sesion iniciada'); // Marca para recargar la página anterior
+            history.back(); // Navega hacia atrás
+        }
+        botonEnviar.classList.remove('boton__enProceso') // Modifica el estilo del boton para aclarar que la solicitud termino
     })
 
-    // Si se hace click en email y estaba marcado como con un error, lo remueve
-    emailInput.addEventListener('click', () =>{ 
-        emailInput.classList.remove('boton__enError')
-        mensajeErrorEmail.textContent=null;
-    })
 
-    // Si se hace click en password y estaba marcado como con un error, lo remueve
-    passwordInput.addEventListener('click', () =>{ 
-        passwordInput.classList.remove('boton__enError')
-        mensajeErrorPassword.textContent=null;
-    })
 
 
 
@@ -127,20 +111,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const mensajeErrorPasswordRepetirRegistro:HTMLElement = document.getElementById('errorRepetirPasswordRegistro')!;
     const botonEnviarRegistro:HTMLElement = document.getElementById('registrarse__formulario__enviar')!;
 
-    formularioRegistrarse.addEventListener('submit',(event)=>{
+    formularioRegistrarse.addEventListener('submit',async (event)=>{
         event.preventDefault(); // Evita que el formulario recargue la página
 
         botonEnviarRegistro.classList.add('boton__enProceso') // Modifica el estilo del boton para aclarar que se esta procesando la solicitud
 
         // Elimina, si esta presente, los estados de error
-        nombreInput.classList.remove('boton__enError')
-        registroPasswordRepetirInput.classList.remove('boton__enError')
-        registroPasswordInput.classList.remove('boton__enError')
-        registroEmailInput.classList.remove('boton__enError')
-        mensajeErrorNombre.textContent=''
-        mensajeErrorEmailRegistro.textContent=''
-        mensajeErrorPasswordRegistro.textContent=''
-        mensajeErrorPasswordRepetirRegistro.textContent=''
+        botonEnviarRegistro.querySelectorAll('.iniciarSesion-input').forEach(input=>input.classList.remove('boton__enError'))
+        botonEnviarRegistro.querySelectorAll('.errorText').forEach(textError=>textError.textContent='')
+
 
         // Compara si las contraseñas introducidas son iguales
         if(registroPasswordInput.value&&registroPasswordRepetirInput.value){ // Primero verifica que ambas no sean nulas
@@ -151,89 +130,44 @@ document.addEventListener("DOMContentLoaded", function() {
                 mostrarMensaje('',true);
             }else{ // Si las contraseñas son iguales entonces se realiza la peticion POST
 
+                const respuesta = await solicitudRegistrarUsuario(nombreInput.value,registroPasswordInput.value,registroEmailInput.value)
+                if(respuesta.errors.length>0){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
+                    (respuesta.errors).forEach((error:error) => { // Recorre los errores
 
-                const data={ // Define los parametros inputs por el usuario para enviarlos al servidor
-                    nombre:nombreInput.value,
-                    password:registroPasswordInput.value,
-                    correo:registroEmailInput.value,
-                    rol:'usuario',
-                    activo:'true',
-                    google:'false'
-                }
-                fetch(urlRegistro, { // Realiza el post
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data) // Convertir los datos a JSON
-                })
-                .then(response => response.json()) // Parsear la respuesta como JSON
-                .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
-                    mostrarMensaje('',true);
-                    if(data.errors){ // Si el servidor devuelve errores en el inicio de sesion los muestra segun corresponda
-                        (data.errors).forEach((error: { path: string; msg: string; }) => { // Recorre los errores
+                        if(error.path==='correo'){ // Si el error es del correo:
 
-                            if(error.path==='correo'){ // Si el error es del correo:
-
-                                registroEmailInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
-                                if(!mensajeErrorEmailRegistro.textContent){ // Verifica si tenia un mensaje de error previo
-                                    mensajeErrorEmailRegistro.textContent=error.msg; // Si no tenia, le coloca 
-                                }
-
-                            }else if(error.path==='nombre'){
-                                
-                                nombreInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
-                                if(!mensajeErrorNombre.textContent){ // Verifica si tenia un mensaje de error previo
-                                    mensajeErrorNombre.textContent=error.msg; // Si no tenia, le coloca 
-                                }
-
-                            }else{ // Si el error no es del nombre, entonces deberia ser de la password
-                                registroPasswordInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo 
-                                if(!mensajeErrorPasswordRegistro.textContent){ // Verifica si tenia un mensaje de error previo
-                                    mensajeErrorPasswordRegistro.textContent=error.msg; // Si no tenia, le coloca 
-                                }
+                            registroEmailInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
+                            if(!mensajeErrorEmailRegistro.textContent){ // Verifica si tenia un mensaje de error previo
+                                mensajeErrorEmailRegistro.textContent=error.msg; // Si no tenia, le coloca 
                             }
-                        })
-                    }else{ // Si el servidor devuelve un registro exitoso:
 
-                        const tokenAcceso = data.token; // Define el token de acceso devuelto por el servidor
-                        localStorage.setItem('tokenAcceso',tokenAcceso); // Guarda el token en el navegador del usuario para usarlo cuando se requiera
-                        window.location.assign(url) // Redirije al usuario al inicio de la pagina
-                        
-                    }
-                })
-                .catch(error => { // Si hay un error se manejan 
-                    mostrarMensaje('2',true);
-                    console.error(error);
-                })
-                .finally( ()=>{
-                    botonEnviarRegistro.classList.remove('boton__enProceso') // Modifica el estilo del boton para aclarar que la solicitud termino
-                });;
+                        }else if(error.path==='nombre'){
+                            
+                            nombreInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo
+                            if(!mensajeErrorNombre.textContent){ // Verifica si tenia un mensaje de error previo
+                                mensajeErrorNombre.textContent=error.msg; // Si no tenia, le coloca 
+                            }
+
+                        }else{ // Si el error no es del nombre, entonces deberia ser de la password
+                            registroPasswordInput.classList.add('boton__enError'); // Cambia el borde del input del correo a rojo 
+                            if(!mensajeErrorPasswordRegistro.textContent){ // Verifica si tenia un mensaje de error previo
+                                mensajeErrorPasswordRegistro.textContent=error.msg; // Si no tenia, le coloca 
+                            }
+                        }
+                    })
+                }else if(respuesta.token){ // Si el servidor devuelve un registro exitoso:
+
+                    const tokenAcceso = respuesta.token; // Define el token de acceso devuelto por el servidor
+                    localStorage.setItem('tokenAcceso',tokenAcceso); // Guarda el token en el navegador del usuario para usarlo cuando se requiera
+                    localStorage.setItem('recargarPagina','true')
+                    document.getElementById('registrarse__formulario')!.classList.add('noActivo') // Desactiva la ventana de inicio de sesion
+                    document.getElementById('registrarse__exito')!.classList.remove('noActivo') // Activa la ventana de registro exitoso
+                }
+                botonEnviarRegistro.classList.remove('boton__enProceso') // Modifica el estilo del boton para aclarar que la solicitud termino
             }
         }
 
     })
-    
-    // Si se hace click en el nombre y estaba marcado como con un error, lo remueve
-    nombreInput.addEventListener('click', (event) =>{ 
-        nombreInput.classList.remove('boton__enError')
-        mensajeErrorNombre.textContent=null;
-    })
 
-    // Si se hace click en email y estaba marcado como con un error, lo remueve
-    registroEmailInput.addEventListener('click', (event) =>{ 
-        registroEmailInput.classList.remove('boton__enError')
-        mensajeErrorEmailRegistro.textContent=null;
-    })
-
-    // Si se hace click en password y estaba marcado como con un error, lo remueve
-    registroPasswordInput.addEventListener('click', (event) =>{ 
-        registroPasswordInput.classList.remove('boton__enError')
-        mensajeErrorPasswordRegistro.textContent=null;
-    })
-
-    // Si se hace click en password y estaba marcado como con un error, lo remueve
-    registroPasswordRepetirInput.addEventListener('click', (event) =>{ 
-        registroPasswordRepetirInput.classList.remove('boton__enError')
-        mensajeErrorPasswordRepetirRegistro.textContent=null;
-    })
 
 })
