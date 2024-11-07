@@ -23,24 +23,33 @@ const agregarUsuario = async(req: Request, res: Response) => {
     //Desestructura la informacion entrante para usar solo lo que se requiera
     const {nombre,password,correo,google} = req.body;
     const rol='usuario';
+    try{
+        // Crea una nueva entrada con el modelo "Usuario"
+        const usuario = new Usuario( {nombre,password,correo,rol,google} ); // A la entrada le agrega la informacion que viene en el body
 
-    // Crea una nueva entrada con el modelo "Usuario"
-    const usuario = new Usuario( {nombre,password,correo,rol,google} ); // A la entrada le agrega la informacion que viene en el body
+        // Encriptar contraseña
+        const salt = bcryptjs.genSaltSync() // Genera un "salt" para indicar el nivel de encriptacion
+        usuario.password = hashSync(password, salt) // Genera un hash relacionado a la contraseña del usuario
 
-    // Encriptar contraseña
-    const salt = bcryptjs.genSaltSync() // Genera un "salt" para indicar el nivel de encriptacion
-    usuario.password = hashSync(password, salt) // Genera un hash relacionado a la contraseña del usuario
+        await usuario.save(); // Guarda el modelo en la base de datos
 
-    await usuario.save(); // Guarda el modelo en la base de datos
+        // Generar JWT 
+        const token = await generarJWT( usuario!.id )
 
-    // Generar JWT 
-    const token = await generarJWT( usuario!.id )
-
-    res.status(201).json({ //Devuelve un mensaje y el usuario agregado a la base de datos
-        msg: "Usuario guardado en la base de datos",
-        token,
-        usuario
-    })
+        res.status(201).json({ //Devuelve un mensaje y el usuario agregado a la base de datos
+            msg: "Usuario guardado en la base de datos",
+            token,
+            usuario
+        })
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al agregar el usuario",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 };
 
 
@@ -71,6 +80,7 @@ const modificarDeseado = async(req: Request, res: Response) =>{
             path: 'Servidor',
             value: (error as Error).message
         }]
+        console.log(error)
         return res.status(500).json(errors)
     }
 
@@ -86,28 +96,38 @@ const verDeseados = async(req: Request, res: Response) =>{
     // Recibe el id del usuario de la lista de deseados, se toma el id del el JWT
     const usuarioVerificado:usuario = req.body.usuario; 
 
-    // Se busca al usuario en la base de datos
-    const usuario = (await Usuario.findById(usuarioVerificado._id))!;
-    
-    
-    if(!productoCompleto){// Devuelve solo los id de lista de productos deseados
-        res.json(usuario.listaDeseados);
-    }else{// Devuelve la lista de productos deseados junto a toda su informacion
-        let productos=[]
-    
-        for (const indice in usuario.listaDeseados) {
-            const id = usuario.listaDeseados[indice]
-            try{ // Busca el producto
-                const producto = await Producto.findById(id)
-                if(producto){
-                    // Si el producto existe lo agrega
-                    productos.push(producto)
-                }
-            } // Si hay algun problema con un producto lo saltea
-            catch{}
-        }
+    try{
+        // Se busca al usuario en la base de datos
+        const usuario = (await Usuario.findById(usuarioVerificado._id))!;
+        
+        
+        if(!productoCompleto){// Devuelve solo los id de lista de productos deseados
+            res.json(usuario.listaDeseados);
+        }else{// Devuelve la lista de productos deseados junto a toda su informacion
+            let productos=[]
+        
+            for (const indice in usuario.listaDeseados) {
+                const id = usuario.listaDeseados[indice]
+                try{ // Busca el producto
+                    const producto = await Producto.findById(id)
+                    if(producto){
+                        // Si el producto existe lo agrega
+                        productos.push(producto)
+                    }
+                } // Si hay algun problema con un producto lo saltea
+                catch{}
+            }
 
-        res.status(200).json(productos)
+            res.status(200).json(productos)
+        }
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al ver la lista de productos deseados por el usuario",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
     }
 }
 
@@ -144,30 +164,40 @@ const actualizarUsuario = async(req: Request, res: Response) =>{
         direccion
     }
 
-    if(imgPura){ // Si se envia una foto de perfil del usuario entonces la sube al servidor
-        try {
-            data.img = await subirFotoPerfil(imgPura,usuario._id.toString()) 
-        } catch (errors) {
-            if ((errors as any).path==='Servidor'){
-                return res.status(500).json({errors})
+    try{
+        if(imgPura){ // Si se envia una foto de perfil del usuario entonces la sube al servidor
+            try {
+                data.img = await subirFotoPerfil(imgPura,usuario._id.toString()) 
+            } catch (errors) {
+                if ((errors as any).path==='Servidor'){
+                    return res.status(500).json({errors})
+                }
+                return res.status(400).json({errors})
             }
-            return res.status(400).json({errors})
         }
+
+
+        if(password){ // Si se mando una contraseña:
+            // Encriptar contraseña
+            const salt = bcryptjs.genSaltSync() // Genera un "salt" para indicar el nivel de encriptacion
+            data.password = hashSync(password, salt) // Genera un hash relacionado a la contraseña del usuario y la agrega al resto de propiedades
+        }
+
+        // Busca por id en la base de datos que actualiza las propiedades que esten en "resto". { new: true } devuelve el documento actualizado
+        const usuarioActualizado = await Usuario.findByIdAndUpdate( usuario._id ,  data , { new: true }); 
+        res.status(200).json({ //Devuelve un mensaje y el usuario agregado a la base de datos
+            msg: "Usuario actualizado en la base de datos",
+            usuarioActualizado,
+        })
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al actualizar el usuario",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
     }
-
-
-    if(password){ // Si se mando una contraseña:
-        // Encriptar contraseña
-        const salt = bcryptjs.genSaltSync() // Genera un "salt" para indicar el nivel de encriptacion
-        data.password = hashSync(password, salt) // Genera un hash relacionado a la contraseña del usuario y la agrega al resto de propiedades
-    }
-
-    // Busca por id en la base de datos que actualiza las propiedades que esten en "resto". { new: true } devuelve el documento actualizado
-    const usuarioActualizado = await Usuario.findByIdAndUpdate( usuario._id ,  data , { new: true }); 
-    res.status(200).json({ //Devuelve un mensaje y el usuario agregado a la base de datos
-        msg: "Usuario actualizado en la base de datos",
-        usuarioActualizado,
-    })
 }
 
 const subirFotoPerfil = async(img:fileUpload.UploadedFile,idUsuario:string) =>{
@@ -219,24 +249,33 @@ const verUsuarios = async(req: Request, res: Response) =>{
 
     const desde:number = Math.abs(Number(req.query.desde)) || 0;  // Valor por defecto 0 si no se pasa el parámetro o es invalido
     const cantidad:number = Math.abs(Number(req.query.cantidad)) || 10;  // Valor por defecto 10 si no se pasa el parámetro o es invalido
-
     const condicion = {activo:true}; // Condicion que debe cumplir la busqueda de usuarios
 
-    // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
-    const [usuarios, usuariosCantidad] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
-        Usuario.find(condicion)  // Busca a todos los usuarios en la base de datos que cumplen la condicion
-            .skip(desde).limit(cantidad),
-        Usuario.countDocuments(condicion) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
-    ])
+    try{
+        // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
+        const [usuarios, usuariosCantidad] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
+            Usuario.find(condicion)  // Busca a todos los usuarios en la base de datos que cumplen la condicion
+                .skip(desde).limit(cantidad),
+            Usuario.countDocuments(condicion) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
+        ])
 
-    // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
-    const paginasCantidad = Math.ceil(usuariosCantidad/cantidad); 
+        // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
+        const paginasCantidad = Math.ceil(usuariosCantidad/cantidad); 
 
-    res.status(200).json({
-        usuariosCantidad,
-        paginasCantidad,
-        usuarios
-    })
+        res.status(200).json({
+            usuariosCantidad,
+            paginasCantidad,
+            usuarios
+        })
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al ver los usuarios",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 }
 
 const verUsuarioToken = async(req: Request, res: Response) =>{
@@ -251,13 +290,24 @@ const verUsuarioToken = async(req: Request, res: Response) =>{
 const eliminarUsuario = async(req: Request, res: Response) =>{
 
     const {id} = req.params; // Desestructura el id
-    // Busca el usuario con ese id y cambia su estado de actividad
-    const usuario = await Usuario.findByIdAndUpdate( id , {activo: false}, { new: true }); 
-    const usuarioAutenticado:usuario = req.body.usuario
-    res.status(200).json({
-        usuario,
-        usuarioAutenticado
-    })
+
+    try{
+        // Busca el usuario con ese id y cambia su estado de actividad
+        const usuario = await Usuario.findByIdAndUpdate( id , {activo: false}, { new: true }); 
+        const usuarioAutenticado:usuario = req.body.usuario
+        res.status(200).json({
+            usuario,
+            usuarioAutenticado
+        })
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al eliminar el usuario",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 }
 
 

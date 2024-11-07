@@ -29,77 +29,97 @@ const verProductos = async(req: Request, res: Response)=>{
     const disponible:boolean | undefined = (req.query.disponible)?false:true; // Indica si busca productos solo disponibles al publico, por defecto es true a menos que se envie un parametro
     const variantes:string | undefined = (req.query.variantes)?'variantes':undefined; // Indica si se desea obtener la informacion de las variantes del producto
     
-    // Se obtiene la forma de ordenar los resultados
-    let ordenar: { [key: string]: number } = {}; // Inicia la variable vacia
-    if(req.query.ordenar){ // Verifica si se envio la variable
-        if (req.query.ordenar === 'precioMax') { 
-            ordenar = { precio: -1 }; // Ordena por precio descendente
-        } else if (req.query.ordenar === 'precioMin') {
-            ordenar = { precio: 1 }; // Ordena por precio ascendente
+    try{
+        // Se obtiene la forma de ordenar los resultados
+        let ordenar: { [key: string]: number } = {}; // Inicia la variable vacia
+        if(req.query.ordenar){ // Verifica si se envio la variable
+            if (req.query.ordenar === 'precioMax') { 
+                ordenar = { precio: -1 }; // Ordena por precio descendente
+            } else if (req.query.ordenar === 'precioMin') {
+                ordenar = { precio: 1 }; // Ordena por precio ascendente
+            }
         }
+
+
+
+        const categoriasNombreArreglo:string[] = categoriasNombresCadena.split(',').filter(Boolean) // Convierte la cadena en un arreglo
+
+        // Busca las categorías por sus nombres
+        let categoriasEncontradas
+        if(categoriasNombreArreglo[0]){ // Si se pasa como argumento las categorias especificas:
+            categoriasEncontradas = await Categoria.find({ nombre: {$in: categoriasNombreArreglo}});
+        }else{ // Si no se busco ninguna categoria en particular entonces busca todas las categorias validas
+            categoriasEncontradas = await Categoria.find();
+        }
+
+        // Extrae los ObjectId de las categorías encontradas
+        const categoriasIds: mongoose.Schema.Types.ObjectId[] = categoriasEncontradas.map(categoria => categoria._id);
+
+
+        // Definir la expresión regular para buscar productos cuyo nombre, descripción, etc., contenga la palabra buscada
+        const palabraBuscadaRegExp = new RegExp(palabraBuscada, 'i');
+
+        let filtros: any = {
+            // Los filtros opcionales donde el valor buscado puede estar en varias propiedades
+            $or: [
+                { nombre: palabraBuscadaRegExp },
+                { marca: palabraBuscadaRegExp },
+                { modelo: palabraBuscadaRegExp },
+                { descripcion: palabraBuscadaRegExp },
+                { tags: { $in: [palabraBuscadaRegExp] } }  // Aquí el uso de $in, pero asegurándonos que tags es un array
+            ],
+            $and: [
+                { estado: true },  // El producto no tiene que estar eliminado
+                { precio: { $gte: precioMin, $lte: precioMax } },  // Rango de precios
+                { categoria: { $in: categoriasIds } }  // Las categorías deben ser parte de las seleccionadas
+            ]
+        };
+
+        if(disponible) filtros.$and[0].disponible = disponible // Si se tiene que realizar la busqueda de productos que esten disponibles entonces agrega el aparametro al filtro
+        
+        // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
+        const [productos, productosCantidad]:[producto[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
+            Producto.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condicion
+                .skip(desde).sort(ordenar as any).limit(cantidad).populate(variantes!),
+            Producto.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
+        ])
+
+        // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
+        const paginasCantidad:number = Math.ceil(productosCantidad/cantidad); 
+
+        res.status(200).json({
+            categoriasIds,
+            productosCantidad,
+            paginasCantidad,
+            productos
+        })
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al ver los productos",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
     }
-
-
-
-    const categoriasNombreArreglo:string[] = categoriasNombresCadena.split(',').filter(Boolean) // Convierte la cadena en un arreglo
-
-    // Busca las categorías por sus nombres
-    let categoriasEncontradas
-    if(categoriasNombreArreglo[0]){ // Si se pasa como argumento las categorias especificas:
-        categoriasEncontradas = await Categoria.find({ nombre: {$in: categoriasNombreArreglo}});
-    }else{ // Si no se busco ninguna categoria en particular entonces busca todas las categorias validas
-        categoriasEncontradas = await Categoria.find();
-    }
-
-    // Extrae los ObjectId de las categorías encontradas
-    const categoriasIds: mongoose.Schema.Types.ObjectId[] = categoriasEncontradas.map(categoria => categoria._id);
-
-
-    // Definir la expresión regular para buscar productos cuyo nombre, descripción, etc., contenga la palabra buscada
-    const palabraBuscadaRegExp = new RegExp(palabraBuscada, 'i');
-
-    let filtros: any = {
-        // Los filtros opcionales donde el valor buscado puede estar en varias propiedades
-        $or: [
-            { nombre: palabraBuscadaRegExp },
-            { marca: palabraBuscadaRegExp },
-            { modelo: palabraBuscadaRegExp },
-            { descripcion: palabraBuscadaRegExp },
-            { tags: { $in: [palabraBuscadaRegExp] } }  // Aquí el uso de $in, pero asegurándonos que tags es un array
-        ],
-        $and: [
-            { estado: true },  // El producto no tiene que estar eliminado
-            { precio: { $gte: precioMin, $lte: precioMax } },  // Rango de precios
-            { categoria: { $in: categoriasIds } }  // Las categorías deben ser parte de las seleccionadas
-        ]
-    };
-
-    if(disponible) filtros.$and[0].disponible = disponible // Si se tiene que realizar la busqueda de productos que esten disponibles entonces agrega el aparametro al filtro
-    
-    // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
-    const [productos, productosCantidad]:[producto[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
-        Producto.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condicion
-            .skip(desde).sort(ordenar as any).limit(cantidad).populate(variantes!),
-        Producto.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
-    ])
-
-    // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
-    const paginasCantidad:number = Math.ceil(productosCantidad/cantidad); 
-
-    res.status(200).json({
-        categoriasIds,
-        productosCantidad,
-        paginasCantidad,
-        productos
-    })
 }
 
 // Devuelve la producto con el id pasado como parametro
 const verProductoID = async(req: Request, res: Response)=>{
     const { id } = req.params
-    const producto = await Producto.findById(id).populate('categoria')
+    try{
+        const producto = await Producto.findById(id).populate('categoria')
 
-    res.status(200).json(producto)
+        res.status(200).json(producto)
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al ver el producto",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 }
 
 // Crea una nueva producto
@@ -111,7 +131,6 @@ const crearProducto = async(req: Request, res: Response)=>{
         descripcion,
         precio,
         precioViejo,
-        //especificaciones,
         disponible,
         tags
     } = req.body
@@ -127,15 +146,23 @@ const crearProducto = async(req: Request, res: Response)=>{
         descripcion,
         precio,
         precioViejo,
-        //especificaciones,
         disponible,
         tags
     }
-
-    const producto = new Producto( data ) // Crea una nueva producto
-    await producto.save() // La guarda en la base de datos
-    
-    res.json(producto)
+    try{
+        const producto = new Producto( data ) // Crea una nueva producto
+        await producto.save() // La guarda en la base de datos
+        
+        res.json(producto)
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al crear el producto",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 }
 
 // Actualiza una producto con el id pasado como parametro
@@ -170,97 +197,97 @@ const actualizarProducto = async(req: Request, res: Response)=>{
 
     try {
         // Verifica si se envio una nueva imagen y la obtiene
-    const  imgPura  = (req.files?req.files.img:undefined) as fileUpload.UploadedFile// Obtiene la imagen 
-    let imgURL:string // Se inicia la variable que va a contener el path de la foto de perfil del usuario
+        const  imgPura  = (req.files?req.files.img:undefined) as fileUpload.UploadedFile// Obtiene la imagen 
+        let imgURL:string // Se inicia la variable que va a contener el path de la foto de perfil del usuario
 
-    if(categoria){ // Si se envia el nombre de una categoria entonces la busca en la base de datos y remplaza el nombre por su ObjectID
-        const objetoCategoria:CategoriaI|null = (await Categoria.findOne({'nombre':categoria}))!
-        if(!objetoCategoria) {
-            return res.status(400).json({
-                errors:[{
-                    msg: "La categoria no es valida",
-                    path: "categoria"
-                }]
-            })
-        }
-        categoria = objetoCategoria._id.toString()
-    }
-
-    // Si se reciben especificaciones entonces le da el formato correcto
-    let especificaciones:EspecificacionI[] = []
-    if(especificacionesJSON){ 
-        especificaciones=JSON.parse(especificacionesJSON)
-    }
-
-    // Estructura la informacion para enviarla correctamente al servidor
-    const data={
-        nombre,
-        marca,
-        modelo,
-        usuario,
-        categoria,
-        descripcion,
-        precio,
-        precioViejo,
-        especificaciones,
-        disponible,
-        tags
-    }
-
-    // Busca por id en la base de datos que actualiza las propiedades que esten en el segundo parametro. { new: true } devuelve el documento actualizado
-    let producto:producto = (await Producto.findByIdAndUpdate( id,data, { new: true }))!; 
-    let esProductoModificado:boolean = false // Indica si el usuario fue modificado luego este este punto
-
-    // Si se envia un URL de una imagen anterior entonces la elimina
-    if(URLImagenVieja) { 
-        try{
-            producto = await eliminarFotoProducto(producto,URLImagenVieja) // Elimina la foto y devuelve el producto modificado
-            esProductoModificado = true
-        }catch(error){
-            console.log(error)
-            return res.status(500).json([{
-                errors:{
-                    msg:(error as Error).message,
-                    path:'Servidor'
-                }
-            }])
-        }
-
-    }
-
-
-    // Si se envia una foto de perfil del usuario entonces la sube al servidor
-    if(imgPura){ 
-        try {
-            // Sube la foto al servidor
-            imgURL = await subirFotoProducto(imgPura)
-            // Agrega el url al array de imagenes del producto
-            producto.imagenes.push(imgURL) // Guarda la imagen en el array de imagenes
-            esProductoModificado = true
-        } catch (error) {
-            console.log(error)
-            if ((error as error).path==='Servidor'){
-                return res.status(500).json({error})
+        if(categoria){ // Si se envia el nombre de una categoria entonces la busca en la base de datos y remplaza el nombre por su ObjectID
+            const objetoCategoria:CategoriaI|null = (await Categoria.findOne({'nombre':categoria}))!
+            if(!objetoCategoria) {
+                return res.status(400).json({
+                    errors:[{
+                        msg: "La categoria no es valida",
+                        path: "categoria"
+                    }]
+                })
             }
-            return res.status(400).json(error)
+            categoria = objetoCategoria._id.toString()
         }
-    }
 
-    // Verifica si el usuario se modifico nuevamente
-    if(esProductoModificado) producto.save() // Guarda los cambios en la base de datos
+        // Si se reciben especificaciones entonces le da el formato correcto
+        let especificaciones:EspecificacionI[] = []
+        if(especificacionesJSON){ 
+            especificaciones=JSON.parse(especificacionesJSON)
+        }
+
+        // Estructura la informacion para enviarla correctamente al servidor
+        const data={
+            nombre,
+            marca,
+            modelo,
+            usuario,
+            categoria,
+            descripcion,
+            precio,
+            precioViejo,
+            especificaciones,
+            disponible,
+            tags
+        }
+
+        // Busca por id en la base de datos que actualiza las propiedades que esten en el segundo parametro. { new: true } devuelve el documento actualizado
+        let producto:producto = (await Producto.findByIdAndUpdate( id,data, { new: true }))!; 
+        let esProductoModificado:boolean = false // Indica si el usuario fue modificado luego este este punto
+
+        // Si se envia un URL de una imagen anterior entonces la elimina
+        if(URLImagenVieja) { 
+            try{
+                producto = await eliminarFotoProducto(producto,URLImagenVieja) // Elimina la foto y devuelve el producto modificado
+                esProductoModificado = true
+            }catch(error){
+                console.log(error)
+                return res.status(500).json([{
+                    errors:{
+                        msg:(error as Error).message,
+                        path:'Servidor'
+                    }
+                }])
+            }
+
+        }
 
 
-    res.status(200).json({ //Devuelve un mensaje y el producto agregado a la base de datos
-        productoActualizado:producto
-    })
+        // Si se envia una foto de perfil del usuario entonces la sube al servidor
+        if(imgPura){ 
+            try {
+                // Sube la foto al servidor
+                imgURL = await subirFotoProducto(imgPura)
+                // Agrega el url al array de imagenes del producto
+                producto.imagenes.push(imgURL) // Guarda la imagen en el array de imagenes
+                esProductoModificado = true
+            } catch (error) {
+                console.log(error)
+                if ((error as error).path==='Servidor'){
+                    return res.status(500).json({error})
+                }
+                return res.status(400).json(error)
+            }
+        }
+
+        // Verifica si el usuario se modifico nuevamente
+        if(esProductoModificado) producto.save() // Guarda los cambios en la base de datos
+
+
+        res.status(200).json({ //Devuelve un mensaje y el producto agregado a la base de datos
+            productoActualizado:producto
+        })
     } catch (error) {
-    const errors:error[]=[{
-        msg: (error as Error).message,
-        path: 'Servidor',
-        value: ''
-    }]
-    console.log(error)
-    res.status(500).json(errors)
+        const errors:error[]=[{
+            msg: "Error al autenticar el usuario",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
     }
 }
 
@@ -314,13 +341,24 @@ const subirFotoProducto = async(img:fileUpload.UploadedFile) =>{
 const eliminarProducto = async(req: Request, res: Response) =>{
 
     const {id} = req.params; // Desestructura el id
-    // Busca la producto con ese id y cambia su estado de actividad
-    const productoEliminado = await Producto.findByIdAndUpdate( id , {estado: false}, { new: true }); 
-    const usuarioAutenticado:usuario = req.body.producto
-    res.status(200).json({
-        productoEliminado,
-        usuarioAutenticado
-    })
+
+    try{
+        // Busca la producto con ese id y cambia su estado de actividad
+        const productoEliminado = await Producto.findByIdAndUpdate( id , {estado: false}, { new: true }); 
+        const usuarioAutenticado:usuario = req.body.producto
+        res.status(200).json({
+            productoEliminado,
+            usuarioAutenticado
+        })
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al eliminar el producto",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 }
 
 const eliminarFotoProducto = async(producto:producto,URLImagenVieja:string)=>{

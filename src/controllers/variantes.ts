@@ -39,12 +39,13 @@ export const crearVariante = async(req: Request, res: Response)=>{
 
         res.json(varianteDB)
     } catch (error) {
-        const errors:error[] = [{
-            msg: 'Error al crear una nueva variante.' + (error as Error).message,
+        const errors:error[]=[{
+            msg: "Error al crear una nueva variante",
             path: "Servidor",
-            value: JSON.stringify(data)
+            value: (error as Error).message
         }]
-        res.status(500).json(errors)
+        console.log(error)
+        return res.status(500).json(errors)
     }
 
     
@@ -54,9 +55,19 @@ export const crearVariante = async(req: Request, res: Response)=>{
 export const verVariantes = async(req: Request, res: Response)=>{
     const { productoId } = req.params 
 
-    const variantes:variante[] = await Variante.find( {producto:productoId} )
+    try{
+        const variantes:variante[] = await Variante.find( {producto:productoId} )
 
-    res.json(variantes)
+        res.json(variantes)
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al ver las variantes",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 }
 
 export const actualizarVariantes = async (req: Request, res: Response) => {
@@ -115,7 +126,13 @@ export const actualizarVariantes = async (req: Request, res: Response) => {
         return res.status(200).json({ message: "Variantes actualizadas exitosamente" });
 
     } catch (error) {
-        return res.status(500).json({ error: "Error al actualizar variantes" });
+        const errors:error[]=[{
+            msg: "Error al actualizar las variantes",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
     }
 };
 
@@ -133,7 +150,18 @@ const agregarVarianteProducto=async(productoId:string|ObjectId,varianteId:Object
 
 export const eliminarVariante = async(req: Request, res: Response) =>{
     const {varianteId} = req.params; // Desestructura el id
-    // Busca la variante con ese id y cambia su estado de actividad
-    const variante = await Variante.findByIdAndDelete( varianteId ); 
-    return res.status(200).json(variante)
+
+    try{
+        // Busca la variante con ese id y cambia su estado de actividad
+        const variante = await Variante.findByIdAndDelete( varianteId ); 
+        return res.status(200).json(variante)
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al eliminar la variante",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 }
