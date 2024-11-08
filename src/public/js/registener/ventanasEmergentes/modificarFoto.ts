@@ -53,8 +53,8 @@ export const ventanaEmergenteCargarImagenProducto = (productoInformacion:product
     })
     .then(async(guardar)=>{
         if(guardar) {
-            const productoActualizado = await subirFotoProducto(productoInformacion._id.toString(),imagenNueva,imagenActualURL) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y si todo sale bien recibe el producto actualizado
-            if(productoActualizado) await agregarImagenesDOM(productoActualizado) // Si todo sale bien refleja los cambios en el DOM
+            const respuesta = await subirFotoProducto(productoInformacion._id.toString(),imagenNueva,imagenActualURL) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y si todo sale bien recibe el producto actualizado
+            if(respuesta.productoActualizado) await agregarImagenesDOM(respuesta.productoActualizado) // Si todo sale bien refleja los cambios en el DOM
         }
     })
     .then(()=>{
@@ -80,8 +80,8 @@ document.addEventListener('DOMContentLoaded',()=>{
         if(respuesta){
             ventanaImagenVariante.classList.remove('noActivo') // Activa la ventana emergente de agregar o visualizar imagen a la variante
             // Si el usuario confirma que quiere eliminar la foto entonces llama a la funcion para agregar una foto de perfil, pero no le envia ninguna foto y solo envia el URL que debe eliminar del servidor
-            const productoActualizado = await subirFotoProducto(productoInformacionGlobal._id.toString(),undefined,imagenActualURLGlobal) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y recibe el producto actulizado
-            if(productoActualizado) await agregarImagenesDOM(productoActualizado) // Refleja los cambios en la ventana de modificar producto
+            const respuesta = await subirFotoProducto(productoInformacionGlobal._id.toString(),undefined,imagenActualURLGlobal) // Envia la foto subida por el usuario (y si existe envia la imagen que va a remplazar) y recibe el producto actulizado
+            if(respuesta.productoActualizado) await agregarImagenesDOM(respuesta.productoActualizado) // Refleja los cambios en la ventana de modificar producto
             ventanaImagenVariante.classList.add('noActivo') // Desactiva la ventana emergente de agregar o visualizar imagen a la variante
             contenedorVentanaModificar.classList.remove('noActivo') // Activa la ventana emergente para modificar el producto 
         }

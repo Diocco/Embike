@@ -59,28 +59,8 @@ class carrito{
 let carrito1 = new carrito(["vacio"],[0],[0])
 
 //Variables globales
-let tipoSeleccionado:string //Indica que "tipo" se selecciono en la configuracion de productos
-let categoriaSeleccionada:string //Indica que "categoria" se selecciono en la configuracion de productos
-let db:IDBDatabase // Data Base
-let peticionDB:IDBOpenDBRequest = indexedDB.open("DB",1); 
 let seleccionProductoCargada:boolean=false //Indica si el area de seleccion de productos esta cargada, util para volverla a cargar en caso de que se haya ingresado al area de modificacion de productos o si simplemente no esta cargada
 let posicionUsuario:number = 0 //Indica en que ventana esta el usuario, se usa para lanzar ventanas de error
-
-
-
-
-// Define las funciones
-// Carga las categorias validas en el DOM
-// Busca las categorias validas en la base de datos
-
-
-
-
-
-
-
-
-
 
 
 
@@ -115,7 +95,8 @@ const botonesConfiguracionProducto =()=>{
     // Le da la funcion a los botones de alternar disponibilidad de un producto
     const botonesDisponibilidad: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.producto__disponibilidad')
     botonesDisponibilidad.forEach((boton)=>{
-        boton.onclick =()=>{
+        boton.onclick =(event)=>{
+            event.stopPropagation()
             const idProducto = boton.parentElement!.parentElement!.id!
             const estaDisponible = boton.classList.contains('botonPositivo')
             alternarDisponibilidadProducto(idProducto,estaDisponible,boton)
@@ -135,7 +116,8 @@ const botonesConfiguracionProducto =()=>{
 
     const botonesEliminar: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.producto__eliminar')
     botonesEliminar.forEach((boton)=>{
-        boton.onclick =async()=>{
+        boton.onclick =async(event)=>{
+            event.stopPropagation()
             const idProducto = boton.parentElement!.parentElement!.id!
             const respuesta:boolean = await preguntar('¿Estas seguro que quieres eliminar este producto?')
             if(respuesta) {
@@ -153,7 +135,8 @@ const botonesConfiguracionProducto =()=>{
 //Carga la seccion de seleccion de productos, se ejecuta cada vez que se hace click sobre la barra lateral para desplazarse a este mismo
 function cargarSeccionProductos() {
     const botonAgregarProductos = document.getElementById('contenedorConfiguracionProductos__contenido__agregarProducto')! as HTMLButtonElement
-    botonAgregarProductos.onclick=()=>{
+    botonAgregarProductos.onclick=(event)=>{
+        event.stopPropagation()
         ventanaEmergenteModificarProducto() // Abre la ventana emergente para modificar un producto, al no pasarle ningun ID la funcion crea un producto nuevo.
     }
 }

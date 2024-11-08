@@ -7,4 +7,5 @@ export interface variante {
     talle: string,
     SKU: string,
     stock: number
+    save?: () => Promise<void>
     }

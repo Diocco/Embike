@@ -44,12 +44,17 @@ const botonAgregarEspecificacion = document.getElementById('especificacionesProd
 
 // Ventana general
 export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
+
+    // Elimina los estados de error previos, si existen
+    contenedorVentanaEmergente.querySelectorAll('.boton__enError').forEach(botonEnError=>botonEnError.classList.remove('boton__enError'))
+
     // Activa la ventana emergente
     contenedorVentanaEmergente.classList.remove('noActivo')
     ventanaEmergente.classList.remove('noActivo')
 
     //Les da un valor inicial, borrando cualquier valor viejo que tenga
     id.value="";
+    descripcion.value='';
     nombre.value="";
     precio.value="";
     marca.value="";
@@ -57,10 +62,11 @@ export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
     categoriaIngresada.value=''
     descripcion.textContent=''
 
-
+    // Define la funcion del boton 
+    let esCrearProducto=false
     if(!producto) {
         producto = await crearProducto() // Crea un nuevo producto
-        cancelar.classList.remove('noActivo') // Activa el boton "cancelar"
+        esCrearProducto=true
     
     }; // Si a la funcion no se le pasa la informacion de un producto entonces crea uno nuevo
     if(!producto) return // Si fallo la creacion del producto entonces resulta en un error fatal
@@ -73,28 +79,23 @@ export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
     // Espera que el usuario aprete el boton "volver" antes de guardar todos los cambios, el bucle se repite hasta que el usuario introduzca todos los datos necesarios correctamente
     let nodosEnError:NodeListOf<HTMLInputElement>
     const formularioProducto = document.getElementById('modificarProducto__caracteristicas')! as HTMLFormElement
-    const datosFormulario = new FormData(formularioProducto)
-
     do {
 
         // Espera la respuesta del usuario
-        let esCancelar:boolean=false
         await new Promise<void>((resolve) => {
             aceptar.onclick=()=>resolve();
-            cancelar.onclick=()=>{
-                esCancelar=true;
-                resolve()
+            cancelar.onclick=async ()=>{
+                if(esCrearProducto) await solicitudEliminarProducto(producto._id.toString()) // Si la ventana es para crear un producto, entonces lo elimina de la base de datos
+
+                // Desactiva la ventana emergente
+                contenedorVentanaEmergente.classList.add('noActivo')
+                ventanaEmergente.classList.add('noActivo')
+                return 
             };
         })
 
-        if(esCancelar) {// Si el usuario selecciono "cancelar" entonces elimina el producto antes creado y
-            await solicitudEliminarProducto(producto._id.toString())
-            cancelar.classList.add('noActivo') // Desactiva el boton "cancelar"
-            // Desactiva la ventana emergente
-            contenedorVentanaEmergente.classList.add('noActivo')
-            ventanaEmergente.classList.add('noActivo')
-            return 
-        }
+        let datosFormulario = new FormData(formularioProducto) // Lee los datos introducidos por el usuario
+
 
         // Toma los datos del producto en el formulario
         const especificaciones:EspecificacionI[] = obtenerEspecificacionesDOM()
@@ -112,7 +113,24 @@ export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
         // Busca estados de error
         nodosEnError = contenedorVentanaEmergente.querySelectorAll('.boton__enError')
 
-    } while (nodosEnError.length>0);
+        // Si no hay errores envia la solicitud para modificar el usuario 
+        if(nodosEnError.length<1) {
+            const respuesta = await actualizarProducto(datosFormulario,producto._id.toString()); // Actualiza los datos del producto en la base de datos
+            if(respuesta.errors.length>0){
+                respuesta.errors.forEach(error=>{
+                    if(error.path==='nombre') nombre.classList.add('boton__enError')
+                    if(error.path==='precio') precio.classList.add('boton__enError')
+                    if(error.path==='marca') marca.classList.add('boton__enError')
+                    if(error.path==='modelo') modelo.classList.add('boton__enError')
+                    if(error.path==='categoria') categoria.classList.add('boton__enError')
+                })
+            }
+            // Vuelve a buscar nodos en estado de error
+            nodosEnError = contenedorVentanaEmergente.querySelectorAll('.boton__enError')
+        }
+
+        // Vuelve a buscar nodos en estado de error
+        } while (nodosEnError.length>0);
 
     
     // Desactiva la ventana emergente
@@ -120,8 +138,6 @@ export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
     ventanaEmergente.classList.add('noActivo')
     
     // Vuelve a cargar los productos actualizados
-    cancelar.classList.add('noActivo') // Desactiva el boton "cancelar"
-    await actualizarProducto(datosFormulario,producto._id.toString()); // Actualiza los datos del producto en la base de datos
     buscarCargarProductos()
     return
 
@@ -242,13 +258,8 @@ export const cargarVariantesDOM=async(productoInformacion:producto) =>{
             stock: 0
         }
 
-        // La manda al servidor para crearla en la base de datos, espera a que el servidor responda con el id de la variante creada
-        const varianteId = await crearVariante(varianteNueva)
+        agregarVarianteDOM(contenedorVariantes,varianteNueva) // Crea la variante en el DOM
         
-        if(varianteId){ // Si todo sale bien asigna el id de la variante a la variante nueva 
-            varianteNueva._id = varianteId
-            agregarVarianteDOM(contenedorVariantes,varianteNueva) // Crea la variante en el DOM
-        }
     }
 
 
@@ -258,7 +269,7 @@ export const agregarVarianteDOM =(contenedor:HTMLElement,variante:variante)=>{
 
     // Agrega la variante al DOM
     const contenedorVariante = document.createElement('div') // Contenedor de la variante
-    contenedorVariante.id = variante._id!.toString() // El id del contenedor es el mismo id que el de la variante
+    if(variante._id) contenedorVariante.id = variante._id.toString() // Si la variante existe en la base de datos deberia tener un id, asi que id del contenedor es el mismo id que el de la variante
     contenedorVariante.classList.add('variantesProducto__variantes__div');
 
     let opcionesColores:string = `
@@ -333,9 +344,7 @@ const obtenerVariantesDOM =(productoID:string):variante[]=>{
         }
 
         // Agrega las nueva variante
-        if(variantes[0]) variantes.push(varianteNueva) // Si el array de variantes no esta vacio entonces agrega la nueva variante
-        else variantes[0] = varianteNueva // Si esta vacio entonces lo inicia con la nueva variante
-        
+        variantes.push(varianteNueva) // Si el array de variantes no esta vacio entonces agrega la nueva variante
     })
     return variantes
 }
@@ -344,7 +353,7 @@ const validarVariantesDOM =async(productoId:string)=>{
     // Verifica las variantes
 
     const variantes = obtenerVariantesDOM(productoId) // Devuelve las variantes que hay en el DOM
-    if(!variantes) return // Si no hay variantes entonces termina la ejecucion de la funcion
+    if(variantes.length<1) return // Si no hay variantes entonces termina la ejecucion de la funcion
 
     // Si hay almenos una variante entonces la envia al servidor para ser guardada
     const errores = await actualizarVariantes(variantes,productoId)

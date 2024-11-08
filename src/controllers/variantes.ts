@@ -79,12 +79,8 @@ export const actualizarVariantes = async (req: Request, res: Response) => {
     let errors: error[] = []; // Inicia una variable que contendra un array de errores de tipeo, se los hay
     
     try {
-
         // Verifica que ninguna variante tenga errores y almacena sus ID
-        let variantesId:string[]=[]
-        for (const variante of variantes) { // Recorre las variantes
-
-            variantesId.push(variante._id! as string) // Almacena el ID de la variante
+        for (let variante of variantes) { // Recorre las variantes
 
             try { // Verifica si el stock es valido
                 if (isNaN(Number(variante.stock))) throw new Error("El stock no es válido");
@@ -102,7 +98,7 @@ export const actualizarVariantes = async (req: Request, res: Response) => {
             } catch (error) {
                 errors.push({
                     msg: (error as Error).message,
-                    value: variante._id!.toString(),
+                    value: variante.SKU,
                     path: 'SKU'
                 });
             }
@@ -112,15 +108,24 @@ export const actualizarVariantes = async (req: Request, res: Response) => {
         if (errors.length > 0) return res.status(400).json({ errors });
 
         // Si no hay errores guarda las variantes en la base de datos
+        await Promise.all(
+            // Crea un array de promesas para actualizar la base de datos en paralelo
+            variantes.map(async variante => { 
+                if(variante._id) {
+                    await Variante.findByIdAndUpdate(variante._id, variante); // Si el id existe entonces actualiza la variante
+                }
 
-        await Promise.all([
-            variantes.map(async variante => {// Crea un array de promesas para actualizar la base de datos en paralelo
-                await Variante.findByIdAndUpdate(variante._id, variante);
-    }),
-            Producto.findByIdAndUpdate(productoId,{'variantes':variantesId}) // Actualiza el array de objectId de las variantes dentro del producto
-        ]);
+                else { // Si el id no existe entonces crea la variante 
+                    const {_id, ...data} = variante // Quita el id vacio
+                    const varianteDB = new Variante( data )
+                    await varianteDB.save()
+                    variante._id=varianteDB._id // Le asigna el id
+                }
+            })
+        );
 
-
+        const variantesId:string[] = variantes.map(variante => variante._id!.toString())
+        await Producto.findByIdAndUpdate(productoId,{'variantes':variantesId})
 
         // Devuelve el estado de éxito
         return res.status(200).json({ message: "Variantes actualizadas exitosamente" });

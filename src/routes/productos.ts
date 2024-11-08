@@ -43,8 +43,8 @@ router.post('/', // Crear producto - Admin
     validarRolJWT('admin'), // Valida que el usuario tenga permisos de administrador
 
     check('nombre', 'El nombre es obligatorio').notEmpty(),
-    check('marca', 'La marca es obligatoria check').notEmpty(),
-    check('modelo', 'El modelo es obligatorio check').notEmpty(),
+    check('marca', 'La marca es obligatoria').notEmpty(),
+    check('modelo', 'El modelo es obligatorio').notEmpty(),
     check('categoria', 'La categoria es obligatoria').notEmpty(),
     check('categoria').custom(categoriaValida),
     validarCampos,

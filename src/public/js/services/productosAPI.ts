@@ -1,4 +1,5 @@
 
+import { error } from "../../../interfaces/error.js";
 import { producto } from "../../../models/interfaces/producto.js";
 import { mostrarErroresConsola, tokenAcceso, urlCategorias, urlProductos } from "../global.js";
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js";
@@ -48,7 +49,7 @@ export const buscarCategoriasValidas=async()=>{
 }
 
 // Sube una nueva foto del producto al servidor
-export const subirFotoProducto =async(productoID:string,imagenNueva?:File,URLImagenVieja?:string):Promise<producto | undefined>=>{
+export const subirFotoProducto =async(productoID:string,imagenNueva?:File,URLImagenVieja?:string)=>{
     
     const formData = new FormData()
     if(imagenNueva) formData.append('img',imagenNueva) // Si se envia una imagen para agregar, la agrega al FormData
@@ -58,8 +59,14 @@ export const subirFotoProducto =async(productoID:string,imagenNueva?:File,URLIma
 }
 
 export const actualizarProducto= async(datosProducto:FormData,productoId:string)=>{
+    let respuesta:{
+        productoActualizado:producto|undefined,
+        errors:error[]
+    }={
+        productoActualizado: undefined,
+        errors: []
+    }
 
-    let productoActualizado:producto|undefined = undefined
     await fetch(urlProductos+`/${productoId}`, {
         method: 'PUT',
         headers: { 'tokenAcceso':`${tokenAcceso}`},
@@ -67,15 +74,18 @@ export const actualizarProducto= async(datosProducto:FormData,productoId:string)
     })
     .then(response => response.json()) // Parsear la respuesta como JSON
     .then(data=> { // Maneja la respuesta del servidor
-        if(data.errors) mostrarErroresConsola (data.errors) // Si hay errores de tipeo los muestra en consola 
-        else productoActualizado = data.productoActualizado // Si el servidor no devuelve errores guarda la respuesta
+        if(data.errors) {
+            respuesta.errors = data.errors // Si hay errores de tipeo los muestra en consola 
+            mostrarErroresConsola (data.errors)
+        }
+        else respuesta.productoActualizado = data.productoActualizado // Si el servidor no devuelve errores guarda la respuesta
     })
     .catch(error => { // Si hay un error se manejan 
         console.error(error);
         mostrarMensaje('2',true);
     })
 
-    return productoActualizado
+    return respuesta
 }
 
 export const crearProducto= async(datosProducto?:FormData):Promise<producto | undefined>=>{
