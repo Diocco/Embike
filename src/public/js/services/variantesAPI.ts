@@ -35,6 +35,7 @@ export const crearVariante = async(variante:variante)=>{
 export const eliminarVariante = async(varianteId:string)=>{
 
     let respuesta:number|undefined
+
     await fetch(urlVariantes+`/${varianteId}`, { 
         method: 'DELETE',
         headers: {'tokenAcceso' : `${tokenAcceso}`  },

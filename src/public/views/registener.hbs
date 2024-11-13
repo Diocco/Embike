@@ -119,29 +119,29 @@
 
     <div id="barraLateral">
         <div id="barraLateral__iconos">
-            <div id="barraLateral_AA__icono" class="barraLateral__iconos">C</div>
-            <div id="barraLateral_A__icono" class="barraLateral__iconos">M</div>
-            <div id="barraLateral_B__icono" class="barraLateral__iconos">S</div>
-            <div id="barraLateral_C__icono" class="barraLateral__iconos">P</div>
-            <div id="barraLateral_D__icono" class="barraLateral__iconos">E</div>
-            <div id="barraLateral_E__icono" class="barraLateral__iconos">R</div>
+            <div id="barraLateral_A__icono" class="fa-solid fa-list botonRegistener3"></div>
+            <div id="barraLateral_B__icono" class="fa-solid fa-cash-register botonRegistener3" ></div>
+            <div id="barraLateral_C__icono" class="fa-solid fa-cart-shopping botonRegistener3"></div>
+            <div id="barraLateral_D__icono" class="fa-solid fa-chart-line botonRegistener3"></div>
+            <div id="barraLateral_E__icono" class="fa-solid fa-address-card botonRegistener3"></div>
+            <div id="barraLateral_AA__icono" class="fa-solid fa-gear botonRegistener3"></div>
         </div>
         <div id="barraLateral__nombres">
-            <div id="barraLateral_AA__nombre" class="barraLateral__botones">Configuracion</div>
-            <div id="barraLateral_A__nombre" class="barraLateral__botones">Modificar Productos</div>
-            <div id="barraLateral_B__nombre" class="barraLateral__botones">Seleccionar productos</div>
-            <div id="barraLateral_C__nombre" class="barraLateral__botones">Pago</div>
-            <div id="barraLateral_D__nombre" class="barraLateral__botones">Estadisicas</div>
-            <div id="barraLateral_E__nombre" class="barraLateral__botones">Registro de empleados</div>
+            <div id="barraLateral_A__nombre" class="ayudaRegistener1">Productos</div>
+            <div id="barraLateral_B__nombre" class="ayudaRegistener1">Venta al publico</div>
+            <div id="barraLateral_C__nombre" class="ayudaRegistener1">Pago</div>
+            <div id="barraLateral_D__nombre" class="ayudaRegistener1">Estadisticas</div>
+            <div id="barraLateral_E__nombre" class="ayudaRegistener1">Registro de empleados</div>
+            <div id="barraLateral_AA__nombre" class="ayudaRegistener1">Configuracion</div>
         </div>
     </div>
     
-    <div id="configuracionProductos">
-        <div id="contenedorConfiguracionProductos"></div>
-    </div>
+    {{!-- <div id="configuracionProductos">
+        <div id="contenedorConfiguracionProductos" class="contenedorRegistener1"></div>
+    </div> --}}
 
     {{!-- Contenedor general de categorias, indice y productos --}}
-    <div id="contenedorConfiguracionProductos__contenido">
+    <div id="contenedorConfiguracionProductos__contenido" class="contenedorRegistener1">
 
         {{!-- Contenedor de categorias --}}
         <div id="contenedorConfiguracionProductos__contenido__categorias"></div>
@@ -162,12 +162,27 @@
 
     </div>
 
-    <div id="seleccionProductos">
+    <div id="seleccionProductos" class="contenedorRegistener1">
+        <div id="seleccionProductos__div-contenedorSeleccionarProductos">
+            <h2>Seleccionar Productos</h2>
+            <label>
+                Agrupar por categoria
+                <input type="checkbox"  id="seleccionProductos__botonAgruparCategorias" checked>
+            </label>
+            <label>
+                Agrupar por productos
+                <input type="checkbox"  id="seleccionProductos__botonSoloVariantes" checked>
+            </label>
+            <input id="seleccionProductos__input-buscarSKU" class="inputRegistener1" placeholder="Buscar un SKU">
+            <input id="seleccionProductos__input-buscar" class="inputRegistener1" placeholder="Buscar un producto">
+            <div id="seleccionProductos__div-productos" > </div>
+        </div>
+        <div id="seleccionProductos__div-resumen"></div>
     </div>
 
     </div>
 
-    <div id="seccionCobro">
+    <div id="seccionCobro" class="contenedorRegistener1">
         <div class="seccionCobro__titulo text">Resumen</div>
         <div class="seccionCobro__titulo text">Modo de pago</div>
         <div class="seccionCobro__titulo text">Modificacion</div>

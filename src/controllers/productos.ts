@@ -27,8 +27,20 @@ const verProductos = async(req: Request, res: Response)=>{
     const palabraBuscada:string = req.query.palabraBuscada as string || ''; // Palabra buscada por el usuario
     const categoriasNombresCadena:string = req.query.categorias as string || ''; // Categorias especificadas por el usuario en formato de cadena con separador por coma Ej:(categ1,categ2,categ3,)
     const disponible:boolean | undefined = (req.query.disponible)?false:true; // Indica si busca productos solo disponibles al publico, por defecto es true a menos que se envie un parametro
-    const variantes:string | undefined = (req.query.variantes)?'variantes':undefined; // Indica si se desea obtener la informacion de las variantes del producto
-    
+    const esVariantesCompleta:boolean = (req.query.variantes)?true:false; // Indica si se desea obtener la informacion de las variantes del producto
+    const categoriasNombre:string | undefined = (req.query.categoriasNombre)?'categoria':undefined; // Indica si se desea obtener la informacion de las categorias del producto
+    const SKUBuscado:string = req.query.SKUBuscado as string || ''; // SKU buscado por el usuario
+
+    // Define la variable que se utiliza para la busqueda de variantes
+    let poblarVariante:any=''
+    if(esVariantesCompleta||SKUBuscado){
+        poblarVariante='variantes'
+        if(SKUBuscado) poblarVariante={
+        path: 'variantes',
+        match: { SKU:new RegExp(SKUBuscado, 'i') }
+        }
+    }
+
     try{
         // Se obtiene la forma de ordenar los resultados
         let ordenar: { [key: string]: number } = {}; // Inicia la variable vacia
@@ -45,15 +57,15 @@ const verProductos = async(req: Request, res: Response)=>{
         const categoriasNombreArreglo:string[] = categoriasNombresCadena.split(',').filter(Boolean) // Convierte la cadena en un arreglo
 
         // Busca las categorías por sus nombres
-        let categoriasEncontradas
+        let categoriasCompletas
         if(categoriasNombreArreglo[0]){ // Si se pasa como argumento las categorias especificas:
-            categoriasEncontradas = await Categoria.find({ nombre: {$in: categoriasNombreArreglo}});
+            categoriasCompletas = await Categoria.find({ nombre: {$in: categoriasNombreArreglo}});
         }else{ // Si no se busco ninguna categoria en particular entonces busca todas las categorias validas
-            categoriasEncontradas = await Categoria.find();
+            categoriasCompletas = await Categoria.find();
         }
 
         // Extrae los ObjectId de las categorías encontradas
-        const categoriasIds: mongoose.Schema.Types.ObjectId[] = categoriasEncontradas.map(categoria => categoria._id);
+        const categoriasIds: mongoose.Schema.Types.ObjectId[] = categoriasCompletas.map(categoria => categoria._id);
 
 
         // Definir la expresión regular para buscar productos cuyo nombre, descripción, etc., contenga la palabra buscada
@@ -76,11 +88,12 @@ const verProductos = async(req: Request, res: Response)=>{
         };
 
         if(disponible) filtros.$and[0].disponible = disponible // Si se tiene que realizar la busqueda de productos que esten disponibles entonces agrega el aparametro al filtro
-        
+
+
         // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
         const [productos, productosCantidad]:[producto[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
             Producto.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condicion
-                .skip(desde).sort(ordenar as any).limit(cantidad).populate(variantes!),
+                .skip(desde).sort(ordenar as any).limit(cantidad).populate(poblarVariante).populate(categoriasNombre!),
             Producto.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
         ])
 
@@ -88,7 +101,7 @@ const verProductos = async(req: Request, res: Response)=>{
         const paginasCantidad:number = Math.ceil(productosCantidad/cantidad); 
 
         res.status(200).json({
-            categoriasIds,
+            categoriasCompletas,
             productosCantidad,
             paginasCantidad,
             productos

@@ -27,11 +27,11 @@ export const buscarProductos = async()=>{
         const ordenar = params.get('ordenar') || '';
 
         // Realiza la peticion GET para obtener los productos
-        const productos = await obtenerProductos(desde,hasta,precioMin,precioMax,palabraBuscada,categorias,ordenar)
+        const respuesta = await obtenerProductos(desde,hasta,precioMin,precioMax,palabraBuscada,categorias,ordenar)
 
-        if (productos.length > 0){ // Si se encuentran productos para los parametros de busqueda entonces los agrega
+        if (respuesta.productos.length > 0){ // Si se encuentran productos para los parametros de busqueda entonces los agrega
             contenedorProductos.classList.remove('catalogo-conMensaje')
-            agregarProductosDOM(productos,contenedorProductos)
+            agregarProductosDOM(respuesta.productos,contenedorProductos)
         }else{ // Si no se encontraron productos da aviso al usuario
             // Vacia el contenedor y muestra un mensaje de error
             contenedorProductos.innerHTML=`

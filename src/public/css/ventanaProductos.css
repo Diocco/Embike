@@ -8,27 +8,6 @@
 
 
 
-/*Contenedor general de la configuracion de productos, contiene los indices de categorias, indice y productos*/
-#contenedorConfiguracionProductos__contenido{
-    display: flex;
-    height: 85vh;
-    width: 1290px;
-    background-color: var(--colorFondoVentana);
-    position: absolute;
-    z-index: 60;
-    margin: 0px calc((100vw - 1290px) / 2);
-    margin-top: 0;
-    transform: translateY(78px);
-    overflow: auto;
-    padding: 10px;
-    border-radius: 10px;
-    border: solid black 2px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-content: flex-start
-}
-
 
 /*Contenedor de botones de filtro categorias*/
 #contenedorConfiguracionProductos__contenido__categorias{

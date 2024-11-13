@@ -308,9 +308,12 @@ export const agregarVarianteDOM =(contenedor:HTMLElement,variante:variante)=>{
     contenedorVariante.appendChild(botonEliminarVariante) // Agrega el boton al contenedor
     contenedor.appendChild(contenedorVariante) // Agrega el contenedor al DOM
     botonEliminarVariante.onclick=async()=>{
-        const varianteId:string = botonEliminarVariante.parentElement!.id;
-        const respuesta = await eliminarVariante(varianteId);
-        if(respuesta===0) botonEliminarVariante.parentElement!.classList.add('noActivo'); // Si la variante se elimino de forma exitosa oculta la variante
+        const varianteId:string|undefined = botonEliminarVariante.parentElement!.id;
+        if(!varianteId) botonEliminarVariante.parentElement!.className="noActivo"; // Si la variante no esta en la base de datos simplemente la oculta en el DOM
+        else{ // Si esta en la base de datos se envia una solicitud al servidor
+            const respuesta = await eliminarVariante(varianteId);
+            if(respuesta===0) botonEliminarVariante.parentElement!.classList.add('noActivo'); // Si la variante se elimino de forma exitosa oculta la variante
+        }
     }
     
 

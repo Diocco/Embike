@@ -1,30 +1,41 @@
 
+import { ObjectId } from "mongoose";
 import { error } from "../../../interfaces/error.js";
 import { producto } from "../../../models/interfaces/producto.js";
 import { mostrarErroresConsola, tokenAcceso, urlCategorias, urlProductos } from "../global.js";
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js";
+import { CategoriaI } from "../../../models/interfaces/categorias.js";
 
 
 
 
 // Realiza la peticion GET para obtener los productos
-export const obtenerProductos=async(desde:string,hasta:string,precioMin:string,precioMax:string,palabraBuscada:string,categorias:string,ordenar:string)=>{
-    let productos:producto[] = []
-    await fetch(urlProductos+`?variantes=true&desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}`, { 
+export const obtenerProductos=async(desde:string='',hasta:string='',precioMin:string='',precioMax:string='',palabraBuscada:string='',categorias:string='',ordenar:string='',categoriasNombre:string='',SKUBuscado:string='')=>{
+    let respuesta:{
+        productos:producto[],
+        categoriasCompletas:CategoriaI[]
+    } = {
+        productos: [],
+        categoriasCompletas:[]
+    }
+    await fetch(urlProductos+`?variantes=true&desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}&categoriasNombre=${categoriasNombre}&SKUBuscado=${SKUBuscado}`, { 
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     })
     .then(response => response.json()) // Parsear la respuesta como JSON
     .then(data=> { // Maneja la respuesta del servidor
         if(data.errors) mostrarErroresConsola (data.errors) // Si hay errores de tipeo los muestra en consola 
-        else productos = data.productos // Si no hay errores entonces almacena la respuesta del servidor
+        else { // Si no hay errores entonces almacena la respuesta del servidor
+            respuesta.productos = data.productos 
+            respuesta.categoriasCompletas = data.categoriasCompletas 
+        }
     })
     .catch(error => { // Si hay un error se manejan y se muestra en consola
         mostrarMensaje('2',true);
         console.error(error);
     })
 
-    return productos
+    return respuesta
 }
 
 

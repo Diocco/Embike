@@ -52,7 +52,7 @@
 /*Elemento individuales dentro de las caracteristicas del producto*/
 .modificarProducto__caracteristicas__input{
     display: flex;
-    font-size: 1vw;
+    font-size: 19px;
     margin: 5px 15px 5px 5px;
     padding: 6px;
     width: 100%;
