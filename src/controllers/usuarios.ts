@@ -142,7 +142,10 @@ const actualizarUsuario = async(req: Request, res: Response) =>{
             ciudad,
             calle,
             piso,
-            observacion} = req.body // Desestructura las propiedades modificables
+            observacion,
+            metodosPago,
+            modificacionesPago
+        } = req.body // Desestructura las propiedades modificables
     const  imgPura  = (req.files?req.files.img:undefined) as fileUpload.UploadedFile// Obtiene la imagen 
     let img:string|undefined // Se inicia la variable que va a contener el path de la foto de perfil del usuario
     
@@ -161,7 +164,11 @@ const actualizarUsuario = async(req: Request, res: Response) =>{
         password,
         telefono,
         img,
-        direccion
+        direccion,
+        preferencias:{
+            metodosPago,
+            modificacionesPago
+        }
     }
 
     try{

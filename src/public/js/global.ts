@@ -55,15 +55,19 @@ export const mostrarErroresConsola =(errores:error[])=>{
 
 // Revisa si hay que mostrarle un mensaje al usuario
 document.addEventListener('DOMContentLoaded',()=>{
-    const mensaje:string|null = sessionStorage.getItem('mostrarMensaje')
+    const mensaje:string|null = localStorage.getItem('mostrarMensaje')
     if (mensaje) {
-        sessionStorage.removeItem('mostrarMensaje'); 
+        localStorage.removeItem('mostrarMensaje'); 
         mostrarMensaje(mensaje)
     }
-    const mensajeError:string|null = sessionStorage.getItem('mostrarMensajeError')
+    const mensajeError:string|null = localStorage.getItem('mostrarMensajeError')
     if (mensajeError) {
-        sessionStorage.removeItem('mostrarMensajeError'); 
+        localStorage.removeItem('mostrarMensajeError'); 
         mostrarMensaje(mensajeError,true)
     }
+
+    // Reinicia las variable de la seccion de venta al publico
+    sessionStorage.setItem('metodoSeleccionado','')
+    sessionStorage.setItem('modificacionSeleccionado','')
 })
 

@@ -6,6 +6,7 @@ export interface variante {
     color: string,
     talle: string,
     SKU: string,
-    stock: number
+    stock: number,
+    esFavorito: boolean,
     save?: () => Promise<void>
     }

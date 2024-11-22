@@ -24,8 +24,7 @@
 /*Indice del contenedor de productos y productos individuales*/
 .tipo__categoria__producto,.productos__div{
     display: grid;
-    grid-template-columns: 740px 230px 70px 90px;
-    margin: 1px;
+    grid-template-columns: minmax(300px, 720px) 230px 70px 90px;
     border-radius: 6px;
     border: 1px solid black;
     background-color: var(--colorVentana);
@@ -34,13 +33,20 @@
     padding-left: 12px;
     min-height: 52px;
     max-height: 52px;
-    margin: 0 calc((1290px - 1180px) / 2);
+    max-width: 1150px;
 }
 .productos__div:hover{
     filter: brightness(1.05);
     cursor: pointer;
 }
-
+/*Contenedor general*/
+#contenedorConfiguracionProductos__contenido{
+    display: flex;
+    height: 100%;
+    margin: auto;
+    flex-direction: column;
+    align-items: center;
+}
 
 /*Contenedor de productos*/
 #contenedorConfiguracionProductos__contenido__productos{

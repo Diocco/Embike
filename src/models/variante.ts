@@ -20,6 +20,9 @@ const varianteSchema = new mongoose.Schema<variante>({
     },
     stock: { // Se puede estructurar de esta forma para que sea mas legible
         type: Number,
+    },
+    esFavorito:{
+        type:Boolean,
     }
 })
 

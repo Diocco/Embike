@@ -32,6 +32,13 @@
 .noactivo{
   display: none !important;
 }
+.nodisponible{
+  filter: brightness(0.5) !important;
+  cursor: default !important;
+}
+.nodisponible:hover{
+  filter: brightness(0.5) !important;
+}
 
 .imagenProducto{
   background-color: white;
@@ -42,42 +49,49 @@
 
 .contenedorRegistener1{
   display: flex;
-  height: 85vh;
-  width: 1290px;
-  background-color: var(--colorFondoVentana);
-  z-index: 60;
-  margin: 7.5vh calc((100vw - 1290px) / 2);
-  transform: translateX(60px);
-  overflow: auto;
-  padding: 10px;
-  border-radius: 10px;
-  border: solid black 2px;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-content: flex-start;
+    height: 100vh;
+    width: 95%;
+    background-color: var(--colorFondoVentana);
+    z-index: 60;
+    transform: translateX(5vw);
+    overflow: auto;
+    border-radius: 10px;
+    border: solid black 2px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: flex-start;
 }
 
 .ayudaRegistener1{
   font-size: 20px;
-  padding: 5px;
+  padding: 2px;
   margin: 5px;
   width: 90%;
   text-align: center;
   white-space: nowrap;
-  background-color: var(--colorFondoVentana);
+  background-color: #00000080;
   color: var(--colorLetra);
   user-select: none;
   border-radius: 26px;
 }
 .botonRegistener2{
-  font-size: 20px;
-  height: 30px;
-  width: 30px;
+  font-size: 25px;
+  height: 45px;
+  width: 45px;
+  padding: 10px;
   background-color: var(--colorBotones);
   color: var(--colorLetra);
   cursor: pointer;
   user-select: none;
+  border: 0;
+  border-radius: 10px;
+}
+.botonRegistener2:hover{
+  filter: brightness(1.05)
+}
+.botonRegistener2:active{
+  filter: brightness(0.9)
 }
 
 .botonRegistener3{
@@ -109,6 +123,9 @@
 .boton__enError{
   border:2px solid !important;
   border-color: red !important;
+}
+.boton__activo{
+  background-color: green !important;
 }
 
 

@@ -27,6 +27,7 @@ export const crearVariante = async(req: Request, res: Response)=>{
         producto,
         color,
         talle,
+        'esFavorito':false,
         'stock':Number(stock)
     }
     try {
@@ -133,6 +134,41 @@ export const actualizarVariantes = async (req: Request, res: Response) => {
     } catch (error) {
         const errors:error[]=[{
             msg: "Error al actualizar las variantes",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
+};
+
+export const actualizarVariante = async (req: Request, res: Response) => {
+    const { varianteId } = req.params;  // ID de la variante
+    let {  // Desestructura la informacion del body para utilizar solo la informacion requerida
+            stock, 
+            esFavorito
+        }:{
+            stock:number,
+            esFavorito:boolean,
+        } = req.body
+
+    try {
+
+        // Estructura la informacion para enviarla correctamente al servidor
+        const data={
+            stock, 
+            esFavorito
+        }
+
+        // Busca por id en la base de datos que actualiza las propiedades que esten en el segundo parametro. { new: true } devuelve el documento actualizado
+        let varianteActualizada = (await Variante.findByIdAndUpdate( varianteId,data, { new: true })); 
+
+        res.status(200).json({ // Devuelve un mensaje y el producto agregado a la base de datos
+            varianteActualizada
+        })
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al modificar la variante",
             path: "Servidor",
             value: (error as Error).message
         }]

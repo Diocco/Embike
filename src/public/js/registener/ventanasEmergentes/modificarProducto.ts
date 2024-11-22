@@ -255,7 +255,8 @@ export const cargarVariantesDOM=async(productoInformacion:producto) =>{
             color: '',
             talle: '',
             SKU: (new Date().getTime()).toString(), // Crea un SKU por default, el usuario luego puede definir uno diferente
-            stock: 0
+            stock: 0,
+            'esFavorito':false
         }
 
         agregarVarianteDOM(contenedorVariantes,varianteNueva) // Crea la variante en el DOM
@@ -343,7 +344,8 @@ const obtenerVariantesDOM =(productoID:string):variante[]=>{
             SKU,
             color,
             talle,
-            stock
+            stock,
+            'esFavorito':false
         }
 
         // Agrega las nueva variante

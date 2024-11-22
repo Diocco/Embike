@@ -79,6 +79,36 @@ export const actualizarVariantes = async(variantes:variante[],productoId:string)
     return respuesta
 }
 
+export const actualizarVariante= async(datosProducto:FormData,varianteId:string)=>{
+    let respuesta:{
+        varianteActualizada:variante|undefined,
+        errors:error[]
+    }={
+        varianteActualizada: undefined,
+        errors: []
+    }
+
+    await fetch(urlVariantes+`/modificar/${varianteId}`, {
+        method: 'PUT',
+        headers: { 'tokenAcceso':`${tokenAcceso}`},
+        body: datosProducto
+    })
+    .then(response => response.json()) // Parsear la respuesta como JSON
+    .then(data=> { // Maneja la respuesta del servidor
+        if(data.errors) {
+            respuesta.errors = data.errors // Si hay errores de tipeo los muestra en consola 
+            mostrarErroresConsola (data.errors)
+        }
+        else respuesta.varianteActualizada = data.varianteActualizada // Si el servidor no devuelve errores guarda la respuesta
+    })
+    .catch(error => { // Si hay un error se manejan 
+        console.error(error);
+        mostrarMensaje('2',true);
+    })
+
+    return respuesta
+}
+
 export const verVariantes = async(productoId:ObjectId)=>{
     let respuesta:variante[]|undefined
     // Envia el id del producto y el servidor devuelve todas las variantes para ese producto

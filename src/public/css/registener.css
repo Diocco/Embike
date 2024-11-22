@@ -16,18 +16,20 @@ body{
     grid-template-columns: 60px 240px;
     position: fixed;
     z-index: 400;
-    transform: translateY(-7.5vh);
+    pointer-events: none;
 }
 
 /*Las dos columnas de la barra lateral, una con los iconos y la otra con la descripcion*/
 #barraLateral__nombres, #barraLateral__iconos{
     background-color: var(--colorBarraLateral);
     display: grid;
-    grid-template-rows: repeat(5, 50px) 1fr;
+    grid-template-rows: repeat(5, 60px) 1fr;
     height: 100vh;
     align-items: end;
-    justify-items:center;
+    justify-items: center;
     z-index: 402;
+    width: 5vw;
+    pointer-events: all;
 }
 
 /*Nombre de cada boton*/
@@ -108,24 +110,43 @@ body{
 
 
 /*SECCION DE PRODUCTOS*/
-#seleccionProductos__div-productos{
-    display: flex;
+/*Ventana, contenedor de todos los elementos*/
+#seleccionProductos{
+    display: grid;
+    grid-template-columns: 58% 42% 58%;
+    grid-template-rows: 40% 51% 9%;
     flex-direction: column;
-    flex-wrap: nowrap;
-    min-width: 695px;
-    height: 100%;
+    justify-content: start;
+    background-color: initial;
+    border: 0;
+    overflow: hidden;
 }
 /*Contenedor de la seccion que contiene el titulo, la barra de busqueda y los productos*/
 #seleccionProductos__div-contenedorSeleccionarProductos{
     display: flex;
     flex-direction: row;
-    max-height: 791px;
-    min-height: 791px;
     flex-wrap: wrap;
-    width: 720px;
     overflow: hidden auto;
     justify-content: space-between;
+    background-color: var(--colorFondoVentana);
+    padding: 10px;
+    border-radius: 20px;
+    margin: 5px;
+    grid-row: 1 / 4;
+    align-content: flex-start;
 }
+
+
+
+
+/*Contenedor de los productos individuales*/
+#seleccionProductos__div-productos{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
 /*Contenedores de productos*/
 .ventaPublico__div-producto{
     display: grid;
@@ -146,14 +167,17 @@ body{
     justify-items: center;
 }
 /*Contenedor de la variable completa, si el usuario prefiere visualizar solo variantes*/
-.ventaPublico__div-varianteCompleta{
+.ventaPublico__div-varianteCompleta,.ventaPublico__div-varianteFavorita{
     display: grid;
-    grid-template-columns: 160px 270px 45px 45px 45px 120px;
+    grid-template-columns: 30px minmax(160px, 1fr) minmax(200px, 2fr) 40px 40px 45px 120px;
     align-items: center;
     padding: 0px 5px !important;
     font-size: 23px;
     text-align: center;
     border-bottom: 1px #808080 solid;
+}
+.ventaPublico__div-varianteFavorita{
+    grid-template-columns: 30px minmax(200px, 100%) 40px 40px 120px;
 }
 
 /*Titulo de las categorias de los productos*/
@@ -169,6 +193,15 @@ body{
     width: 100%;
     margin: 5px 0;
 }
+/*Boton de agregar a favorito una variante*/
+.botonAgregarVarianteFavorito{
+    background-color: transparent;
+    border: none;
+}
+.esVarianteFavorito{
+    color: goldenrod;
+}
+
 /*Color de la variante*/
 .div-productos__div-color{
     min-width: 20px;
@@ -182,81 +215,136 @@ body{
 }
 /*Input de busqueda*/
 #seleccionProductos__input-buscar,#seleccionProductos__input-buscarSKU{
-    width: 345px;
+    width: 340px;
     margin-bottom:17px
 }
+
+/*Contenedor de productos favoritos*/
+#seleccionProductos__div-productosFav{
+    padding: 0 10px;
+    background-color: var(--colorFondoVentana);
+    padding: 10px;
+    border-radius: 20px;
+    margin: 5px;
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    overflow-y: auto;
+}
+/*Contenedor del resumen del carrito*/
+#seleccionProductos__div-resumen{
+    display: grid;
+    grid-template-rows: min-content min-content 1fr;
+    background-color: var(--colorFondoVentana);
+    padding: 10px;
+    border-radius: 20px;
+    margin: 5px;
+    grid-column: 2 / 3;
+    flex-wrap: wrap;
+    flex-direction: row;
+    overflow-y: auto;
+    align-items: end;
+}
+/*Tabla del resumen del carrito*/
+#seleccionProductos__div-resumen__table{
+    width: 100%;
+    text-align: end;
+}
+#seleccionProductos__div-resumen__table:nth-child(0),#seleccionProductos__div-resumen__table:nth-child(1){
+    font-size: 20px;
+}
+/*Precio total de carrito*/
+#seleccionProductos__div-resumen__total{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    font-size: 25px;
+    justify-content: space-between;
+}
+/*Primera columna en el carrito*/
+.seleccionProductos__div-resumen__table__nombre{
+    text-align: start;
+}
+/*Contenedor de botones*/
+#botonesVentaPublico{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 15px;
+    grid-column: 2 / 3;
+}
+/*Boton para cargar la zona de seleccionar productos*/
+#botonIrSeleccionProductos{
+    transform: rotate(180deg);
+}
+/*Contenedor de la seccion de pago*/
+#seleccionProductos__div-pago{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 5% 65% 30%;
+    grid-column: 3 / 4;
+    grid-row: 1 / 4;
+    width: 100%;
+    height: 100%;
+    background-color: var(--colorFondoVentana);
+    padding: 10px;
+    border-radius: 20px;
+    margin: 5px;
+}
+
+
+
+
 
 
 
 /*SECCION DE COBRO*/
+/*Titulo de la seccion*/
+#seleccionProductos__div-pago__h2{
+    grid-column: 1/3;
+}
 
-
-
-.seccionCobro__titulo{
+/*Contenedores de metodos de pago y de modificacion*/
+#div-pago__metodoPago,#div-pago__modificacion{
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 60px;
-    width: 420px;
-    border: solid 2px black;
-    font-size: 30px;
-}
-
-#seccionCobro__resumen,#seccionCobro__metodoPago,#seccionCobro__modificacion{
-    display:flex;
     flex-wrap: wrap;
-    align-content: flex-start;
-    border: solid 2px black;
-    height: 380px;
-    width: 420px;
-    font-size: 20px;
-    margin-top: 10px;
-}
-#seccionCobro__resumen{
-    height:380px;
-    overflow: auto;
-}
-
-#seccionCobro__metodoPago,#seccionCobro__modificacion{
     flex-direction: column;
     flex-wrap: nowrap;
-}
-.seccionCobro__metodoPago__metodo,.seccionCobro__modificacion__metodo{
-    margin: 5px 40px 5px 40px;
+    align-content: flex-start;
     font-size: 20px;
+    grid-row: 2/3;
+}
+/*Contenedor de observacion y confirmar*/
+#div-pago__confirmar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+}
+/*Textarea de obervaciones*/
+#div-pago__confirmar__observacion{
+    margin: 10px; 
+    width: 100%;
+    overflow: auto;
+    text-align: start;
+    padding: 10px;
+    background-color: var(--colorVentana);
     color: var(--colorLetra);
-    padding: 5px;
-    background-color: var(--colorBotones);
-    border-radius: 5px;
-    border:1px black solid;
-    height: 50px;
+    font-size: 20px;
+    resize: none;
+    border: solid black 1px;
+    border-radius: 10px;
 }
-.seccionCobro__metodoPago__metodo:hover,.seccionCobro__modificacion__metodo:hover{
-    filter: brightness(1.2);
+/*Boton de confirmar*/
+#div-pago__confirmar__boton{
+    margin: auto; 
+    width: 300px;
+    font-size: 35px;
 }
-.seccionCobro__metodoPago__metodo:active,.seccionCobro__modificacion__metodo:active{
-    filter: brightness(1.4);
-}
-
-.seccionCobro__metodoPago__metodo-active,.seccionCobro__modificacion__metodo-active{
-    background-color: var(--colorBotones-positivo);
-}
-
-
 
 
 /*Promociones*/
 
-#seccionCobro__promociones{
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    height: 378px;
-    width: 400px;
-    padding: 10px;
-}
 
-.seccionCobro__promociones__contenedores{
+.div-pago__promociones__contenedores{
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -272,27 +360,11 @@ body{
     align-items: center;
 }
 
-.seccionCobro__promociones__contenedores__boton{
-    background: var(--colorBotones);
-    color: var(--colorLetra);
-    padding: 5px;
-    height: 35px;
-    width: 33px;
-    font-size: 30px;
-    border-radius: 10px;
-    border: 1px black solid;
-}
-.seccionCobro__promociones__contenedores__boton:hover{
-    filter: brightness(1.2);
-}
-.seccionCobro__promociones__contenedores__boton:active{
-    filter: brightness(1.4);
-}
 
-.seccionCobro__promociones__contenedores__titulo{
+.div-pago__promociones__contenedores__titulo{
     width: 230px;
 }
-.seccionCobro__promociones__contenedores__precio{
+.div-pago__promociones__contenedores__precio{
     width: 100px;
     text-align: end;
 }
@@ -304,74 +376,23 @@ body{
 
 
 
-
-
-
-
-
-
-.seccionCobro__resumen__indices{
-    border-bottom: dashed 2px rgb(53, 53, 53);
+/*Contenedor de pagos, vuelto y total*/
+#div-pago__div-total{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: repeat(6,min-content);
 }
-
-#seccionCobro__resumen__indice-nombre,.seccionCobro__resumen__producto-nombre{
-    width: 159px;
-    border-right: dashed 2px rgb(53, 53, 53);
-    padding: 10px;
+/*Titulos de la seccion*/
+.div-pago__div-total__h5{
+    grid-column: 1/3;
 }
-#seccionCobro__resumen__indice-cantidad,.seccionCobro__resumen__producto-cantidad{
-    width: 80px;
-    padding: 10px;
-    text-align: center;
-}
-
-#seccionCobro__resumen__indice-precio,.seccionCobro__resumen__producto-precio{
-    width: 100px;
-    border-left: dashed 2px rgb(53, 53, 53);
-    padding: 10px;
-    text-align: center;
-}
-
-
-#seccionCobro__pago,#seccionCobro__confirmar{
-    width: 420px;
-}
-
-#seccionCobro__confirmar{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    flex-wrap: nowrap;
-}
-
-#seccionCobro__pago{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-evenly;
-    flex-wrap: nowrap;
-}
-
-.seccionCobro__pago__valor{
-    width: 300px;
-    height: 30px;
-    padding: 11px;
-    margin: 5px;
-    background-color: var(--colorVentana);
-    border: 1px black solid;
-    border-radius: 10px;
-    color: var(--colorLetra);
-    font-size: 20px;
+/*Contenedores del vuelto y el total*/
+#div-pago__div-total__div-vuelto,#div-pago__div-total__div-total{
+    grid-column: 1 / 3;
+    font-size: 36px;
+    padding: 2px 7px;
     text-align: end;
 }
-#seccionCobro__pago__vuelto__valor{
-    font-size: 26px;
-}
-#seccionCobro__pago__total__valor{
-    font-size: 40px;
-    height: 50px;
-}
 
 
 
@@ -379,29 +400,5 @@ body{
 
 
 
-#seccionCobro__confirmar__boton{
-    margin: 10px;
-    width: 300px;
-    background-color: var(--colorBotones);
-    color: var(--colorLetra);
-    font-size: 35px;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-#seccionCobro__confirmar__observacion{
-    margin: 10px;
-    width: 350px;
-    height: 200px;
-    overflow: auto;
-    text-align: start;
-    padding: 20px;
-    background-color: var(--colorVentana);
-    color: var(--colorLetra);
-    font-size: 20px;
-    resize: none;
-    border: solid black 1px;
-    border-radius: 10px;
-}
 
 

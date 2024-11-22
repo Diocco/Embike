@@ -58,6 +58,16 @@ const usuarioSchema = new mongoose.Schema<usuario>({
         observacion:{
             type:String,
         }
+    },
+    preferencias:{
+        metodosPago:{
+            type:[String],
+            default:[]
+        },
+        modificacionesPago:{
+            type:[String],
+            default:[]
+        }
     }
 }, { timestamps: true });
 

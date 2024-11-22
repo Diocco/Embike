@@ -19,6 +19,10 @@ export interface usuario {
             piso:string,
             observacion:string,
         }
+        preferencias:{
+            metodosPago:string[],
+            modificacionesPago:string[]
+        }
         createAT:Date
         updateAT:Date
         __v:number

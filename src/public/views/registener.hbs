@@ -135,30 +135,26 @@
             <div id="barraLateral_AA__nombre" class="ayudaRegistener1">Configuracion</div>
         </div>
     </div>
-    
-    {{!-- <div id="configuracionProductos">
-        <div id="contenedorConfiguracionProductos" class="contenedorRegistener1"></div>
-    </div> --}}
 
     {{!-- Contenedor general de categorias, indice y productos --}}
-    <div id="contenedorConfiguracionProductos__contenido" class="contenedorRegistener1">
+    <div id="contenedorConfiguracionProductos" class="contenedorRegistener1 noActivo">
+        <div id="contenedorConfiguracionProductos__contenido">
+            {{!-- Contenedor de categorias --}}
+            <div id="contenedorConfiguracionProductos__contenido__categorias"></div>
 
-        {{!-- Contenedor de categorias --}}
-        <div id="contenedorConfiguracionProductos__contenido__categorias"></div>
+            {{!-- Indice de categorias --}}
+            <div class="tipo__categoria__producto">
+                <div>Nombre</div>
+                <div>Precio</div>
+                <div>Stock</div>
+                {{!-- Boton para agregar un producto --}}
+                <button id="contenedorConfiguracionProductos__contenido__agregarProducto" class="botonRegistener3"> + </button>
+            </div>
+            
 
-        {{!-- Boton para agregar un producto --}}
-        <button id="contenedorConfiguracionProductos__contenido__agregarProducto" class="botonRegistener3">Agregar producto</button>
-
-        {{!-- Indice de categorias --}}
-        <div class="tipo__categoria__producto">
-            <div>Nombre</div>
-            <div>Precio</div>
-            <div>Stock</div>
+            {{!-- Contenedor de productos --}}
+            <div id="contenedorConfiguracionProductos__contenido__productos" ></div>
         </div>
-        
-
-        {{!-- Contenedor de productos --}}
-        <div id="contenedorConfiguracionProductos__contenido__productos" ></div>
 
     </div>
 
@@ -177,91 +173,64 @@
             <input id="seleccionProductos__input-buscar" class="inputRegistener1" placeholder="Buscar un producto">
             <div id="seleccionProductos__div-productos" > </div>
         </div>
-        <div id="seleccionProductos__div-resumen"></div>
+        <div id="seleccionProductos__div-productosFav">
+            <h2>Productos favoritos</h2>
+        </div>
+        <div id="seleccionProductos__div-resumen">
+            <h2>Resumen</h2>
+            <table id="seleccionProductos__div-resumen__table">
+                <thead>
+                    <tr>
+                        <th class="seleccionProductos__div-resumen__table__nombre">SKU</th>
+                        <th class="seleccionProductos__div-resumen__table__nombre">Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="seleccionProductos__div-resumen__total">
+                <div>Total</div>
+                <div >$ 0</div>
+            </div>
+        </div>
+        <div id="botonesVentaPublico">
+            <button class="botonRegistener2 nodisponible" id="botonIrSeleccionProductos"><i class="fa-solid fa-arrow-right-long"></i></button>
+            <button class="botonRegistener2" id="botonIrPago"><i class="fa-solid fa-arrow-right-long"></i></button>
+        </div>
+        <div id="seleccionProductos__div-pago">
+            <h2 id="seleccionProductos__div-pago__h2">Pago</h2>
+            <div id="div-pago__metodoPago">
+                <h4>Modo de pago</h4>
+            </div>
+            <div id="div-pago__modificacion">
+                <h4>Modificacion</h4>
+                <input class="inputRegistener1" placeholder="Ingrese porcentaje de descuento" type="number"></input>
+                <button class="botonRegistener3">10% de descuento</button>
+                <button class="botonRegistener3">15% de descuento</button>
+                <button class="botonRegistener3">Sin cargo</button>
+            </div>
+            <div id="div-pago__div-total">
+                <h5>Pago 1</h5>
+                <h5>Pago 2</h5>
+                <input class="inputRegistener1"              id="div-pago__div-total__div-pago1" placeholder="Ingrese el monto">
+                <input class="inputRegistener1 nodisponible" id="div-pago__div-total__div-pago2" type="number" placeholder="Ingrese el monto" disabled>
+                <h5    class="div-pago__div-total__h5">Vuelto</h5>
+                <div   class="inputRegistener1"              id="div-pago__div-total__div-vuelto">$ 0</div>
+                <h5    class="div-pago__div-total__h5">Total</h5>
+                <div   class="inputRegistener1"              id="div-pago__div-total__div-total">$ 0</div>
+
+            </div>
+            <div id="div-pago__confirmar">
+                <textarea id="div-pago__confirmar__observacion" placeholder="Ingrese una observacion"></textarea>
+                <button id="div-pago__confirmar__boton" class="botonRegistener3 nodisponible">Confirmar</button>
+            </div>
+        </div>
     </div>
 
     </div>
 
-    <div id="seccionCobro" class="contenedorRegistener1">
-        <div class="seccionCobro__titulo text">Resumen</div>
-        <div class="seccionCobro__titulo text">Modo de pago</div>
-        <div class="seccionCobro__titulo text">Modificacion</div>
-        <div id="seccionCobro__resumen">
-            <div id="seccionCobro__resumen__indice-nombre" class="seccionCobro__resumen__indices">Nombre</div>
-            <div id="seccionCobro__resumen__indice-cantidad" class="seccionCobro__resumen__indices">Cantidad</div>
-            <div id="seccionCobro__resumen__indice-precio" class="seccionCobro__resumen__indices">Precio</div>
-        </div>
-        <div id="seccionCobro__metodoPago">
-            <button class="seccionCobro__metodoPago__metodo">Efectivo</button>
-            <button class="seccionCobro__metodoPago__metodo">Cuenta DNI</button>
-            <button class="seccionCobro__metodoPago__metodo">Nave</button>
-            <button class="seccionCobro__metodoPago__metodo">Postnet</button>
-            <button class="seccionCobro__metodoPago__metodo">Transferencia</button>
-            <button class="seccionCobro__metodoPago__metodo">Otro</button>
-            <button class="seccionCobro__metodoPago__metodo"></button>
-            <button class="seccionCobro__metodoPago__metodo">Combinado</button>
-        </div>
-        <div id="seccionCobro__modificacion">
-            <button class="seccionCobro__modificacion__metodo">10% de descuento</button>
-            <button class="seccionCobro__modificacion__metodo">15% de descuento</button>
-            <button class="seccionCobro__modificacion__metodo">Cambios de stock</button>
-            <button class="seccionCobro__modificacion__metodo">Pedido</button>
-            <button class="seccionCobro__modificacion__metodo"></button>
-            <button class="seccionCobro__modificacion__metodo"></button>
-            <button class="seccionCobro__modificacion__metodo"></button>
-            <button class="seccionCobro__modificacion__metodo"></button>
-        </div>
-        <div id="seccionCobro__promociones">
-            <div id="seccionCobro__promociones__promocion1" class="seccionCobro__promociones__contenedores">
-                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por facha</div>
-                <div class="seccionCobro__promociones__contenedores__precio">-$1.500</div>
-                <button class="seccionCobro__promociones__contenedores__boton">^</button>
-            </div>
-            <div id="seccionCobro__promociones__promocion2" class="seccionCobro__promociones__contenedores">
-                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por feo</div>
-                <div class="seccionCobro__promociones__contenedores__precio">-$2.500</div>
-                <button class="seccionCobro__promociones__contenedores__boton">^</button>
-            </div>
-            <div id="seccionCobro__promociones__promocion3" class="seccionCobro__promociones__contenedores">
-                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por jubilado</div>
-                <div class="seccionCobro__promociones__contenedores__precio">-$3.500</div>
-                <button class="seccionCobro__promociones__contenedores__boton">^</button>
-            </div>
-            <div id="seccionCobro__promociones__promocion4" class="seccionCobro__promociones__contenedores">
-                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por hincha de boca</div>
-                <div class="seccionCobro__promociones__contenedores__precio">-$500</div>
-                <button class="seccionCobro__promociones__contenedores__boton">^</button>
-            </div>
-            <div id="seccionCobro__promociones__promocion5" class="seccionCobro__promociones__contenedores">
-                <div class="seccionCobro__promociones__contenedores__titulo">Descuento por algo</div>
-                <div class="seccionCobro__promociones__contenedores__precio">-$1.500</div>
-                <button class="seccionCobro__promociones__contenedores__boton">^</button>
-            </div>
-        </div>
-        <div id="seccionCobro__pago">
-            <div id="seccionCobro__pago__pago1">
-                <div class="seccionCobro__pago__titulo">Pago 1</div>
-                <input class="seccionCobro__pago__valor" type="number" placeholder="Ingrese el monto">
-            </div>
-            <div id="seccionCobro__pago__pago2">
-                <div class="seccionCobro__pago__titulo">Pago 2</div>
-                <input class="seccionCobro__pago__valor" type="number" placeholder="Ingrese el monto">
-            </div>
-            <div id="seccionCobro__pago__vuelto">
-                <div class="seccionCobro__pago__titulo">Vuelto</div>
-                <div class="seccionCobro__pago__valor" id="seccionCobro__pago__vuelto__valor">$ 1.250</div>
-            </div>
-            <div id="seccionCobro__pago__total">
-                <div class="seccionCobro__pago__titulo">Total</div>
-                <div class="seccionCobro__pago__valor" id="seccionCobro__pago__total__valor">$ 10.000</div>
-            </div>
 
-        </div>
-        <div id="seccionCobro__confirmar">
-            <textarea id="seccionCobro__confirmar__observacion" placeholder="Ingrese una observacion"></textarea>
-            <button id="seccionCobro__confirmar__boton">Confirmar</button>
-        </div>
-    </div>
 
 
 
