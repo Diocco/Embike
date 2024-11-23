@@ -3,13 +3,11 @@ import { ObjectId } from "mongoose"
 import { CategoriaI } from "../../../models/interfaces/categorias.js"
 import { producto } from "../../../models/interfaces/producto.js"
 import { buscarCargarCategorias } from "../helpers/categorias.js"
-import { actualizarProducto, obtenerProductos, solicitudEliminarProducto } from "../services/productosAPI.js"
+import { obtenerProductos, solicitudEliminarProducto } from "../services/productosAPI.js"
 import { agregarProductosDOM, alternarDisponibilidadProducto } from "./productos.js"
 import { ventanaEmergenteModificarProducto } from "./ventanasEmergentes/modificarProducto.js"
 import { preguntar } from "./ventanasEmergentes/preguntar.js"
-import { mostrarMensaje } from "../helpers/mostrarMensaje.js"
-import { variante } from "../../../models/interfaces/variante.js"
-import { actualizarVariante } from "../services/variantesAPI.js"
+
 import { url, usuarioVerificado } from "../global.js"
 import { usuario } from "../../../models/interfaces/usuario.js"
 import { cargarVentaPublico } from "./ventaPublico.js"
@@ -102,12 +100,10 @@ const cargarBotonesBarraLateral=()=>{
     document.getElementById("barraLateral_A__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
         configuracionProductosVentana.classList.remove('noActivo')
-        configuracionProductosVentana.scrollIntoView(({block: 'center' }));
     });
     document.getElementById("barraLateral_B__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
         seleccionProductosVentana.classList.remove('noActivo')
-        seleccionProductosVentana.scrollIntoView(({block: 'center' }));
         cargarVentaPublico()
     });
     document.getElementById("barraLateral_C__icono")!.addEventListener("click",()=>{

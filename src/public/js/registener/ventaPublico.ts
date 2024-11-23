@@ -775,3 +775,18 @@ const crearVariantesDOM=(productos:producto[],nombreCategorias:string[],producto
 
     return productosDIV
 }
+
+window.addEventListener('resize',()=>{
+
+    const contenedores = document.querySelectorAll('.contenedorRegistener1') 
+    contenedores.forEach(contenedor => {
+        // Verifica que se encuentre activo el contenedor de venta al publico
+        const ventaEsActivo = !contenedor.classList.contains('noActivo') &&  contenedor.id==='seleccionProductos' 
+        if(ventaEsActivo) {
+            document.getElementById('seleccionProductos__div-contenedorSeleccionarProductos')!.scrollIntoView({block:'start'}) // Mueve la vista del usuario a la seleccion de productos
+            document.getElementById('botonIrSeleccionProductos')!.classList.add('nodisponible') // Desactiva el boton de ir a la seleccion de productos
+            document.getElementById('botonIrPago')!.classList.remove('nodisponible') // Activa el boton de ir a la seccion de pago
+        }
+    });
+    
+})
