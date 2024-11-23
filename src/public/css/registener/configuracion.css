@@ -1,0 +1,16 @@
+#configuracion{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.configuracion__div{
+    border-top: 1px solid;
+    border-color: gray;
+    padding: 1%;
+    width: 80%;
+}
+
+.configuracion__h4{
+    padding-top: 1%
+}

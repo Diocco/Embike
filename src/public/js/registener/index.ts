@@ -11,6 +11,7 @@ import { preguntar } from "./ventanasEmergentes/preguntar.js"
 import { url, usuarioVerificado } from "../global.js"
 import { usuario } from "../../../models/interfaces/usuario.js"
 import { cargarVentaPublico } from "./ventaPublico.js"
+import { cargarRegistroVentas } from "./registroVentas.js"
 
 
 
@@ -94,7 +95,9 @@ const cargarBotonesBarraLateral=()=>{
     //Carga y le da funciones a la barra lateral
     const configuracionProductosVentana = document.getElementById("contenedorConfiguracionProductos")!
     const seleccionProductosVentana = document.getElementById("seleccionProductos")!
-    const cobroVentana = document.getElementById("seccionCobro")!
+    const registroVentas = document.getElementById("registroVentas")!
+    const configuracion = document.getElementById("configuracion")!
+
     const ventanas = document.querySelectorAll('.contenedorRegistener1')
 
     document.getElementById("barraLateral_A__icono")!.addEventListener("click",()=>{
@@ -108,8 +111,13 @@ const cargarBotonesBarraLateral=()=>{
     });
     document.getElementById("barraLateral_C__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
-        cobroVentana.classList.remove('noActivo')
-        cobroVentana.scrollIntoView(({block: 'center' }));
+        registroVentas.classList.remove('noActivo')
+        cargarRegistroVentas()
+    });
+    document.getElementById("barraLateral_AA__icono")!.addEventListener("click",()=>{
+        ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
+        configuracion.classList.remove('noActivo')
+        cargarRegistroVentas()
     });
 }
 

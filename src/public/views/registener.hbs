@@ -5,7 +5,11 @@
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Registener</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    {{!-- Estilos de registener --}}
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/configuracion.css'>
+
+
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/mensajeEmergente.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/modificarProducto.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/varianteProducto.css'>
@@ -119,17 +123,29 @@
 
     <div id="barraLateral">
         <div id="barraLateral__iconos">
-            <div id="barraLateral_A__icono" class="fa-solid fa-list botonRegistener3"></div>
-            <div id="barraLateral_B__icono" class="fa-solid fa-cash-register botonRegistener3" ></div>
-            <div id="barraLateral_C__icono" class="fa-solid fa-cart-shopping botonRegistener3"></div>
-            <div id="barraLateral_D__icono" class="fa-solid fa-chart-line botonRegistener3"></div>
-            <div id="barraLateral_E__icono" class="fa-solid fa-address-card botonRegistener3"></div>
-            <div id="barraLateral_AA__icono" class="fa-solid fa-gear botonRegistener3"></div>
+            <button id="barraLateral_A__icono" class="botonRegistener3">
+                <i class="fa-solid fa-list"></i>
+            </button>
+            <button id="barraLateral_B__icono" class="botonRegistener3" >
+                <i class="fa-solid fa-cash-register"></i>
+            </button>
+            <button id="barraLateral_C__icono" class="botonRegistener3">
+                <i class="fa-solid fa-table-cells"></i>
+            </button>
+            <button id="barraLateral_D__icono" class="botonRegistener3">
+                <i class="fa-solid fa-chart-line"></i>
+            </button>
+            <button id="barraLateral_E__icono" class="botonRegistener3">
+                <i class="fa-solid fa-address-card"></i>
+            </button>
+            <button id="barraLateral_AA__icono" class="botonRegistener3">
+                <i class="fa-solid fa-gear"></i>
+            </button>
         </div>
         <div id="barraLateral__nombres">
             <div id="barraLateral_A__nombre" class="ayudaRegistener1">Productos</div>
             <div id="barraLateral_B__nombre" class="ayudaRegistener1">Venta al publico</div>
-            <div id="barraLateral_C__nombre" class="ayudaRegistener1">Pago</div>
+            <div id="barraLateral_C__nombre" class="ayudaRegistener1">Registro de ventas</div>
             <div id="barraLateral_D__nombre" class="ayudaRegistener1">Estadisticas</div>
             <div id="barraLateral_E__nombre" class="ayudaRegistener1">Registro de empleados</div>
             <div id="barraLateral_AA__nombre" class="ayudaRegistener1">Configuracion</div>
@@ -158,6 +174,7 @@
 
     </div>
 
+    {{!-- Venta al publico --}}
     <div id="seleccionProductos" class="contenedorRegistener1">
         <div id="seleccionProductos__div-contenedorSeleccionarProductos">
             <h2>Seleccionar Productos</h2>
@@ -228,7 +245,24 @@
         </div>
     </div>
 
-    </div>
+    {{!-- Registro de ventas --}}
+    <div id="registroVentas" class="contenedorRegistener1"></div>
+
+    {{!-- Configuracion --}}
+    <div id="configuracion" class="contenedorRegistener1">
+        <div id="configuracion__global" class="configuracion__div">
+            <h3 class="configuracion__h3">Configuraciones globales</h3>
+            <h4 class="configuracion__h4">Tema</h4>
+            <select id="configuracion__global__select-tema">
+                <option>Oscuro</option>
+                <option>Azul oscuro</option>
+                <option>Rojo chino</option>
+            </select>
+        </div>
+        <div id="configuracion__ventaPublico" class="configuracion__div">
+            <h3 class="configuracion__h3">Venta al publico</h3>
+        </div>
+    </div> 
 
 
 
@@ -238,10 +272,14 @@
 
 
 
+    {{!-- General--}}
     <script type="module" src="../../js/global.js"></script>
     <script type='module' src="../js/registener/index.js"></script>
     <script type='module' src="../js/registener/productos.js"></script>
+    <script type='module' src="../js/registener/configuracion.js"></script>
+    <script type='module' src="../js/registener/registroVentas.js"></script>
 
+    {{!-- Ventanas emergentes --}}
     <script type='module' src="../js/registener/ventanasEmergentes/modificarFoto.js"></script>
     <script type='module' src="../js/registener/ventanasEmergentes/modificarProducto.js"></script>
     <script type='module' src="../js/registener/ventanasEmergentes/preguntar.js"></script>
