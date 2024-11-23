@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         window.location.assign(url+'/') // Redirije al usuario al inicio de sesion
     }
     
-    
+
     cargarVentaPublico()
 });
 

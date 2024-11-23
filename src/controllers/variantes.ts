@@ -12,6 +12,7 @@ import { producto } from "../models/interfaces/producto.js";
 
 
 
+
 // Crea una nueva variante de un producto
 export const crearVariante = async(req: Request, res: Response)=>{
     const { 
@@ -205,4 +206,43 @@ export const eliminarVariante = async(req: Request, res: Response) =>{
         console.log(error)
         return res.status(500).json(errors)
     }
+}
+
+export const aplicarVenta = async(req: Request, res: Response) =>{
+    // Obtiene el carrito completo como parametro
+    let { carrito } = req.body; 
+
+    
+    try {
+        if(!carrito) throw new Error("El carrito no es valido");
+
+        // Recorre todo el carrito
+        for (let i = 0; i < carrito[0].length; i++) {
+            const SKU = carrito[0][i];
+            const cantidad = carrito[1][i]
+
+            if(!SKU) throw new Error("El SKU no es valido");
+            if(!cantidad) throw new Error("La cantidad no es valida");
+
+            const variante = await Variante.findOne({SKU}) // Busca la variante en la base de datos
+            if(!variante) throw new Error("No se encontro una variante con ese SKU"); // Si no lo encuentra devuele un error
+            
+            variante.stock=variante.stock-cantidad // Actualiza el stock de la variante
+            variante.save() // Guarda los cambios
+        }
+
+        return res.status(200).json(0)
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al confirmar la venta",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
+
+
+
+
 }

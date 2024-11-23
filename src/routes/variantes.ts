@@ -1,7 +1,7 @@
 import express from 'express'; // Express
 import { check } from 'express-validator'; // Validaciones
 import { validarCampos, validarJWT, validarRolJWT } from '../middlewares/index.js';
-import { actualizarVariante, actualizarVariantes, crearVariante, verVariantes } from '../controllers/variantes.js';
+import { actualizarVariante, actualizarVariantes, aplicarVenta, crearVariante, verVariantes } from '../controllers/variantes.js';
 import { SKUUnico, varianteExiste } from '../../database/variantesVerificaciones.js';
 import { productoExiste } from '../../database/productosVerificaciones.js';
 import { eliminarVariante } from '../controllers/variantes.js';
@@ -27,6 +27,12 @@ router.get('/:productoId', // Ver variantes
     validarCampos,
     verVariantes) 
 
+router.put('/venta', // Aplica una venta - Admin
+    validarJWT, // Valida que el usuario que realiza la accion sea valido
+    validarRolJWT('admin'), // Valida que el usuario tenga permisos de administrador
+    validarCampos,
+    aplicarVenta) 
+
 router.put('/:productoId', // Actualizar variantes - Admin
     validarJWT, // Valida que el usuario que realiza la accion sea valido
     validarRolJWT('admin'), // Valida que el usuario tenga permisos de administrador
@@ -44,6 +50,7 @@ router.put('/modificar/:varianteId', // Actualizar variante - Admin
     check('stock','El stock no es valido').isNumeric(),
     validarCampos,
     actualizarVariante) 
+
 
 router.delete('/:varianteId', // Actualizar variantes - Admin
     validarJWT, // Valida que el usuario que realiza la accion sea valido

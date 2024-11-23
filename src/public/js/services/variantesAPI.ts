@@ -128,3 +128,27 @@ export const verVariantes = async(productoId:ObjectId)=>{
     })
     return respuesta
 }
+
+export const aplicarVenta = async(carrito:[string[],number[],number[],string[]])=>{
+
+
+    // Recibe como parametro el carrito y lo envia al servidor
+    let respuesta:number|undefined
+    await fetch(urlVariantes+`/venta`, { 
+        method: 'PUT',
+        headers: {'Content-Type': 'application/json' ,
+                    'tokenAcceso':`${tokenAcceso}`}  ,
+        body: JSON.stringify({carrito})
+    })
+    .then(response => response.json()) // Parsear la respuesta como JSON
+    .then(data=> { // Si todo sale bien se maneja la respuesta del servidor
+        if(data.errors) mostrarErroresConsola(data.errors) // Si hay errores de tipeo los muestra en consola 
+        else respuesta=data // Si el servidor no devuelve errores guarda la respuesta
+    })
+    .catch(error => { // Si hay un error se manejan 
+        mostrarMensaje('2',true);
+        console.error(error);
+        return undefined
+    })
+    return respuesta
+}

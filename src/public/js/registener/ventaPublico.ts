@@ -6,7 +6,7 @@ import { variante } from "../../../models/interfaces/variante.js"
 
 // Servicios
 import { obtenerProductos } from "../services/productosAPI.js"
-import { actualizarVariante } from "../services/variantesAPI.js"
+import { actualizarVariante, aplicarVenta } from "../services/variantesAPI.js"
 
 
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js"
@@ -50,7 +50,18 @@ class carrito{
         this.precio.splice(ubicacion, 1);
     }
     verCarrito(){
-        return [this.SKU,this.cantidad,this.precio,this.nombre]
+        const carrito:[
+            string[],
+            number[],
+            number[],
+            string[]]=[
+            this.SKU,
+            this.cantidad,
+            this.precio,
+            this.nombre
+        ]
+
+        return carrito
     }
     verCantidadProducto(producto:producto){
         const variantesSKU:Object[] = (producto.variantes as variante[]).map(variante=>variante.SKU!)
@@ -293,6 +304,21 @@ const contenedorVuelto=()=>{
     })
 }
 
+const cargarBotonConfirmar=()=>{
+    const botonConfirmar = document.getElementById('div-pago__confirmar__boton')! as HTMLButtonElement
+    const textAreaObervacion = document.getElementById('div-pago__confirmar__observacion')! as HTMLTextAreaElement
+
+    botonConfirmar.onclick=async ()=>{
+        console.log("Se presiono")
+        const respuesta = await aplicarVenta(carrito1.verCarrito())
+        if(respuesta==0) { // Si todo sale bien:
+            carrito1.reiniciarCarrito() // Vacia el carrito
+            document.getElementById('botonIrSeleccionProductos')!.click() // Desplaza la ventana a la seleccion de productos
+            cargarVentaPublico() // Vuelve a cargar la seccion para aplicar los cambios
+        }
+    }
+}
+
 const cargarBotonesVentaPublico=()=>{
     botonesDesplazamiento()
     inputBusqueda()
@@ -300,7 +326,10 @@ const cargarBotonesVentaPublico=()=>{
     botonesModosPago()
     botonesModificacionPago()
     contenedorVuelto()
+    cargarBotonConfirmar()
 }
+
+
 
 export const cargarVentaPublico =async()=>{
     // Define los query params para enviarlos en el fetch y asi filtrar los productos
@@ -319,6 +348,7 @@ export const cargarVentaPublico =async()=>{
     cargarVariantesFavoritosDOM(nombreCategorias)
     cargarCarrito()
     cargarBotonesVentaPublico()
+    calcularTotal()
 }
 
 const cargarCarrito=()=>{
