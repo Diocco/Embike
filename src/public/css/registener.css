@@ -215,7 +215,7 @@ body{
 }
 /*Input de busqueda*/
 #seleccionProductos__input-buscar,#seleccionProductos__input-buscarSKU{
-    width: 340px;
+    width: 49%;
     margin-bottom:17px
 }
 

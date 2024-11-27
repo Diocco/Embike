@@ -11,6 +11,7 @@ import { actualizarVariante, aplicarVenta } from "../services/variantesAPI.js"
 
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js"
 import { usuarioInformacion } from "../registener/index.js"
+import { registrarVenta } from "../services/registroVentasAPI.js"
 
 let productosVenta:producto[]
 
@@ -309,10 +310,22 @@ const cargarBotonConfirmar=()=>{
     const textAreaObervacion = document.getElementById('div-pago__confirmar__observacion')! as HTMLTextAreaElement
 
     botonConfirmar.onclick=async ()=>{
-        console.log("Se presiono")
-        const respuesta = await aplicarVenta(carrito1.verCarrito())
+        const total = Number(sessionStorage.getItem('total'))
+        const metodo = sessionStorage.getItem('metodoSeleccionado')
+        const modificacion = Number(sessionStorage.getItem('modificacionSeleccionado'))|1
+        const observacion = textAreaObervacion.value
+        const carrito = carrito1.verCarrito()
+
+        if(!total||!metodo) return
+
+        registrarVenta(total,metodo,'Exitoso','',modificacion,observacion,carrito)
+
+        const respuesta = await aplicarVenta(carrito)
         if(respuesta==0) { // Si todo sale bien:
             carrito1.reiniciarCarrito() // Vacia el carrito
+            sessionStorage.setItem('metodoSeleccionado','') // Reinicia el valor de la eleccion de metodo de pago
+            sessionStorage.setItem('modificacionSeleccionado','') // Reinicia el valor de la eleccion de modificacion
+            textAreaObervacion.value='' // Reinicia el valor de la observacion de la compra
             document.getElementById('botonIrSeleccionProductos')!.click() // Desplaza la ventana a la seleccion de productos
             cargarVentaPublico() // Vuelve a cargar la seccion para aplicar los cambios
         }
@@ -402,6 +415,8 @@ const calcularTotal=()=>{
 
         // Coloca el total
         const total = carrito1.devolverTotal()*Number(modificacionPago) // Calcula el total con la modificacion aplicada
+
+        sessionStorage.setItem('total',total.toString())
         resolve(total)
 
     })
@@ -416,13 +431,16 @@ const calcularTotal=()=>{
         const contenedorVuelto = document.getElementById('div-pago__div-total__div-vuelto')!
         if(pago1) contenedorVuelto.textContent = `$ ${(pago1-total).toLocaleString('es-AR')}`
         else contenedorVuelto.textContent = `$ 0`
+
     })
     .catch(()=>{
         // Si no se cumplieron todas las condiciones entonces coloca un cero en el total
         totalDIV.textContent= `$ 0`
         botonConfirmar.disabled = true
         botonConfirmar.classList.add('nodisponible')
+
     })
+
 }
 
 const cargarVariantesVentaDOM =(productos:producto[],nombreCategorias:string[],esMostrarCategorias:boolean,esSoloVariantes:boolean)=>{

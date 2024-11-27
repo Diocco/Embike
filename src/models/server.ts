@@ -29,7 +29,8 @@ import usuariosRoutes from '../routes/usuarios.js';
 import authRoutes from '../routes/auth.js'; 
 import categoriasRoutes from '../routes/categorias.js'; 
 import productosRoutes from '../routes/productos.js'; 
-import variantesRoutes from '../routes/variantes.js'
+import variantesRoutes from '../routes/variantes.js';
+import registroVentasRoutes from '../routes/registroVentas.js';
 
 import fileUpload from 'express-fileupload';
 
@@ -42,6 +43,7 @@ class Server {
     categoriasPath:string
     productosPath:string
     variantesPath:string
+    registroVentasPath:string
 
     app: express.Application;
     port: string | number;
@@ -52,6 +54,7 @@ class Server {
         this.categoriasPath = '/api/categorias';
         this.productosPath = '/api/productos';
         this.variantesPath = '/api/variantes';
+        this.registroVentasPath = '/api/registroVentas';
         
         this.app = express(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
@@ -101,6 +104,7 @@ class Server {
         this.app.use(this.productosPath, productosRoutes);
         this.app.use(this.productosPath, productosRoutes);
         this.app.use(this.variantesPath, variantesRoutes);
+        this.app.use(this.registroVentasPath, registroVentasRoutes);
         
         // HTML
         this.app.get('/', cargarIndex); // Configura la ruta

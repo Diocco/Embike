@@ -117,7 +117,6 @@ const cargarBotonesBarraLateral=()=>{
     document.getElementById("barraLateral_AA__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
         configuracion.classList.remove('noActivo')
-        cargarRegistroVentas()
     });
 }
 

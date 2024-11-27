@@ -8,6 +8,7 @@
     {{!-- Estilos de registener --}}
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/configuracion.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/registroVentas.css'>
 
 
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/mensajeEmergente.css'>
@@ -113,15 +114,18 @@
             {{!-- Botones para guardar o volver --}}
             <div>
                 {{!-- Boton para guardar la imagen --}}
-                <button id="imagenVariantesProducto__guardar" class="botonRegistener1">Guardar</button>
+                <button id="imagenVariantesProducto__guardar" class="botonRegistener3">Guardar</button>
                 {{!-- Boton para volver --}}
-                <button id="imagenVariantesProducto__volver" class="botonRegistener1">Volver</button>
+                <button id="imagenVariantesProducto__volver" class="botonRegistener3">Volver</button>
             </div>
         </div>
+
+        {{!-- Ventana emergente para modificar una compra--}}
+        <div></div>
     </div>
 
 
-    <div id="barraLateral">
+    <aside id="barraLateral">
         <div id="barraLateral__iconos">
             <button id="barraLateral_A__icono" class="botonRegistener3">
                 <i class="fa-solid fa-list"></i>
@@ -150,10 +154,10 @@
             <div id="barraLateral_E__nombre" class="ayudaRegistener1">Registro de empleados</div>
             <div id="barraLateral_AA__nombre" class="ayudaRegistener1">Configuracion</div>
         </div>
-    </div>
+    </aside>
 
     {{!-- Contenedor general de categorias, indice y productos --}}
-    <div id="contenedorConfiguracionProductos" class="contenedorRegistener1 noActivo">
+    <section id="contenedorConfiguracionProductos" class="contenedorRegistener1 noActivo">
         <div id="contenedorConfiguracionProductos__contenido">
             {{!-- Contenedor de categorias --}}
             <div id="contenedorConfiguracionProductos__contenido__categorias"></div>
@@ -171,11 +175,10 @@
             {{!-- Contenedor de productos --}}
             <div id="contenedorConfiguracionProductos__contenido__productos" ></div>
         </div>
-
-    </div>
+    </section>
 
     {{!-- Venta al publico --}}
-    <div id="seleccionProductos" class="contenedorRegistener1">
+    <section id="seleccionProductos" class="contenedorRegistener1">
         <div id="seleccionProductos__div-contenedorSeleccionarProductos">
             <h2>Seleccionar Productos</h2>
             <label>
@@ -243,15 +246,28 @@
                 <button id="div-pago__confirmar__boton" class="botonRegistener3 nodisponible">Confirmar</button>
             </div>
         </div>
-    </div>
+    </section>
 
     {{!-- Registro de ventas --}}
-    <div id="registroVentas" class="contenedorRegistener1"></div>
+    <section id="registroVentas" class="contenedorRegistener1">
+        <div id="registroVentas__contenido">
+            <h2>Registro de ventas</h2>
+            <div id="registroVentas__contenedorTabla">
+                <div id="registroVentas__indiceTabla" class="registroVentas__fila">
+                    <div id="registroVentas__indiceTabla__ID">ID</div>
+                    <div id="registroVentas__indiceTabla__hora">Hora</div>
+                    <div id="registroVentas__indiceTabla__total">Total</div>
+                    <div id="registroVentas__indiceTabla__metodo">Metodo</div>
+                    <div id="registroVentas__indiceTabla__observacion">Observaciones</div>
+                </div>
+            </div>
+            <div id="registroVentas__indice"></div>
+    </section>
 
     {{!-- Configuracion --}}
-    <div id="configuracion" class="contenedorRegistener1">
+    <section id="configuracion" class="contenedorRegistener1">
         <div id="configuracion__global" class="configuracion__div">
-            <h3 class="configuracion__h3">Configuraciones globales</h3>
+            <h3 class="configuracion__h3">Preferencias</h3>
             <h4 class="configuracion__h4">Tema</h4>
             <select id="configuracion__global__select-tema">
                 <option>Oscuro</option>
@@ -262,7 +278,7 @@
         <div id="configuracion__ventaPublico" class="configuracion__div">
             <h3 class="configuracion__h3">Venta al publico</h3>
         </div>
-    </div> 
+    </section> 
 
 
 

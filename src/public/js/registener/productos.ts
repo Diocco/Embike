@@ -52,7 +52,7 @@ export const agregarProductosDOM = async(productos:producto[],contenedorProducto
             <div class="producto__div__precio">${(Number(producto.precio)).toLocaleString('es-AR')}</div>
             <div class="producto__div__stock">${stockTotal}</div>
             <div class="producto__div__opciones">
-                <button class="fa-solid fa-check     producto__opciones botonRegistener3 producto__disponibilidad ${claseProductoDisponible}" ></button>
+                <button class="fa-solid fa-eye       producto__opciones botonRegistener3 producto__disponibilidad ${claseProductoDisponible}" ></button>
                 <button class="fa-solid fa-trash-can producto__opciones botonRegistener3 producto__eliminar       botonNegativo             " ></button>
             </div>
             `
