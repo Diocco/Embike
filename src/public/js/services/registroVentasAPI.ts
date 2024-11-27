@@ -6,10 +6,14 @@ import { variante } from "../../../models/interfaces/variante.js"
 
 export const registrarVenta = async(
     total:number,
-    metodo:string,
+    metodo1:string,
     estado:string,
+    pago1?:number,
+    pago2?:number,
+    metodo2?:string,
     lugarVenta?:string,
     descuento?:number,
+    descuentoNombre?:string,
     observacion?:string,
     carrito?:[
         string[],
@@ -24,10 +28,14 @@ export const registrarVenta = async(
     const data = JSON.stringify({
         fechaVenta,
         total,
-        metodo,
+        pago1,
+        pago2,
+        metodo1,
+        metodo2,
         estado,
         lugarVenta,
         descuento,
+        descuentoNombre,
         observacion,
         carrito
     })
@@ -85,4 +93,24 @@ export const verRegistroVentas =async(desde:string='',hasta:string='',pagina:str
     })
 
     return respuesta
+}
+
+export const obtenerRegistro =async (id:string)=>{
+    let registro:RegistroVentaI|undefined
+    
+    await fetch(urlRegistroVentas+`/${id}`, { 
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json'},
+        })
+    .then(response => response.json()) // Parsea la respuesta 
+    .then(data=> { // Maneja la respuesta del servidor
+        if(data.errors) mostrarErroresConsola (data.errors) // Si hay errores de tipeo los muestra en consola 
+        else registro = data // Si el servidor no devuelve errores guarda la respuesta
+    })
+    .catch(error => { // Si hay un error se manejan 
+        console.error(error);
+        mostrarMensaje('2',true);
+    })
+
+    return registro
 }

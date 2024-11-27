@@ -9,6 +9,7 @@
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/configuracion.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/registroVentas.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/modificarVenta.css'>
 
 
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/mensajeEmergente.css'>
@@ -121,7 +122,70 @@
         </div>
 
         {{!-- Ventana emergente para modificar una compra--}}
-        <div></div>
+        <section id="modificarVenta" class="noActivo">
+            <form id="modificarVenta__form">
+                <h2 id="modificarVenta__h2">ID: 890as9d8089ads809das890das908</h2>
+                <h3 id="modificarVenta__h3">Estado: Exitoso</h3>
+                <div id="modificarVenta__infoGen">
+                    <h4 id="modificarVenta__infoGen__h4">Informacion general</h4>
+                    <h5    class="modificarVenta__infoGen__h5">Lugar de venta</h5>
+                    <h5    class="modificarVenta__infoGen__h5">Fecha de venta</h5>
+                    <input class="inputRegistener1" id="modificarVenta__infoGen__lugarVenta" name="lugarVenta" type="text" >
+                    <input class="inputRegistener1" id="modificarVenta__infoGen__fechaVenta" name="fechaVenta" type="text" >
+                    <h5    class="modificarVenta__infoGen__h5">Vendedor</h5>
+                    <h5    class="modificarVenta__infoGen__h5">Cliente</h5>
+                    <input class="inputRegistener1" id="modificarVenta__infoGen__vendedor" name="vendedor" type="text" >
+                    <input class="inputRegistener1 nodisponible" id="modificarVenta__infoGen__cliente" type="text" disabled>
+                    <h5    class="modificarVenta__infoGen__h5" id="modificarVenta__infoGen__observacion-h5">Observacion</h5>
+                    <textarea class="inputRegistener1" id="modificarVenta__infoGen__observacion" name="observacion" type="text" ></textarea>
+                </div>
+                <div>
+                    <h4>Carrito</h4>
+                    <div id="modificarVenta__carrito">
+                        <div id="modificarVenta__carrito__indice" class="modificarVenta__carrito__fila">
+                            <div>Nombre</div>
+                            <div class="modificarVenta__carrito__cantidad">Cantidad</div>
+                            <div class="modificarVenta__carrito__precio">Precio</div>
+                        </div>
+                        <div class="modificarVenta__carrito__fila">
+                            <div>Bicicleta cheta</div>
+                            <div class="modificarVenta__carrito__cantidad">3</div>
+                            <div class="modificarVenta__carrito__precio">$ 150.000</div>
+                        </div>
+                        <div class="modificarVenta__carrito__fila">
+                            <div>Bicicleta cheta</div>
+                            <div class="modificarVenta__carrito__cantidad">3</div>
+                            <div class="modificarVenta__carrito__precio">$ 150.000</div>
+                        </div>
+                        <div class="modificarVenta__carrito__fila">
+                            <div>Bicicleta cheta</div>
+                            <div class="modificarVenta__carrito__cantidad">3</div>
+                            <div class="modificarVenta__carrito__precio">$ 150.000</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="modificarVenta__infoPago">
+                    <h4 id="modificarVenta__infoPago__h4">Informacion de pago</h4>
+                    <h3 class="modificarVenta__infoPago__h3">Subtotal</h3>
+                    <div class="inputRegistener1" id="modificarVenta__infoPago__subtotal"></div>
+                    <input class="inputRegistener1" id="modificarVenta__infoPago__descuentoNombre" name="descuentoNombre" type="text">
+                    <input class="inputRegistener1" id="modificarVenta__infoPago__descuento" name="descuento" type="number">
+                    <h3 class="modificarVenta__infoPago__h3">Total</h3>
+                    <div class="inputRegistener1" id="modificarVenta__infoPago__total"></div>
+                    <input class="inputRegistener1" id="modificarVenta__infoPago__metodo1" name="metodo1" type="text">
+                    <input class="inputRegistener1" id="modificarVenta__infoPago__pago1" name="pago1" type="number">
+                    <input class="inputRegistener1" id="modificarVenta__infoPago__metodo2" name="metodo2" type="text" placeholder="Metodo de pago 2">
+                    <input class="inputRegistener1" id="modificarVenta__infoPago__pago2" name="pago2" type="number" placeholder="$ 0">
+                </div>
+                <div id="modificarVenta__modificaciones">
+                    <h4>Modificaciones</h4>
+                </div>
+                <div id="modificarVenta__respuesta">
+                    <button id="modificarVenta__respuesta__guardar" type="submit" class="botonRegistener3">Guardar</button>
+                    <button id="modificarVenta__respuesta__salir" class="botonRegistener3">Salir</button>
+                </div>
+            </form>
+        </section>
     </div>
 
 
@@ -299,6 +363,7 @@
     <script type='module' src="../js/registener/ventanasEmergentes/modificarFoto.js"></script>
     <script type='module' src="../js/registener/ventanasEmergentes/modificarProducto.js"></script>
     <script type='module' src="../js/registener/ventanasEmergentes/preguntar.js"></script>
+    <script type='module' src="../js/registener/ventanasEmergentes/modificarVenta.js"></script>
 
     <script type='module' src="../js/helpers/mostrarMensaje.js"></script>
 

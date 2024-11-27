@@ -1,7 +1,7 @@
 import express from 'express'; // Express
 import { validarRolJWT,validarJWT, validarCampos } from '../middlewares/index.js';
 import { check } from 'express-validator';
-import { registrarVenta, verRegistroVentas } from '../controllers/registroVentas.js';
+import { registrarVenta, verRegistro, verRegistroVentas } from '../controllers/registroVentas.js';
 const router = express.Router();
 
 router.post('/', // Crear registro de venta - Admin
@@ -11,7 +11,8 @@ router.post('/', // Crear registro de venta - Admin
     check('lugarVenta', 'El lugar no tiene formato valido').optional().isString(),
     check('fechaVenta', 'La fecha es obligatoria').notEmpty(),
     check('total', 'El total es obligatorio').notEmpty(),
-    check('metodo', 'El metodo de pago es obligatorio').notEmpty(),
+    check('pago1', 'El primer pago es obligatorio').notEmpty(),
+    check('metodo1', 'El metodo de pago es obligatorio').notEmpty(),
     check('descuento', 'El lugar no tiene formato valido').optional().isNumeric(),
     check('promocion').optional(), // TODO: Valida el id del codigo de descuento con la base de datos de codigos de descuentos
     check('observacion', 'La observacion no tiene formato valido').optional().isString(),
@@ -23,6 +24,9 @@ router.post('/', // Crear registro de venta - Admin
     
     validarCampos,
     registrarVenta) 
+
+router.get('/:id', // Obtener productos
+    verRegistro) 
 
 router.get('/', // Obtener productos
     verRegistroVentas) 

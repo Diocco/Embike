@@ -248,9 +248,11 @@ const botonesModificacionPago=()=>{
         if(esVacio){ // Si el input esta vacio, o no es valido, elimina su estado activo
             inputModificacion.classList.remove('boton__activo')
             sessionStorage.setItem('modificacionSeleccionado','') 
+            sessionStorage.setItem('modificacionSeleccionadoNombre','') 
         }else{ // Si el input no esta vacio lo coloca en estado activo y almacena su valor 
             inputModificacion.classList.add('boton__activo')
             sessionStorage.setItem('modificacionSeleccionado',`${1-Number(inputModificacion.value)/100}`) 
+            sessionStorage.setItem('modificacionSeleccionadoNombre',`Ingresado manualmente`) 
         }
         calcularTotal() // Vuelve a calcular el total del carrito
     })
@@ -274,10 +276,12 @@ const botonesModificacionPago=()=>{
             if(esActivo){
                 botonModificacion.classList.remove('boton__activo') // Desactiva el estado de actividad
                 sessionStorage.setItem('modificacionSeleccionado','') // Vacia la variable que contiene el metodo de pago
+                sessionStorage.setItem('modificacionSeleccionadoNombre','') // Vacia la variable que contiene el metodo de pago
             }else{
                 inputModificacion.value='' // Vacia el input inicial
                 contenedorModificacion.querySelectorAll('*').forEach(opcionModificador=>opcionModificador.classList.remove('boton__activo')) // Desactiva cualquier boton activo previamente
                 sessionStorage.setItem('modificacionSeleccionado',`${1-Number(modificacion)/100}`) // Se almacena el modificador seleccionado
+                sessionStorage.setItem('modificacionSeleccionadoNombre',nombre) // Se almacena el modificador seleccionado
                 botonModificacion.classList.add('boton__activo') // Se refleja visualmente que el metodo esta activo
             }
             calcularTotal() // Vuelve a calcular el total del carrito
@@ -296,7 +300,8 @@ const contenedorVuelto=()=>{
         // Obtiene y elimina cualquier carácter que no sea número o punto decimal
         let value = pago1Input.value.replace(/[^0-9]/g, '');  // Elimina cualquier carácter no numérico
         if (value) {
-            value = parseFloat(`${Number(value) / 100}`).toFixed(2);     // Formatea a decimales
+            const valueNumerico = Number(value) / 100
+            value = parseFloat(valueNumerico.toString()).toFixed(2);     // Formatea a decimales
             pago1Input.value = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
         } else {
             pago1Input.value = '';  // Restablece si no hay números
@@ -311,14 +316,18 @@ const cargarBotonConfirmar=()=>{
 
     botonConfirmar.onclick=async ()=>{
         const total = Number(sessionStorage.getItem('total'))
-        const metodo = sessionStorage.getItem('metodoSeleccionado')
-        const modificacion = Number(sessionStorage.getItem('modificacionSeleccionado'))|1
+        const pago1 = Number(sessionStorage.getItem('pago1'))||0
+        const pago2 = Number(sessionStorage.getItem('pago2'))||0
+        const metodo1 = sessionStorage.getItem('metodoSeleccionado')
+        const metodo2 = sessionStorage.getItem('metodoSeleccionado2')||''
+        const descuento = Number(sessionStorage.getItem('descuento'))||0;
+        const modificacionNombre = sessionStorage.getItem('modificacionSeleccionadoNombre')||'';
         const observacion = textAreaObervacion.value
-        const carrito = carrito1.verCarrito()
+        const carrito = carrito1.verCarrito();
 
-        if(!total||!metodo) return
+        if(!total||!metodo1) return;
 
-        registrarVenta(total,metodo,'Exitoso','',modificacion,observacion,carrito)
+        registrarVenta(total,metodo1,'Exitoso',pago1,pago2,metodo2,'',descuento,modificacionNombre,observacion,carrito);
 
         const respuesta = await aplicarVenta(carrito)
         if(respuesta==0) { // Si todo sale bien:
@@ -414,9 +423,13 @@ const calcularTotal=()=>{
         if(isNaN(Number(modificacionPago))) reject() // Verifica que sea un numero valido
 
         // Coloca el total
-        const total = carrito1.devolverTotal()*Number(modificacionPago) // Calcula el total con la modificacion aplicada
-
+        const subtotal = carrito1.devolverTotal()
+        const descuento = subtotal*Number(modificacionPago) - subtotal
+        const total = subtotal+descuento // Calcula el total con la modificacion aplicada
+        sessionStorage.setItem('descuento',descuento.toString())
         sessionStorage.setItem('total',total.toString())
+        sessionStorage.setItem('pago1',total.toString())
+        if(sessionStorage.getItem('metodoSeleccionado')==='combinado'){} // TODO Se tiene que especificar el pago 1 y 2
         resolve(total)
 
     })

@@ -6,7 +6,11 @@ export interface RegistroVentaI{
     lugarVenta?:string
     fechaVenta:Date
     total:number
-    metodo:string
+    metodo1:string
+    metodo2?:string
+    pago1?:number
+    pago2?:number
+    descuentoNombre?:string
     descuento?:number
     promocion?:mongoose.Schema.Types.ObjectId,
     observacion?:string

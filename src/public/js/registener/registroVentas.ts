@@ -5,7 +5,8 @@
 // Opciones:Anular venta, buscar por IDVenta, rango de fechas, paginacion, modificar venta
 
 import { convertirAInput } from "../helpers/convertirElemento.js"
-import { verRegistroVentas } from "../services/registroVentasAPI.js"
+import { obtenerRegistro, verRegistroVentas } from "../services/registroVentasAPI.js"
+import { ventanaModificarVenta } from "./ventanasEmergentes/modificarVenta.js"
 
 //TODO proximo
 // Vendedor,Cliente,estado(completado,anulado),exportar a excel,imprimir recibo o factura,devolucion en efectivo
@@ -19,27 +20,36 @@ const indiceObservacion=()=>{
     const indiceObservacion = document.getElementById('registroVentas__indiceTabla__observacion') as HTMLButtonElement|undefined
     if(indiceObservacion){
         indiceObservacion.onclick=()=> {
-            const inputFinal = convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion',cargarRegistroVentas)
+            const inputFinal = convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',cargarRegistroVentas)
             inputFinal.focus() // Le hace focus inmediatamente al input recien creado
         }
-        if(sessionStorage.getItem('registroVentas-buscaObservacion')) convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion',cargarRegistroVentas)
+        if(sessionStorage.getItem('registroVentas-buscaObservacion')) convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',cargarRegistroVentas)
     }
 }
 const indiceID=()=>{
     const indiceID = document.getElementById('registroVentas__indiceTabla__ID') as HTMLButtonElement|undefined
     if(indiceID) {
         indiceID.onclick=()=> {
-            const inputFinal = convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta',cargarRegistroVentas)
+            const inputFinal = convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',cargarRegistroVentas)
             inputFinal.focus() // Le hace focus inmediatamente al input recien creado
         }
-        if(sessionStorage.getItem('registroVentas-IDVenta')) convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta',cargarRegistroVentas)
+        if(sessionStorage.getItem('registroVentas-IDVenta')) convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',cargarRegistroVentas)
     }
 }
-
+const botonModificarVenta=()=>{
+    const botonesModificarVenta = document.querySelectorAll('.registroVentas__botonModificar') as NodeListOf<HTMLButtonElement>
+    botonesModificarVenta.forEach((boton)=>{
+        boton.onclick=async()=>{
+            const IDVenta = boton.parentElement!.firstElementChild!.textContent!
+            ventanaModificarVenta(IDVenta)
+        }
+    })
+}
 
 const cargarBotones=()=>{
     indiceObservacion()
     indiceID()
+    botonModificarVenta()
 }
 const cargarRegistrosDOM=async ()=>{
     const contenedorRegistros = document.getElementById('registroVentas__contenedorTabla')!
@@ -81,7 +91,7 @@ const cargarRegistrosDOM=async ()=>{
                 <div>${registro._id}</div>
                 <div>${fecha.toLocaleString('es-AR')}</div>
                 <div>$ ${registro.total.toLocaleString('es-AR')}</div>
-                <div>${registro.metodo}</div>
+                <div>${registro.metodo2?'Combinado':registro.metodo1}</div>
                 <div class="registroVentas__fila__observacion" title="${registro.observacion||''}">${registro.observacion||''}</div>
                 <button class="botonRegistener1 registroVentas__botonModificar"><i class="fa-solid fa-pencil" aria-hidden="true"></i></button>
                 <button class="botonRegistener1 registroVentas__botonVer"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>

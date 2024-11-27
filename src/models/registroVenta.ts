@@ -14,9 +14,21 @@ const ventaSchema = new mongoose.Schema<RegistroVentaI>({
         type: Number,
         required: [true, "El total de la venta es obligatorio"]
     },
-    metodo:{ 
+    metodo1:{ 
         type: String,
         required: [true, "El metodo de pago es obligatorio"]
+    },
+    metodo2:{ 
+        type: String,
+    },
+    pago1:{ 
+        type: Number,
+    },
+    pago2:{ 
+        type: Number,
+    },
+    descuentoNombre:{ 
+        type: String,
     },
     descuento:{ 
         type: Number,
