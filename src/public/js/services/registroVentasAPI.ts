@@ -3,6 +3,8 @@ import { RegistroVentaI } from "../../../models/interfaces/registroVentas.js"
 import { mostrarErroresConsola, tokenAcceso, urlRegistroVentas } from "../global.js"
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js"
 import { variante } from "../../../models/interfaces/variante.js"
+import { ElementoCarritoI } from "../../../interfaces/elementoCarrito.js"
+
 
 export const registrarVenta = async(
     total:number,
@@ -15,12 +17,7 @@ export const registrarVenta = async(
     descuento?:number,
     descuentoNombre?:string,
     observacion?:string,
-    carrito?:[
-        string[],
-        number[],
-        number[],
-        string[]
-    ]
+    carrito?:ElementoCarritoI[]
 ):Promise<RegistroVentaI | undefined>=>{
 
     // Estructura la informacion y le da formato de string
@@ -78,7 +75,8 @@ export const verRegistroVentas =async(desde:string='',hasta:string='',pagina:str
 
     await fetch(urlRegistroVentas+`?desde=${desde}&hasta=${hasta}&pagina=${pagina}&IDVenta=${IDVenta}&metodo=${metodo}&estado=${estado}&buscarObservacion=${buscarObservacion}`, { 
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' ,
+            'tokenAcceso':`${tokenAcceso}`},
     })
     .then(response => response.json()) // Parsear la respuesta como JSON
     .then(data=> { // Maneja la respuesta del servidor
@@ -100,7 +98,8 @@ export const obtenerRegistro =async (id:string)=>{
     
     await fetch(urlRegistroVentas+`/${id}`, { 
         method: 'GET',
-        headers: { 'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json',
+            'tokenAcceso':`${tokenAcceso}`},
         })
     .then(response => response.json()) // Parsea la respuesta 
     .then(data=> { // Maneja la respuesta del servidor
@@ -113,4 +112,25 @@ export const obtenerRegistro =async (id:string)=>{
     })
 
     return registro
+}
+
+export const modificarRegistro = async (formdata:FormData)=>{
+    let registroVenta:RegistroVentaI|undefined = undefined
+
+    await fetch(urlRegistroVentas, {
+        method: 'PUT',
+        headers: {'tokenAcceso':`${tokenAcceso}`},
+        body: formdata
+    })
+    .then(response => response.json()) // Parsear la respuesta como JSON
+    .then(data=> { // Maneja la respuesta del servidor
+        if(data.errors) mostrarErroresConsola (data.errors) // Si hay errores de tipeo los muestra en consola 
+        else registroVenta = data // Si el servidor no devuelve errores guarda la respuesta
+    })
+    .catch(error => { // Si hay un error se manejan 
+        console.error(error);
+        mostrarMensaje('2',true);
+    })
+
+    return registroVenta
 }

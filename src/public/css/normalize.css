@@ -134,6 +134,10 @@
   border:2px solid !important;
   border-color: red !important;
 }
+.boton__enAdvertencia{
+  border:1px solid !important;
+  border-color: yellow !important;
+}
 .boton__activo{
   background-color: green !important;
 }

@@ -3,6 +3,7 @@ import { variante } from "../../../models/interfaces/variante.js"
 import { mostrarErroresConsola, tokenAcceso, urlVariantes } from "../global.js"
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js"
 import { error } from "../../../interfaces/error.js"
+import { ElementoCarritoI } from "../../../interfaces/elementoCarrito.js"
 
 export const crearVariante = async(variante:variante)=>{
     let varianteId:ObjectId|undefined
@@ -129,7 +130,7 @@ export const verVariantes = async(productoId:ObjectId)=>{
     return respuesta
 }
 
-export const aplicarVenta = async(carrito:[string[],number[],number[],string[]])=>{
+export const aplicarVenta = async(carrito:ElementoCarritoI[])=>{
 
 
     // Recibe como parametro el carrito y lo envia al servidor

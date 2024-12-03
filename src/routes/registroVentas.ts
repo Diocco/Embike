@@ -1,13 +1,14 @@
 import express from 'express'; // Express
 import { validarRolJWT,validarJWT, validarCampos } from '../middlewares/index.js';
 import { check } from 'express-validator';
-import { registrarVenta, verRegistro, verRegistroVentas } from '../controllers/registroVentas.js';
+import { modificarRegistro, registrarVenta, verRegistro, verRegistroVentas } from '../controllers/registroVentas.js';
 const router = express.Router();
 
 router.post('/', // Crear registro de venta - Admin
     validarJWT, // Valida que el usuario que realiza la accion sea valido
     validarRolJWT('admin'), // Valida que el usuario tenga permisos de administrador
 
+    check('carrito', 'El carrito es obligatorio').notEmpty(),
     check('lugarVenta', 'El lugar no tiene formato valido').optional().isString(),
     check('fechaVenta', 'La fecha es obligatoria').notEmpty(),
     check('total', 'El total es obligatorio').notEmpty(),
@@ -25,10 +26,21 @@ router.post('/', // Crear registro de venta - Admin
     validarCampos,
     registrarVenta) 
 
-router.get('/:id', // Obtener productos
+router.get('/:id', // Obtener registro por ID
+    validarJWT, // Valida que el usuario que realiza la accion sea valido
     verRegistro) 
 
-router.get('/', // Obtener productos
+router.get('/', // Obtener registros
+    validarJWT, // Valida que el usuario que realiza la accion sea valido
     verRegistroVentas) 
+
+router.put('/',
+    validarJWT, // Valida que el usuario que realiza la accion sea valido
+    validarRolJWT('admin'), // Valida que el usuario tenga permisos de administrador
+    check('id','El id del registro es obligatorio').notEmpty(),
+
+    validarCampos,
+    modificarRegistro
+)
 
 export default router;

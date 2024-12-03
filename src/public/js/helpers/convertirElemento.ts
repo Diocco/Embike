@@ -1,4 +1,4 @@
-export const convertirAInput =(botonOrigen:HTMLElement,IdFinal?:string,sessionStorageNombre:string='',tipo:string='text',funcionRecarga?:Function)=>{
+export const convertirAInput =(botonOrigen:HTMLElement,IdFinal?:string,sessionStorageNombre:string='',tipo:string='text',volverADIV:boolean=false,funcionRecarga?:Function)=>{
     const clasesBotonOrigen = botonOrigen.className
     
     const valor = sessionStorageNombre?sessionStorage.getItem(sessionStorageNombre):botonOrigen.textContent
@@ -15,7 +15,7 @@ export const convertirAInput =(botonOrigen:HTMLElement,IdFinal?:string,sessionSt
             // Realiza la búsqueda cuando presionas Enter
             sessionStorage.setItem(sessionStorageNombre,inputFinal.value);
             if(funcionRecarga) funcionRecarga()
-            else convertirADIV(inputFinal,IdFinal,sessionStorageNombre,tipo)
+            if(volverADIV) convertirADIV(inputFinal,IdFinal,sessionStorageNombre,tipo,volverADIV,funcionRecarga)
         }
     });
 
@@ -24,13 +24,13 @@ export const convertirAInput =(botonOrigen:HTMLElement,IdFinal?:string,sessionSt
         // Se hace clic fuera del elemento
         sessionStorage.setItem(sessionStorageNombre,inputFinal.value);
         if(funcionRecarga) funcionRecarga()
-        else convertirADIV(inputFinal,IdFinal,sessionStorageNombre,tipo)
+        if(volverADIV) convertirADIV(inputFinal,IdFinal,sessionStorageNombre,tipo,volverADIV,funcionRecarga)
     });
 
     return inputFinal
 }
 
-const convertirADIV =(inputOrigen:HTMLInputElement,IdFinal?:string,sessionStorageNombre:string='',tipo:string='text',funcionRecarga?:Function)=>{
+const convertirADIV =(inputOrigen:HTMLInputElement,IdFinal:string,sessionStorageNombre:string,tipo:string,volverADIV:boolean,funcionRecarga:Function|undefined)=>{
     const clases = inputOrigen.className.replace('inputRegistener1','')
     const valor = inputOrigen.value
     if(!IdFinal) IdFinal= new Date().getTime().toString()
@@ -41,7 +41,7 @@ const convertirADIV =(inputOrigen:HTMLInputElement,IdFinal?:string,sessionStorag
 
     // Añadir un event listener al input
     divFinal.onclick=()=>{
-        const elementoFinal = convertirAInput(divFinal,IdFinal,sessionStorageNombre,tipo)
+        const elementoFinal = convertirAInput(divFinal,IdFinal,sessionStorageNombre,tipo,volverADIV,funcionRecarga)
         elementoFinal.focus()
     }
 

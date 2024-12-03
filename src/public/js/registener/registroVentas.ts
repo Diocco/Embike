@@ -20,20 +20,20 @@ const indiceObservacion=()=>{
     const indiceObservacion = document.getElementById('registroVentas__indiceTabla__observacion') as HTMLButtonElement|undefined
     if(indiceObservacion){
         indiceObservacion.onclick=()=> {
-            const inputFinal = convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',cargarRegistroVentas)
+            const inputFinal = convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',true,cargarRegistroVentas)
             inputFinal.focus() // Le hace focus inmediatamente al input recien creado
         }
-        if(sessionStorage.getItem('registroVentas-buscaObservacion')) convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',cargarRegistroVentas)
+        if(sessionStorage.getItem('registroVentas-buscaObservacion')) convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',true,cargarRegistroVentas)
     }
 }
 const indiceID=()=>{
     const indiceID = document.getElementById('registroVentas__indiceTabla__ID') as HTMLButtonElement|undefined
     if(indiceID) {
         indiceID.onclick=()=> {
-            const inputFinal = convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',cargarRegistroVentas)
+            const inputFinal = convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',true,cargarRegistroVentas)
             inputFinal.focus() // Le hace focus inmediatamente al input recien creado
         }
-        if(sessionStorage.getItem('registroVentas-IDVenta')) convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',cargarRegistroVentas)
+        if(sessionStorage.getItem('registroVentas-IDVenta')) convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',true,cargarRegistroVentas)
     }
 }
 const botonModificarVenta=()=>{
@@ -89,9 +89,9 @@ const cargarRegistrosDOM=async ()=>{
             contenedorRegistro.className="registroVentas__fila";
             contenedorRegistro.innerHTML=`
                 <div>${registro._id}</div>
-                <div>${fecha.toLocaleString('es-AR')}</div>
-                <div>$ ${registro.total.toLocaleString('es-AR')}</div>
-                <div>${registro.metodo2?'Combinado':registro.metodo1}</div>
+                <div>${fecha.toLocaleString('es-AR')||''}</div>
+                <div>$ ${registro.total.toLocaleString('es-AR')||''}</div>
+                <div>${registro.metodo2?'Combinado':registro.metodo1||''}</div>
                 <div class="registroVentas__fila__observacion" title="${registro.observacion||''}">${registro.observacion||''}</div>
                 <button class="botonRegistener1 registroVentas__botonModificar"><i class="fa-solid fa-pencil" aria-hidden="true"></i></button>
                 <button class="botonRegistener1 registroVentas__botonVer"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
@@ -105,7 +105,6 @@ const cargarRegistrosDOM=async ()=>{
         // Agrega las paginas de los elementos
         const contenedorPaginas = document.getElementById('registroVentas__indice')!
         contenedorPaginas.innerHTML='' // Vacia el contenedor previo
-
 
         // Agrega los indices dentro del contenedor
         for (let i = 1; i < respuesta.paginasCantidad+1; i++) {

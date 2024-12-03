@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
-import { variante } from "./variante.js";
+import { ElementoCarritoI } from "../../interfaces/elementoCarrito";
+
 
 export interface RegistroVentaI{
     _id?:mongoose.Schema.Types.ObjectId,
@@ -15,17 +16,12 @@ export interface RegistroVentaI{
     promocion?:mongoose.Schema.Types.ObjectId,
     observacion?:string
     cliente?:mongoose.Schema.Types.ObjectId,
-    carrito?:[
-        string[],
-        number[],
-        number[],
-        string[]
-    ]
+    carrito?:ElementoCarritoI[]
     vendedor?:string
     estado:string,
     modificaciones?:[{
         fecha:Date,
-        vendedor:string,
-        modificaciones:string[]
+        usuarioNombre:string,
+        modificacion:string
     }]
 }

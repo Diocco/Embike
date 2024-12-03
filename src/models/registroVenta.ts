@@ -1,5 +1,6 @@
 import mongoose, { Model } from "mongoose";
 import { RegistroVentaI } from './interfaces/registroVentas.js';
+import { ElementoCarritoI } from '../interfaces/elementoCarrito';
 
 const ventaSchema = new mongoose.Schema<RegistroVentaI>({
     lugarVenta:{ 
@@ -42,14 +43,20 @@ const ventaSchema = new mongoose.Schema<RegistroVentaI>({
     cliente:{
         type: mongoose.Schema.Types.ObjectId,
     },
-    carrito:{
-        type:[
-            [String],
-            [Number],
-            [Number],
-            [String]
-        ]
-    },
+    carrito:[{
+        SKU:{
+            type: String,
+        },
+        cantidad:{
+            type: Number,
+        },
+        precio:{
+            type: Number,
+        },
+        nombre:{
+            type: String,
+        },
+    }],
     vendedor: { 
         type: String
     },
@@ -61,11 +68,11 @@ const ventaSchema = new mongoose.Schema<RegistroVentaI>({
         fecha:{
             type: Date
         },
-        vendedor:{
+        usuarioNombre:{
             type: String
         },
-        modificaciones:{
-            type: [String]
+        modificacion:{
+            type: String
         },
     }],
 });

@@ -12,58 +12,58 @@ import { actualizarVariante, aplicarVenta } from "../services/variantesAPI.js"
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js"
 import { usuarioInformacion } from "../registener/index.js"
 import { registrarVenta } from "../services/registroVentasAPI.js"
+import { ElementoCarritoI } from "../../../interfaces/elementoCarrito.js"
 
 let productosVenta:producto[]
 
-class carrito{
-    constructor(private SKU:string[],private cantidad:number[],private precio:number[],private nombre:string[]){}
+class Carrito{
+    private carrito:ElementoCarritoI[]
+    
+    constructor(){
+        this.carrito=[]
+    }
 
     cambiarCarrito(SKUVariante:string,cantidad:number,precio:number,nombre:string){
-        let ubicacion:number = this.SKU.findIndex(SKU=>SKU===SKUVariante)
 
-        if(ubicacion===-1){//Si el producto no se encuentra en el carrito entonces lo agrega
-            this.SKU.push(SKUVariante)
-            this.cantidad.push(cantidad)
-            this.precio.push(precio)
-            this.nombre.push(nombre)
-            cargarCarrito() // Refleja los cambios en el resumen del DOM
-            calcularTotal()
-            return cantidad
-        }else{ //Si el producto se encuentra en el carro entonces simplemente agrega la cantidad ingresada
-            this.cantidad[ubicacion]=this.cantidad[ubicacion]+cantidad;
+        // Busca el elemento en el carrito
+        let encontrado=false
+        let cantidadEnCarro:number=0
 
-            if(this.cantidad[ubicacion]===0) { // Si la cantidad queda en cero entonces elimina el producto del carro
-                this.eliminarProducto(this.SKU[ubicacion])
-                cargarCarrito() // Refleja los cambios en el resumen del DOM
-                calcularTotal()
-                return 0
-            } 
+        this.carrito.forEach(elementoCarrito => {
+            if(elementoCarrito.SKU!==SKUVariante) return
+            // Si lo encuentra entonces agrega la cantidad pasada como parametro
+            encontrado = true
+            elementoCarrito.cantidad=elementoCarrito.cantidad+cantidad
+            cantidadEnCarro=elementoCarrito.cantidad
+        });
+        
+
+        if(!encontrado){
+            // Si no encontro el producto en el carrito entonces lo agrega
+            const elementoCarritoNuevo:ElementoCarritoI={
+                SKU:SKUVariante,
+                cantidad,
+                precio,
+                nombre
+            }
+            cantidadEnCarro=cantidad
+            this.carrito.push(elementoCarritoNuevo)
         }
+
+        if(cantidadEnCarro===0) this.eliminarProducto(SKUVariante) // Si la cantidad en el carro es cero entonces lo elimina
+
         cargarCarrito() // Refleja los cambios en el resumen del DOM
         calcularTotal()
-        return this.cantidad[ubicacion]
+        return cantidadEnCarro
     }
 
     eliminarProducto(SKUVariante:string):void{
-        let ubicacion:number = this.SKU.findIndex(SKU=>SKU===SKUVariante)
-        this.SKU.splice(ubicacion, 1);
-        this.cantidad.splice(ubicacion, 1);
-        this.precio.splice(ubicacion, 1);
+        let ubicacion:number = this.carrito.findIndex(carritoElemento=>carritoElemento.SKU===SKUVariante) // Busca la variante
+        this.carrito.splice(ubicacion,1) // Lo elimina del carrito
     }
-    verCarrito(){
-        const carrito:[
-            string[],
-            number[],
-            number[],
-            string[]]=[
-            this.SKU,
-            this.cantidad,
-            this.precio,
-            this.nombre
-        ]
 
-        return carrito
-    }
+    verCarrito(){return this.carrito}
+    
     verCantidadProducto(producto:producto){
         const variantesSKU:Object[] = (producto.variantes as variante[]).map(variante=>variante.SKU!)
         let cantidadTotal = 0
@@ -71,32 +71,25 @@ class carrito{
         return cantidadTotal
     }
     verCantidadVariante(SKUVariante:string){
-        let ubicacion:number = this.SKU.findIndex(SKU=>SKU===SKUVariante)
+        let ubicacion:number = this.carrito.findIndex(carritoElemento=>carritoElemento.SKU===SKUVariante) // Busca la variante
         if(ubicacion===-1) return 0
-        else return this.cantidad[ubicacion]
+
+        else return this.carrito[ubicacion].cantidad
     }
 
     devolverTotal(){
         // Calcular total
         let total:number = 0
-        for (let i = 0; i < this.SKU.length; i++) {
-            const precio = this.cantidad[i] as number
-            const cantidad = this.precio[i] as number
-            total = total + precio*cantidad
-        }
+        this.carrito.forEach(carritoElemento=>{
+            total=carritoElemento.cantidad*carritoElemento.precio+total
+        })
         return total
     }
     
-    reiniciarCarrito(){ // Reinicia el carrito
-        this.SKU=[]
-        this.cantidad=[]
-        this.precio=[]
-        this.nombre=[]
-    }
-
+    reiniciarCarrito(){this.carrito=[]}
 }
 
-let carrito1 = new carrito([],[],[],[])
+let carrito1 = new Carrito()
 
 const botonesDesplazamiento=()=>{
     // Boton para cargar la seleccion de productos
@@ -383,19 +376,19 @@ const cargarCarrito=()=>{
     tablaResumen.querySelector('tbody')!.innerHTML=''; // Vacia todas las filas
     
     // Agrega los productos del carrito
-    for (let i = 0; i < carrito[0].length; i++) {
+    for (let i = 0; i < carrito.length; i++) {
         const nuevaFila = tablaResumen.querySelector('tbody')!.insertRow()
 
         const SKU = nuevaFila.insertCell(0)
-        SKU.textContent=carrito[0][i] as string
+        SKU.textContent=carrito[i].SKU as string
         SKU.classList.add('seleccionProductos__div-resumen__table__nombre')
 
         const nombre = nuevaFila.insertCell(1)
-        nombre.textContent=carrito[3][i].toString()
+        nombre.textContent=carrito[i].nombre
         nombre.classList.add('seleccionProductos__div-resumen__table__nombre')
 
-        nuevaFila.insertCell(2).textContent=carrito[1][i].toString()
-        nuevaFila.insertCell(3).textContent=`$ ${carrito[2][i].toLocaleString('es-AR')}`
+        nuevaFila.insertCell(2).textContent=carrito[i].cantidad.toString()
+        nuevaFila.insertCell(3).textContent=`$ ${carrito[i].precio.toLocaleString('es-AR')}`
     }
 
     // Calcular total

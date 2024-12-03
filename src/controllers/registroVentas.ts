@@ -4,6 +4,8 @@ import { RegistroVentaI } from '../models/interfaces/registroVentas.js';
 import VentaRegistro from '../models/registroVenta.js';
 import { error } from '../interfaces/error.js';
 import mongoose from 'mongoose';
+import { ElementoCarritoI } from '../interfaces/elementoCarrito.js';
+
 
 export const registrarVenta = async(req: Request, res: Response) =>{
     // Desestructura la informacion del body para utilizar solo la informacion requerida
@@ -41,8 +43,8 @@ export const registrarVenta = async(req: Request, res: Response) =>{
         if(pago2) data.pago2=pago2
         if(metodo2) data.metodo2=metodo2
         if(lugarVenta) data.lugarVenta=lugarVenta
-        if(descuento) data.descuento=descuento
-        if(descuentoNombre) data.descuentoNombre=descuentoNombre
+        data.descuento=descuento||0;
+        data.descuentoNombre=descuentoNombre||'Descuento sin nombre'
         if(promocion) data.promocion=promocion
         if(observacion) data.observacion=observacion
         if(cliente) data.cliente=cliente
@@ -52,7 +54,6 @@ export const registrarVenta = async(req: Request, res: Response) =>{
 
         const registroVenta = new VentaRegistro( data ) // Crea una nuevo registro de venta
         await registroVenta.save() // La guarda en la base de datos
-        
         res.json(registroVenta)
     } catch (error) {
         const errors:error[]=[{
@@ -131,4 +132,141 @@ export const verRegistro = async(req: Request, res: Response)=>{
         console.log(error)
         return res.status(500).json(errors)
     }
+}
+
+export const modificarRegistro= async(req: Request, res: Response)=>{
+    let { id,
+        lugarVenta,
+        fechaVenta,
+        total,
+        metodo1,
+        metodo2,
+        pago1,
+        pago2,
+        descuentoNombre,
+        descuento,
+        promocion,
+        observacion,
+        cliente,
+        carrito,
+        vendedor,
+        usuario } = req.body
+
+        const usuarioNombre = (usuario as usuario).nombre 
+        const fecha = new Date()
+
+        try {
+            const registro = (await VentaRegistro.findById(id))! /* Se busca el registro */
+
+            /* Aplica las modificaciones */
+            /* Lugar de la venta */
+            if(lugarVenta&&registro.lugarVenta!==lugarVenta){
+                const modificacion = registro.lugarVenta?`Se cambio el lugar de venta de "${registro.lugarVenta}" a "${lugarVenta}"`:`Se agrego el lugar de venta: ${lugarVenta}`
+                registro.lugarVenta=lugarVenta
+                registro.modificaciones?.push({fecha,usuarioNombre,modificacion})
+            }
+            /* Fecha y hora de la venta */
+            const fechaVentaString = new Date(fechaVenta).toLocaleString('es-AR')
+            const fechaVentaRegistroString = new Date(registro.fechaVenta).toLocaleString('es-AR')
+            if(fechaVentaString&&fechaVentaRegistroString!==fechaVentaString){
+                const modificacion = registro.fechaVenta?`Se cambio la fecha de la de venta de "${fechaVentaRegistroString}" a "${fechaVentaString}"`:`Se agrego la hora de venta: ${fechaVentaString}`
+                registro.fechaVenta=fechaVenta
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Precio total de la venta */
+            total = Number(total)
+            if(total&&registro.total!==total){
+                const modificacion = registro.total?`Se cambio el total de "${registro.total}" a "${total}"`:`Se agrego el total de la venta: ${total}`
+                registro.total=total
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Primer medio de pago de la venta */
+            if(metodo1&&registro.metodo1!==metodo1){
+                const modificacion = registro.metodo1?`Se cambio el primer metodo de pago de "${registro.metodo1}" a "${metodo1}"`:`Se agrego el primer metodo de pago: ${metodo1}`
+                registro.metodo1=metodo1
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Segundo medio de pago de la venta */
+            if(metodo2&&registro.metodo2!==metodo2){
+                const modificacion = registro.metodo2?`Se cambio el segundo metodo de pago de "${registro.metodo2}" a "${metodo2}"`:`Se agrego el segundo metodo de pago: ${metodo2}`
+                registro.metodo2=metodo2
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Pago con el primer metodo de pago */
+            pago1 = Number(pago1)
+            if(pago1&&registro.pago1!==pago1){
+                const modificacion = registro.pago1?`Se cambio el pago del primer metodo de pago de "${registro.pago1}" a "${pago1}"`:`Se agrego el pago del primer metodo de pago: ${pago1}`
+                registro.pago1=pago1
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Pago con el segundo metodo de pago */
+            pago2 = Number(pago2)
+            if(pago2&&registro.pago2!==pago2){
+                const modificacion = registro.pago2?`Se cambio el pago del primer metodo de pago de "${registro.pago2}" a "${pago2}"`:`Se agrego el pago del primer metodo de pago: ${pago2}`
+                registro.pago2=pago2
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Descuento de la venta */
+            descuento = Number(descuento)
+            if(descuento&&registro.descuento!==descuento){
+                const modificacion = registro.descuento?`Se cambio el descuento de la venta "${registro.descuento}" a "${descuento}"`:`Se agrego un descuento a la venta: ${descuento}`
+                registro.descuento=descuento
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Nombre del decuento de la venta */
+            if(descuentoNombre&&registro.descuentoNombre!==descuentoNombre){
+                const modificacion = registro.descuentoNombre?`Se cambio el descuento de la venta "${registro.descuentoNombre}" a "${descuentoNombre}"`:`Se agrego un descuento a la venta: ${descuentoNombre}`
+                registro.descuentoNombre=descuentoNombre
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Observacion de la venta */
+            if(observacion&&registro.observacion!==observacion){
+                const modificacion = registro.observacion?`Se cambio la observacion de "${registro.observacion}" a "${observacion}"`:`Se agrego una observacion: ${observacion}`
+                registro.observacion=observacion
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Cliente de la venta */
+            if(cliente&&registro.cliente!==cliente){
+                const modificacion = registro.cliente?`Se cambio el cliente de la venta de "${registro.cliente}" a "${cliente}"`:`Se agrego el cliente a la venta: ${cliente}`
+                registro.cliente=cliente
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Carrito de la venta */
+            let registroCarritoSinID:ElementoCarritoI[]|string = registro.carrito!.map(carritoConID => {// Le quita el ID para realizar la comparacion ya que los objetos de entrada no poseen ID
+                const { SKU,precio,cantidad,nombre } = carritoConID; // Extrae _id y crea un nuevo objeto sin esa propiedad
+                const carritoSinID:ElementoCarritoI={
+                    SKU,
+                    cantidad,
+                    precio,
+                    nombre
+                }
+                return carritoSinID; // Devuelve el objeto sin _id
+            });
+            registroCarritoSinID = JSON.stringify(registroCarritoSinID) // Lo convierte en un string para realizar la comparacion
+            if(carrito&&registroCarritoSinID!=carrito){
+                const modificacion = registro.carrito?`Se modifico el carrito`:`Se agrego el carrito a la venta`
+                registro.carrito=JSON.parse(carrito)
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+            /* Nombre del descuento de la venta */
+            if(vendedor&&registro.vendedor!==vendedor){
+                const modificacion = registro.vendedor?`Se cambio el vendedor de la venta de "${registro.vendedor}" a "${vendedor}"`:`Se agrego el vendedor a la venta: ${vendedor}`
+                registro.vendedor=vendedor
+                registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
+            }
+
+            /* Guarda los cambios en la base de datos */
+            registro.save()
+
+            res.json(registro)
+
+        } catch (error) {
+            const errors:error[]=[{
+                msg: "Error al modificar el registro",
+                path: "Servidor",
+                value: (error as Error).message
+            }]
+            console.log(error)
+            return res.status(500).json(errors)
+        }
 }
