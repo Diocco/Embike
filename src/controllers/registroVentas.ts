@@ -95,7 +95,7 @@ export const verRegistroVentas = async(req: Request, res: Response)=>{
         const [registroVentas, registroVentasCantidad]:[RegistroVentaI[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
             VentaRegistro.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condiciones
                 .select('_id fechaVenta total metodo1 metodo2 observacion') // Indica los elementos que se requieren y descarta los demas
-                .skip(desde+((pagina-1)*hasta)).limit(hasta),
+                .skip(desde+((pagina-1)*hasta)).sort({fechaVenta:-1}).limit(hasta),
             VentaRegistro.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condiciones
         ])
 

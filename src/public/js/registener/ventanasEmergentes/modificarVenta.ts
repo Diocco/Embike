@@ -2,6 +2,7 @@ import { ElementoCarritoI } from "../../../../interfaces/elementoCarrito.js"
 import { RegistroVentaI } from "../../../../models/interfaces/registroVentas.js"
 import { convertirAInput } from "../../helpers/convertirElemento.js"
 import { modificarRegistro, obtenerRegistro } from "../../services/registroVentasAPI.js"
+import { cargarRegistrosDOM } from "../registroVentas.js"
 
 export const ventanaModificarVenta =async (IDVenta:string)=>{
     const registro = await obtenerRegistro(IDVenta)
@@ -27,7 +28,8 @@ const cargarInformacionPago=(registro:RegistroVentaI)=>{
     (document.getElementById('modificarVenta__infoPago__pago1')! as HTMLInputElement).value=Number(registro.pago1).toFixed(2).toString()||Number(registro.total).toFixed(2).toString();
     (document.getElementById('modificarVenta__infoPago__metodo2')! as HTMLInputElement).value=registro.metodo2||'';
     (document.getElementById('modificarVenta__infoPago__pago2')! as HTMLInputElement).value=Number(registro.pago2).toFixed(2).toString()||'';
-}   
+} 
+
 const cargarModificaciones=(registro:RegistroVentaI)=>{
     const indice = `<div id="modificarVenta__modificaciones__indice" class="modificarVenta__modificaciones__fila">
                         <div class="modificarVenta__modificaciones__fecha">Fecha</div>
@@ -38,7 +40,7 @@ const cargarModificaciones=(registro:RegistroVentaI)=>{
 
     const contenedorModificaciones = document.getElementById('modificarVenta__modificaciones')! 
     contenedorModificaciones.innerHTML=indice // Vacia el carrito
-    
+
     // Llena el carrito con la informacion del registro
     const fragmento = document.createDocumentFragment()
     if(registro.modificaciones){
@@ -48,7 +50,7 @@ const cargarModificaciones=(registro:RegistroVentaI)=>{
                 const modificacionDIV = document.createElement('div')
                 modificacionDIV.className='modificarVenta__modificaciones__fila'
                 modificacionDIV.innerHTML=`
-                <div>${modificacion.fecha.toLocaleString('es-AR')}</div>
+                <div>${new Date(modificacion.fecha).toLocaleString('es-AR')}</div>
                 <div>${modificacion.usuarioNombre}</div>
                 <div>${modificacion.modificacion}</div>
                 `
@@ -242,8 +244,11 @@ const cargarBotonesRespuesta=()=>{
         formData.append("carrito",JSON.stringify(carrito))
 
         /* Realiza la solicitud */
-        const registroModificado = await modificarRegistro(formData)
+        await modificarRegistro(formData)
         
+        /* Refleja los resultados en el DOM*/
+        cargarRegistrosDOM()
+
         // Desactiva la ventana emergente para modificar la venta
         document.getElementById('ventanaEmergenteFondo')!.classList.add('noActivo')
         document.getElementById('modificarVenta')!.classList.add('noActivo')
