@@ -5,8 +5,9 @@
 // Opciones:Anular venta, buscar por IDVenta, rango de fechas, paginacion, modificar venta
 
 import { convertirAInput } from "../helpers/convertirElemento.js"
-import { verRegistroVentas } from "../services/registroVentasAPI.js"
+import { eliminarRegistro, verRegistroVentas } from "../services/registroVentasAPI.js"
 import { ventanaModificarVenta } from "./ventanasEmergentes/modificarVenta.js"
+import { preguntar } from "./ventanasEmergentes/preguntar.js"
 
 //TODO proximo
 // Vendedor,Cliente,estado(completado,anulado),exportar a excel,imprimir recibo o factura,devolucion en efectivo
@@ -38,6 +39,18 @@ const botonModificarVenta=()=>{
         boton.onclick=async()=>{
             const IDVenta = boton.parentElement!.firstElementChild!.textContent!
             ventanaModificarVenta(IDVenta)
+        }
+    })
+}
+const botoneliminarRegistro=()=>{
+    const botonesAnularVenta = document.querySelectorAll(".registroVentas__botonAnular") as NodeListOf<HTMLButtonElement>
+    botonesAnularVenta.forEach((boton)=>{
+        boton.onclick=async()=>{
+            const respuesta = await preguntar("¿Estas seguro que deseas anular el registro?")
+            if(!respuesta) return
+            const IDVenta = boton.parentElement!.firstElementChild!.textContent!
+            await eliminarRegistro(IDVenta)
+            cargarRegistrosDOM() // Recarga la seccion para visualizar los cambios
         }
     })
 }
@@ -109,6 +122,7 @@ export const cargarRegistrosDOM=async ()=>{
                 <div id="registroVentas__indiceTabla__hora">Hora</div>
                 <div id="registroVentas__indiceTabla__total">Total</div>
                 <div id="registroVentas__indiceTabla__metodo">Metodo</div>
+                <div id="registroVentas__indiceTabla__metodo">Estado</div>
                 <div id="registroVentas__indiceTabla__observacion">Observaciones</div>
     </div>`
 
@@ -123,7 +137,7 @@ export const cargarRegistrosDOM=async ()=>{
         document.getElementById('registroVentas__indice')!.innerHTML='' // Vacia el contenedor de paginado
         return
     }
-    
+
     
     // Agrega los registros al DOM
     const fragmento = document.createDocumentFragment()
@@ -136,10 +150,10 @@ export const cargarRegistrosDOM=async ()=>{
             <div>${fecha.toLocaleString('es-AR',{hour12: false})||''}</div>
             <div>$ ${registro.total.toLocaleString('es-AR')||''}</div>
             <div>${registro.metodo2?'Combinado':registro.metodo1||''}</div>
+            <div class="${registro.estado==='Modificado'?'letra__enAdvertencia':(registro.estado==='Anulado'?'letra__enError':'')}">${registro.estado}</div>
             <div class="registroVentas__fila__observacion" title="${registro.observacion||''}">${registro.observacion||''}</div>
-            <button class="botonRegistener1 registroVentas__botonModificar"><i class="fa-solid fa-pencil" aria-hidden="true"></i></button>
-            <button class="botonRegistener1 registroVentas__botonVer"><i class="fa-solid fa-eye" aria-hidden="true"></i></button>
-            <button class="botonRegistener1 registroVentas__botonAnular"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+            <button class="botonRegistener1 registroVentas__botonModificar" ><i class="fa-solid fa-pencil" aria-hidden="true"></i></button>
+            <button class="botonRegistener1 registroVentas__botonAnular " ${registro.estado==="Anulado"?'disabled':""}><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
         `
 
         fragmento.appendChild(contenedorRegistro)
@@ -150,6 +164,7 @@ export const cargarRegistrosDOM=async ()=>{
     
     cargarPaginadoRegistros(respuesta.paginasCantidad)
     botonModificarVenta()
+    botoneliminarRegistro()
 
 }
 

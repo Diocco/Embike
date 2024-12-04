@@ -143,3 +143,24 @@ export const modificarRegistro = async (formdata:FormData)=>{
 
     return registroVenta
 }
+
+export const eliminarRegistro = async (registroVentaID:string)=>{
+    let respuesta=-1
+
+    await fetch(urlRegistroVentas+`/${registroVentaID}`, { 
+        method: 'DELETE',
+        headers: {  'Content-Type': 'application/json' ,
+                    'tokenAcceso' : `${tokenAcceso}`  },
+    })
+    .then(response => response.json()) // Parsear la respuesta como JSON
+    .then(data=> { // Maneja la respuesta del servidor
+        if(data.errors) mostrarErroresConsola (data.errors) // Si hay errores de tipeo los muestra en consola 
+        else respuesta = 0 // Si el servidor no devuelve errores guarda la respuesta
+    })
+    .catch(error => { // Si hay un error se manejan 
+        console.error(error);
+        mostrarMensaje('2',true);
+    })
+
+    return respuesta
+}

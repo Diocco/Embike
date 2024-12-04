@@ -92,6 +92,7 @@ const cargarInformacionGeneral=(registro:RegistroVentaI)=>{
 }
 
 const cargarCarrito=(registro:RegistroVentaI)=>{
+
     // Coloca la informacion del carrito
     const indice = `<div id="modificarVenta__carrito__indice" class="modificarVenta__carrito__fila">
                         <div>Nombre</div>

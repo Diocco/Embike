@@ -103,7 +103,7 @@ export const verRegistroVentas = async(req: Request, res: Response)=>{
         // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
         const [registroVentas, registroVentasCantidad]:[RegistroVentaI[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
             VentaRegistro.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condiciones
-                .select('_id fechaVenta total metodo1 metodo2 observacion') // Indica los elementos que se requieren y descarta los demas
+                .select('_id fechaVenta total metodo1 metodo2 estado observacion') // Indica los elementos que se requieren y descarta los demas
                 .skip(desde+((pagina-1)*cantidadElementos)).sort({fechaVenta:-1}).limit(cantidadElementos),
             VentaRegistro.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condiciones
         ])
@@ -266,6 +266,8 @@ export const modificarRegistro= async(req: Request, res: Response)=>{
                 registro.modificaciones?.unshift({fecha,usuarioNombre,modificacion})
             }
 
+            /* Refleja el estado modificado del registro */
+            if(registro.modificaciones!.length>0&&registro.estado!=="Anulado") registro.estado= "Modificado"
             /* Guarda los cambios en la base de datos */
             registro.save()
 
@@ -280,4 +282,24 @@ export const modificarRegistro= async(req: Request, res: Response)=>{
             console.log(error)
             return res.status(500).json(errors)
         }
+}
+
+// Elimina un registro de venta con el id pasado como parametro
+export const eliminarRegistroVenta = async(req: Request, res: Response) =>{
+
+    const {registroVentaID} = req.params; // Desestructura el id
+
+    try{
+        // Busca la registro con ese id y cambia su estado de actividad
+        const registroAnulado = await VentaRegistro.findByIdAndUpdate( registroVentaID , {estado: "Anulado"}, { new: true }); 
+        res.status(200).json(registroAnulado)
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al eliminar el registro",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 }

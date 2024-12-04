@@ -1,7 +1,8 @@
 import express from 'express'; // Express
 import { validarRolJWT,validarJWT, validarCampos } from '../middlewares/index.js';
 import { check } from 'express-validator';
-import { modificarRegistro, registrarVenta, verRegistro, verRegistroVentas } from '../controllers/registroVentas.js';
+import { eliminarRegistroVenta, modificarRegistro, registrarVenta, verRegistro, verRegistroVentas } from '../controllers/registroVentas.js';
+import { registroVentaExiste } from '../../database/registroVentaVerificaciones.js';
 const router = express.Router();
 
 router.post('/', // Crear registro de venta - Admin
@@ -42,5 +43,12 @@ router.put('/',
     validarCampos,
     modificarRegistro
 )
+
+router.delete('/:registroVentaID', // Eliminar producto - Admin
+    validarJWT, // Valida que el usuario que realiza la accion sea valido
+    validarRolJWT('admin'), // Valida que el usuario tenga permisos de administrador
+    check('registroVentaID').custom(registroVentaExiste),
+    validarCampos,
+    eliminarRegistroVenta)
 
 export default router;

@@ -130,6 +130,16 @@
   filter: contrast(0.7);
 }
 
+.letra__enError{
+  color: red !important;
+}
+.letra__enAdvertencia{
+  color: yellow !important;
+}
+.letra__activo{
+  color: green !important;
+}
+
 .boton__enError{
   border:2px solid !important;
   border-color: red !important;
