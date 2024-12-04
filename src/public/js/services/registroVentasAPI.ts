@@ -58,7 +58,17 @@ export const registrarVenta = async(
     return registroVenta
 }
 
-export const verRegistroVentas =async(desde:string='',hasta:string='',pagina:string='',IDVenta:string='',metodo:string='',estado:string='',buscarObservacion:string='')=>{
+export const verRegistroVentas =async(
+    desde:string='',
+    cantidadElementos:string='25',
+    pagina:string='',
+    IDVenta:string='',
+    metodo:string='',
+    estado:string='',
+    buscarObservacion:string='',
+    fechaDesde:string='',
+    fechaHasta:string='',
+)=>{
 
     let respuesta:{
         registroVentas:RegistroVentaI[],
@@ -72,8 +82,7 @@ export const verRegistroVentas =async(desde:string='',hasta:string='',pagina:str
 
 
 
-
-    await fetch(urlRegistroVentas+`?desde=${desde}&hasta=${hasta}&pagina=${pagina}&IDVenta=${IDVenta}&metodo=${metodo}&estado=${estado}&buscarObservacion=${buscarObservacion}`, { 
+    await fetch(urlRegistroVentas+`?desde=${desde}&cantidadElementos=${cantidadElementos}&pagina=${pagina}&IDVenta=${IDVenta}&metodo=${metodo}&estado=${estado}&buscarObservacion=${buscarObservacion}&fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`, { 
         method: 'GET',
         headers: { 'Content-Type': 'application/json' ,
             'tokenAcceso':`${tokenAcceso}`},

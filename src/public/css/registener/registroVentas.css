@@ -2,8 +2,23 @@
 /*Contenido de la seccion*/
 #registroVentas__contenido{
     padding: 1%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
+/* Contenedor de filtros */
+#registroVentas__filtros{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+/* Titulos de filtros*/
+.registroVentas__filtros__h3{
+    margin: 0 10px
+}
 
 /*Contenedor general de la tabla*/
 #registroVentas__contenedorTabla{

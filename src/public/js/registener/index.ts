@@ -11,7 +11,7 @@ import { preguntar } from "./ventanasEmergentes/preguntar.js"
 import { url, usuarioVerificado } from "../global.js"
 import { usuario } from "../../../models/interfaces/usuario.js"
 import { cargarVentaPublico } from "./ventaPublico.js"
-import { cargarRegistroVentas } from "./registroVentas.js"
+import { cargarRegistrosDOM } from "./registroVentas.js"
 
 
 
@@ -112,7 +112,7 @@ const cargarBotonesBarraLateral=()=>{
     document.getElementById("barraLateral_C__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
         registroVentas.classList.remove('noActivo')
-        cargarRegistroVentas()
+        cargarRegistrosDOM()
     });
     document.getElementById("barraLateral_AA__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones

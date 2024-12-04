@@ -5,7 +5,7 @@
 // Opciones:Anular venta, buscar por IDVenta, rango de fechas, paginacion, modificar venta
 
 import { convertirAInput } from "../helpers/convertirElemento.js"
-import { obtenerRegistro, verRegistroVentas } from "../services/registroVentasAPI.js"
+import { verRegistroVentas } from "../services/registroVentasAPI.js"
 import { ventanaModificarVenta } from "./ventanasEmergentes/modificarVenta.js"
 
 //TODO proximo
@@ -41,7 +41,43 @@ const botonModificarVenta=()=>{
         }
     })
 }
+const selectCantidadPaginas=()=>{
+    const select = document.getElementById('registroVentas__filtros__cantidad')! as HTMLSelectElement
+    const selectCantidad = sessionStorage.getItem('registroVentas-cantidadElementos')||'25'
+    select.value = selectCantidad
 
+    select.addEventListener('input',()=>{
+        sessionStorage.setItem('registroVentas-cantidadElementos',select.value)
+        cargarRegistrosDOM()
+    })
+}
+const inputFechas=()=>{
+    /* Inputs */
+    const fechaDesdeInput= document.getElementById('registroVentas__filtros__fechaDesde')! as HTMLInputElement
+    const fechaHastaInput= document.getElementById('registroVentas__filtros__fechaHasta')! as HTMLInputElement
+
+    // Coloca las fechas en los inputs
+    const fechaHasta  = sessionStorage.getItem('registroVentas-fechaHasta') ? new Date(new Date().setDate(new Date(sessionStorage.getItem('registroVentas-fechaHasta') as string).getDate() - 1)).toISOString().slice(0, 10) // La fecha almacenada tiene un dia mas sumado, para asi mostrar los resultados de la fecha seleccionada inclusive, por lo tanto se le resta un dia
+                                                                            : new Date().toISOString().slice(0, 10) // Si no hay una fecha seleccionada entonces se pone el dia de hoy
+    const fechaDesde  = sessionStorage.getItem('registroVentas-fechaDesde') ? new Date(sessionStorage.getItem('registroVentas-fechaDesde') as string).toISOString().slice(0, 10) // Fecha inicial para mostrar los resultados
+                                                                            : new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().slice(0, 10); // Si no hay fecha inicial entonces pone la fecha de hace 7 dias
+
+    // Asigna las fechas a los inputs
+    fechaDesdeInput.value=fechaDesde;
+    fechaHastaInput.value=fechaHasta;
+
+    fechaDesdeInput.addEventListener('input',()=>{ 
+        const fechaInput = new Date(fechaDesdeInput.value+'T00:00:00-03:00').toString().substring(0,15) // Se obtiene la fecha del input
+        sessionStorage.setItem('registroVentas-fechaDesde',fechaInput ||'')
+        cargarRegistrosDOM()
+    })
+
+    fechaHastaInput.addEventListener('input',()=>{ 
+        const fechaInput = new Date(new Date(fechaHastaInput.value+'T00:00:00-03:00').setDate(new Date(fechaHastaInput.value+'T00:00:00-03:00').getDate() + 1)).toString().substring(0,15); // Se obtiene la fecha del input y se le suma un dia para obtener los resultados del dia seleccionado
+        sessionStorage.setItem('registroVentas-fechaHasta',fechaInput ||'') 
+        cargarRegistrosDOM()
+    })
+}
 
 export const cargarRegistrosDOM=async ()=>{
     /* Contenedores */
@@ -49,18 +85,20 @@ export const cargarRegistrosDOM=async ()=>{
 
     /* Parametros de busqueda */
     const desde = sessionStorage.getItem('registroVentas-desde')||undefined
-    const hasta = sessionStorage.getItem('registroVentas-hasta')||undefined
+    const cantidadElementos = sessionStorage.getItem('registroVentas-cantidadElementos')||'25'
     const IDVenta = sessionStorage.getItem('registroVentas-IDVenta')||undefined
     const metodo = sessionStorage.getItem('registroVentas-metodo')||undefined
     const estado = sessionStorage.getItem('registroVentas-estado')||undefined
     const buscaObservacion = sessionStorage.getItem('registroVentas-buscaObservacion')||undefined
     const pagina = sessionStorage.getItem('registroVentas-pagina')||undefined
+    const fechaDesde = sessionStorage.getItem('registroVentas-fechaDesde')||undefined
+    const fechaHasta = sessionStorage.getItem('registroVentas-fechaHasta')||undefined
 
     /* Realiza la busqueda de los elementos en la base de datos */
-    let respuesta = await verRegistroVentas(desde,hasta,pagina,IDVenta,metodo,estado,buscaObservacion)
+    let respuesta = await verRegistroVentas(desde,cantidadElementos,pagina,IDVenta,metodo,estado,buscaObservacion,fechaDesde,fechaHasta)
     if(respuesta.registroVentas.length<1&&respuesta.registroVentasCantidad>0){
         // Si la pagina de la respuesta no tiene elementos entonces vuelve hacer la busqueda para la primer pagina
-        respuesta = await verRegistroVentas(desde,hasta,'1',IDVenta,metodo,estado,buscaObservacion)
+        respuesta = await verRegistroVentas(desde,cantidadElementos,'1',IDVenta,metodo,estado,buscaObservacion,fechaDesde,fechaHasta)
         sessionStorage.setItem('registroVentas-pagina','1')
     }
 
@@ -74,10 +112,14 @@ export const cargarRegistrosDOM=async ()=>{
                 <div id="registroVentas__indiceTabla__observacion">Observaciones</div>
     </div>`
 
+    indiceObservacion()
+    indiceID()
+
     if(respuesta.registroVentasCantidad===0){ // Si no se encontraron elementos para mostrar entonces muestra un mensaje al usuario
-        contenedorRegistros.innerHTML=contenedorRegistros.innerHTML+`
-        <div id="registroVentas__mensajeSinElementos" >No se encontro ningun elemento para los parametros de busqueda</div>
-        `
+        const contenedorMensaje = document.createElement('div')
+        contenedorMensaje.id="registroVentas__mensajeSinElementos"
+        contenedorMensaje.textContent=`No se encontro ningun elemento para los parametros de busqueda`
+        contenedorRegistros.appendChild(contenedorMensaje)
         document.getElementById('registroVentas__indice')!.innerHTML='' // Vacia el contenedor de paginado
         return
     }
@@ -91,7 +133,7 @@ export const cargarRegistrosDOM=async ()=>{
         contenedorRegistro.className="registroVentas__fila";
         contenedorRegistro.innerHTML=`
             <div>${registro._id}</div>
-            <div>${fecha.toLocaleString('es-AR')||''}</div>
+            <div>${fecha.toLocaleString('es-AR',{hour12: false})||''}</div>
             <div>$ ${registro.total.toLocaleString('es-AR')||''}</div>
             <div>${registro.metodo2?'Combinado':registro.metodo1||''}</div>
             <div class="registroVentas__fila__observacion" title="${registro.observacion||''}">${registro.observacion||''}</div>
@@ -106,8 +148,9 @@ export const cargarRegistrosDOM=async ()=>{
 
 
     
-    cargarPaginadoRegistros(respuesta.paginasCantidad+1)
+    cargarPaginadoRegistros(respuesta.paginasCantidad)
     botonModificarVenta()
+
 }
 
 const cargarPaginadoRegistros =(cantidadPaginas:number /* Cantidad de paginas total necesarias para ver todos los resultados*/)=>{
@@ -156,7 +199,6 @@ const cargarPaginadoRegistros =(cantidadPaginas:number /* Cantidad de paginas to
 
     // Agrega los indices dentro del contenedor
     for (let i = desdePagina; i < paginaHasta+1; i++) {
-        if(i===cantidadPaginas) return
         const indice = document.createElement('button')
         indice.className='botonRegistener2'
         if(paginaSeleccionada===i) indice.classList.add('boton__activo2') // Si el boton representa a la pagina actualmente activa entonces le da el estilo de activado
@@ -168,7 +210,6 @@ const cargarPaginadoRegistros =(cantidadPaginas:number /* Cantidad de paginas to
         
         contenedorPaginas.appendChild(indice)
     }
-
     if(paginaHasta<cantidadPaginas){ // Si la cantidad de paginas para seleccionar es menor a la cantidad de paginas totales entonces agrega un boton para aumentar la cantidad de paginas seleccionables
         const botonAumentarPaginado = document.createElement('button')
         botonAumentarPaginado.className='botonRegistener2'
@@ -200,6 +241,6 @@ const cargarPaginadoRegistros =(cantidadPaginas:number /* Cantidad de paginas to
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
-    indiceObservacion()
-    indiceID()
+    selectCantidadPaginas()
+    inputFechas()
 })
