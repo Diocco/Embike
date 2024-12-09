@@ -19,6 +19,30 @@
 .registroVentas__filtros__h3{
     margin: 0 10px
 }
+/* Contenedor del indice de estados de la venta*/
+#registroVentas__indiceTabla__contenedorEstado{
+    display: flex;
+}
+
+/* Contenedor de opciones del estado de la venta*/
+#registroVentas__indiceTabla__estado__opciones{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background: var(--colorBotones);
+    padding: 10px;
+    transform: translateX(-10px);
+    border-radius: 5px;
+}
+
+/* Cantidad de estados activos en la busqueda de estados de la venta*/
+#registroVentas__indiceTabla__estado-cantidad{
+    margin-left: 5px;
+}
+/*Opcion*/
+.estado__opciones__label{
+    margin: 5px 0px;
+}
 
 /*Contenedor general de la tabla*/
 #registroVentas__contenedorTabla{
@@ -35,6 +59,7 @@
 #registroVentas__indiceTabla{
     font-size: 19px;
     height: 54px;
+    margin-top: 15px;
 }
 
 /*Mensaje en caso de no haber encontrado elementos para mostrar*/

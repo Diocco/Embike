@@ -64,7 +64,7 @@ export const verRegistroVentas =async(
     pagina:string='',
     IDVenta:string='',
     metodo:string='',
-    estado:string='',
+    estados:string='',
     buscarObservacion:string='',
     fechaDesde:string='',
     fechaHasta:string='',
@@ -82,7 +82,7 @@ export const verRegistroVentas =async(
 
 
 
-    await fetch(urlRegistroVentas+`?desde=${desde}&cantidadElementos=${cantidadElementos}&pagina=${pagina}&IDVenta=${IDVenta}&metodo=${metodo}&estado=${estado}&buscarObservacion=${buscarObservacion}&fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`, { 
+    await fetch(urlRegistroVentas+`?desde=${desde}&cantidadElementos=${cantidadElementos}&pagina=${pagina}&IDVenta=${IDVenta}&metodo=${metodo}&estados=${estados}&buscarObservacion=${buscarObservacion}&fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}`, { 
         method: 'GET',
         headers: { 'Content-Type': 'application/json' ,
             'tokenAcceso':`${tokenAcceso}`},

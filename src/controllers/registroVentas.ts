@@ -80,7 +80,12 @@ export const verRegistroVentas = async(req: Request, res: Response)=>{
                                                         :undefined;  
 
     const metodo1:string|undefined = req.query.metodo1 as string || undefined // Valor que filtra por metodo de pago
-    const estado:string|undefined = req.query.estado as string || undefined // Valor que filtra por estado de venta
+
+    const estadosString = req.query.estados as string // Valor que filtra por estado de la venta
+    let estados:string[] = []
+    estados = estadosString.split(',') // Crea un array de los string con los estados que se quieren filtrar separados por comas
+
+
     const buscarObservacion:RegExp|undefined = req.query.buscarObservacion? new RegExp(req.query.buscarObservacion as string, 'i'): undefined; // Palabra buscada dentro de las observaciones
 
     try{
@@ -88,13 +93,13 @@ export const verRegistroVentas = async(req: Request, res: Response)=>{
             // Los filtros opcionales donde el valor buscado puede estar en varias propiedades
             $or: [{ vacio:undefined }],
             $and: [
-                // { estado: estado||'' },  // El producto no tiene que estar eliminado
                 { fechaVenta: { $gte: new Date(fechaDesde), $lte: new Date(fechaHasta)  } },  // Rango de precios
                 { vacio:undefined }
                 // { metodo1:metodo1||'' }
             ]
         };
 
+        if(estados.length>0) filtros.$and.push({ estado: {$in:estados} })
         if(buscarObservacion) filtros.$and.push({ observacion:  buscarObservacion })
         if(IDVenta) filtros.$and.push({ _id: IDVenta})
 

@@ -17,22 +17,77 @@ const indiceObservacion=()=>{
     const indiceObservacion = document.getElementById('registroVentas__indiceTabla__observacion') as HTMLButtonElement|undefined
     if(indiceObservacion){
         indiceObservacion.onclick=()=> {
-            const inputFinal = convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',true,cargarRegistrosDOM)
+            const inputFinal = convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',false,cargarRegistrosDOM)
             inputFinal.focus() // Le hace focus inmediatamente al input recien creado
         }
-        if(sessionStorage.getItem('registroVentas-buscaObservacion')) convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',true,cargarRegistrosDOM)
+        if(sessionStorage.getItem('registroVentas-buscaObservacion')) convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',false,cargarRegistrosDOM)
     }
 }
 const indiceID=()=>{
     const indiceID = document.getElementById('registroVentas__indiceTabla__ID') as HTMLButtonElement|undefined
     if(indiceID) {
         indiceID.onclick=()=> {
-            const inputFinal = convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',true,cargarRegistrosDOM)
+            const inputFinal = convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',false,cargarRegistrosDOM)
             inputFinal.focus() // Le hace focus inmediatamente al input recien creado
         }
-        if(sessionStorage.getItem('registroVentas-IDVenta')) convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',true,cargarRegistrosDOM)
+        if(sessionStorage.getItem('registroVentas-IDVenta')) convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',false,cargarRegistrosDOM)
     }
 }
+const indiceEstado=()=>{
+    const indiceEstado = document.getElementById('registroVentas__indiceTabla__estado')!
+    const contenedorOpciones = document.getElementById('registroVentas__indiceTabla__estado__opciones')!
+    const checkExitoso = document.getElementById('estado__opciones__exitoso')! as HTMLInputElement
+    const checkModificado = document.getElementById('estado__opciones__modificado')! as HTMLInputElement
+    const checkAnulado = document.getElementById('estado__opciones__anulado')! as HTMLInputElement
+
+    let checkEstados = sessionStorage.getItem('registroVentas-estado')||'' // Los estados se almacenan en un arreglo donde un digito particular representa el estado activo de un check
+    // 1: Exitoso
+    // 2: Modificado
+    // 3: Anulado
+
+    // Refleja si estan activos o no en el checkbox
+    checkExitoso.checked = checkEstados.includes('1')
+    checkModificado.checked = checkEstados.includes('2')
+    checkAnulado.checked = checkEstados.includes('3')
+
+    // Alterna los estados cuando se les hace click
+    checkExitoso.onclick=()=>{
+        alternarEstado('1')
+    
+    }
+    checkModificado.onclick=()=>{
+        alternarEstado('2')
+    
+    }
+    checkAnulado.onclick=()=>{
+        alternarEstado('3')
+    
+    }
+    
+    indiceEstado.onclick=()=>{
+        contenedorOpciones.classList.remove('noActivo')
+    }
+    document.addEventListener('click',(event)=>{
+        const elementoClick = event.target as HTMLElement // Almacena el elemento al que se hizo click
+        const esClickFuera = !indiceEstado.contains(elementoClick) // Verifica si el elemento al que se hizo click esta dentro del contenedor del indice de estado
+        if(esClickFuera) contenedorOpciones.classList.add('noActivo') // Si se hizo click fuera del indice de estado entonces desactiva el contenedor
+    })  
+}
+
+const alternarEstado=(estadoAlternar:string)=>{
+    let checkEstados = sessionStorage.getItem('registroVentas-estado')||''
+    if(checkEstados.includes(estadoAlternar)) checkEstados=checkEstados.replace(estadoAlternar,'') // Si estaba activo lo desactiva
+    else checkEstados=checkEstados+estadoAlternar // Si estaba desactivado lo activa
+    sessionStorage.setItem('registroVentas-estado',checkEstados) // Guarda los cambios
+    cargarRegistrosDOM() // Actualiza los registros mostrados en el DOM
+
+    // Cambia el numero de la cantidad de estados activos para mostrar en la busqueda
+    const contenedorCantidadEstados = document.getElementById('registroVentas__indiceTabla__estado-cantidad')! // Contenedor del contador
+    contenedorCantidadEstados.textContent=`(${checkEstados.length})` // Se refleja en el DOM la cantidad de estados activos en la busqueda
+    contenedorCantidadEstados.className='' // Se quitan las clases previas
+    if(checkEstados.length===0) contenedorCantidadEstados.classList.add('letra__enError') // Activa la clase de estado de error si la cantidad de estados activos en la busqueda es cero
+}
+
 const botonModificarVenta=()=>{
     const botonesModificarVenta = document.querySelectorAll('.registroVentas__botonModificar') as NodeListOf<HTMLButtonElement>
     botonesModificarVenta.forEach((boton)=>{
@@ -101,33 +156,29 @@ export const cargarRegistrosDOM=async ()=>{
     const cantidadElementos = sessionStorage.getItem('registroVentas-cantidadElementos')||'25'
     const IDVenta = sessionStorage.getItem('registroVentas-IDVenta')||undefined
     const metodo = sessionStorage.getItem('registroVentas-metodo')||undefined
-    const estado = sessionStorage.getItem('registroVentas-estado')||undefined
+    let estados = sessionStorage.getItem('registroVentas-estado')||''
+    estados = estados.replace('1','Exitoso,')
+    estados = estados.replace('2','Modificado,')
+    estados = estados.replace('3','Anulado,')
+
+    console.log(estados)
+
+
     const buscaObservacion = sessionStorage.getItem('registroVentas-buscaObservacion')||undefined
     const pagina = sessionStorage.getItem('registroVentas-pagina')||undefined
     const fechaDesde = sessionStorage.getItem('registroVentas-fechaDesde')||undefined
     const fechaHasta = sessionStorage.getItem('registroVentas-fechaHasta')||undefined
 
     /* Realiza la busqueda de los elementos en la base de datos */
-    let respuesta = await verRegistroVentas(desde,cantidadElementos,pagina,IDVenta,metodo,estado,buscaObservacion,fechaDesde,fechaHasta)
+    let respuesta = await verRegistroVentas(desde,cantidadElementos,pagina,IDVenta,metodo,estados,buscaObservacion,fechaDesde,fechaHasta)
     if(respuesta.registroVentas.length<1&&respuesta.registroVentasCantidad>0){
         // Si la pagina de la respuesta no tiene elementos entonces vuelve hacer la busqueda para la primer pagina
-        respuesta = await verRegistroVentas(desde,cantidadElementos,'1',IDVenta,metodo,estado,buscaObservacion,fechaDesde,fechaHasta)
+        respuesta = await verRegistroVentas(desde,cantidadElementos,'1',IDVenta,metodo,estados,buscaObservacion,fechaDesde,fechaHasta)
         sessionStorage.setItem('registroVentas-pagina','1')
     }
 
-    // Vacia el contenedor y deja solo el indice
-    contenedorRegistros.innerHTML=` 
-    <div id="registroVentas__indiceTabla" class="registroVentas__fila">
-                <div id="registroVentas__indiceTabla__ID">ID</div>
-                <div id="registroVentas__indiceTabla__hora">Hora</div>
-                <div id="registroVentas__indiceTabla__total">Total</div>
-                <div id="registroVentas__indiceTabla__metodo">Metodo</div>
-                <div id="registroVentas__indiceTabla__metodo">Estado</div>
-                <div id="registroVentas__indiceTabla__observacion">Observaciones</div>
-    </div>`
-
-    indiceObservacion()
-    indiceID()
+    // Vacia el contenedor 
+    contenedorRegistros.innerHTML=``
 
     if(respuesta.registroVentasCantidad===0){ // Si no se encontraron elementos para mostrar entonces muestra un mensaje al usuario
         const contenedorMensaje = document.createElement('div')
@@ -161,7 +212,6 @@ export const cargarRegistrosDOM=async ()=>{
     contenedorRegistros.appendChild(fragmento)
 
 
-    
     cargarPaginadoRegistros(respuesta.paginasCantidad)
     botonModificarVenta()
     botoneliminarRegistro()
@@ -258,4 +308,7 @@ const cargarPaginadoRegistros =(cantidadPaginas:number /* Cantidad de paginas to
 document.addEventListener('DOMContentLoaded',()=>{
     selectCantidadPaginas()
     inputFechas()
+    indiceObservacion()
+    indiceID()
+    indiceEstado()
 })
