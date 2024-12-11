@@ -27,6 +27,7 @@ import {
 // Rutas
 import usuariosRoutes from '../routes/usuarios.js';
 import authRoutes from '../routes/auth.js'; 
+import metodosPagoRoutes from '../routes/metodosPago.js'; 
 import categoriasRoutes from '../routes/categorias.js'; 
 import productosRoutes from '../routes/productos.js'; 
 import variantesRoutes from '../routes/variantes.js';
@@ -44,6 +45,7 @@ class Server {
     productosPath:string
     variantesPath:string
     registroVentasPath:string
+    metodoPagoPath:string
 
     app: express.Application;
     port: string | number;
@@ -55,6 +57,7 @@ class Server {
         this.productosPath = '/api/productos';
         this.variantesPath = '/api/variantes';
         this.registroVentasPath = '/api/registroVentas';
+        this.metodoPagoPath = '/api/metodoPago';
         
         this.app = express(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
@@ -101,7 +104,7 @@ class Server {
         this.app.use(this.usuariosPath, usuariosRoutes);
         this.app.use(this.authPath, authRoutes);
         this.app.use(this.categoriasPath, categoriasRoutes);
-        this.app.use(this.productosPath, productosRoutes);
+        this.app.use(this.metodoPagoPath, metodosPagoRoutes);
         this.app.use(this.productosPath, productosRoutes);
         this.app.use(this.variantesPath, variantesRoutes);
         this.app.use(this.registroVentasPath, registroVentasRoutes);
