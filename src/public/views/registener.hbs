@@ -9,6 +9,8 @@
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/configuracion.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/registroVentas.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/seccionCaja.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/ventaPublico.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/modificarVenta.css'>
 
 
@@ -187,15 +189,18 @@
                 <i class="fa-solid fa-list"></i>
             </button>
             <button id="barraLateral_B__icono" class="botonRegistener3" >
+                <i class="fa-solid fa-cart-shopping"></i>
+            </button>
+            <button id="barraLateral__caja" class="botonRegistener3">
                 <i class="fa-solid fa-cash-register"></i>
             </button>
             <button id="barraLateral_C__icono" class="botonRegistener3">
                 <i class="fa-solid fa-table-cells"></i>
             </button>
-            <button id="barraLateral_D__icono" class="botonRegistener3">
+            <button id="barraLateral_D__icono" class="botonRegistener3 nodisponible" disabled>
                 <i class="fa-solid fa-chart-line"></i>
             </button>
-            <button id="barraLateral_E__icono" class="botonRegistener3">
+            <button id="barraLateral_E__icono" class="botonRegistener3 nodisponible" disabled>
                 <i class="fa-solid fa-address-card"></i>
             </button>
             <button id="barraLateral_AA__icono" class="botonRegistener3">
@@ -203,12 +208,13 @@
             </button>
         </div>
         <div id="barraLateral__nombres">
-            <div id="barraLateral_A__nombre" class="ayudaRegistener1">Productos</div>
-            <div id="barraLateral_B__nombre" class="ayudaRegistener1">Venta al publico</div>
-            <div id="barraLateral_C__nombre" class="ayudaRegistener1">Registro de ventas</div>
-            <div id="barraLateral_D__nombre" class="ayudaRegistener1">Estadisticas</div>
-            <div id="barraLateral_E__nombre" class="ayudaRegistener1">Registro de empleados</div>
-            <div id="barraLateral_AA__nombre" class="ayudaRegistener1">Configuracion</div>
+            <div class="ayudaRegistener1">Productos</div>
+            <div class="ayudaRegistener1">Venta al publico</div>
+            <div class="ayudaRegistener1">Caja</div>
+            <div class="ayudaRegistener1">Registro de ventas</div>
+            <div class="ayudaRegistener1">Estadisticas</div>
+            <div class="ayudaRegistener1">Registro de empleados</div>
+            <div  class="ayudaRegistener1">Configuracion</div>
         </div>
     </aside>
 
@@ -235,7 +241,7 @@
 
     {{!-- Venta al publico --}}
     <section id="seleccionProductos" class="contenedorRegistener1">
-        <div id="seleccionProductos__div-contenedorSeleccionarProductos">
+        <div class="contenedorRegistener2" id="seleccionProductos__div-contenedorSeleccionarProductos">
             <h2>Seleccionar Productos</h2>
             <label>
                 Agrupar por categoria
@@ -249,10 +255,10 @@
             <input id="seleccionProductos__input-buscar" class="inputRegistener1" placeholder="Buscar un producto">
             <div id="seleccionProductos__div-productos" > </div>
         </div>
-        <div id="seleccionProductos__div-productosFav">
+        <div class="contenedorRegistener2" id="seleccionProductos__div-productosFav">
             <h2>Productos favoritos</h2>
         </div>
-        <div id="seleccionProductos__div-resumen">
+        <div class="contenedorRegistener2" id="seleccionProductos__div-resumen">
             <h2>Resumen</h2>
             <table id="seleccionProductos__div-resumen__table">
                 <thead>
@@ -270,11 +276,11 @@
                 <div >$ 0</div>
             </div>
         </div>
-        <div id="botonesVentaPublico">
+        <div class="contenedorRegistener2" id="botonesVentaPublico">
             <button class="botonRegistener2 nodisponible" id="botonIrSeleccionProductos"><i class="fa-solid fa-arrow-right-long"></i></button>
             <button class="botonRegistener2" id="botonIrPago"><i class="fa-solid fa-arrow-right-long"></i></button>
         </div>
-        <div id="seleccionProductos__div-pago">
+        <div class="contenedorRegistener2" id="seleccionProductos__div-pago">
             <h2 id="seleccionProductos__div-pago__h2">Pago</h2>
             <div id="div-pago__metodoPago">
                 <h4>Modo de pago</h4>
@@ -300,6 +306,88 @@
             <div id="div-pago__confirmar">
                 <textarea id="div-pago__confirmar__observacion" placeholder="Ingrese una observacion"></textarea>
                 <button id="div-pago__confirmar__boton" class="botonRegistener3 nodisponible">Confirmar</button>
+            </div>
+        </div>
+    </section>
+
+    {{!-- Control de caja --}}
+    <section id="seleccionCaja" class="contenedorRegistener1">
+        <div id="seleccionCaja__contenedorGeneral">
+            <div class="contenedorRegistener2" id="seleccionCaja__contenedorSaldos">
+                <h2 class="seleccionCaja__h2">Caja</h3>
+                <button class="botonRegistener3">Movimientos de caja</button>
+                <div id="seleccionCaja__tablaSaldos__encabezado" class="seleccionCaja__tablaSaldos__fila">
+                    <div class="seleccionCaja__tablaSaldos__metodo">Metodo</div>
+                    <div>Saldo inicial</div>
+                    <div>Saldo final</div>
+                    <div>Observado</div>
+                    <div>Diferencia</div>
+                </div>
+                <div id="seleccionCaja__tablaSaldos">
+                    <div class="seleccionCaja__tablaSaldos__fila">
+                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
+                        <div>$ 800.000</div>
+                        <div>-$ 100.000</div>
+                    </div>
+                    <div class="seleccionCaja__tablaSaldos__fila">
+                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
+                        <div>$ 800.000</div>
+                        <div>-$ 100.000</div>
+                    </div>
+                    <div class="seleccionCaja__tablaSaldos__fila">
+                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
+                        <div>$ 800.000</div>
+                        <div>-$ 100.000</div>
+                    </div>
+                    <div class="seleccionCaja__tablaSaldos__fila">
+                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
+                        <div>$ 800.000</div>
+                        <div>-$ 100.000</div>
+                    </div>
+                    <div class="seleccionCaja__tablaSaldos__fila">
+                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
+                        <div>$ 800.000</div>
+                        <div>-$ 100.000</div>
+                    </div>
+                    <div class="seleccionCaja__tablaSaldos__fila">
+                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
+                        <div>$ 800.000</div>
+                        <div>-$ 100.000</div>
+                    </div>
+                    <div class="seleccionCaja__tablaSaldos__fila">
+                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
+                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
+                        <div>$ 800.000</div>
+                        <div>-$ 100.000</div>
+                    </div>
+                </div>
+            </div>
+            <div class="contenedorRegistener2" id="seleccionCaja__cambiosCaja">
+                <h2       id="seleccionCaja__cambiosCaja__h2"      class="seleccionCaja__h2"> Cambios de caja</h3>
+                <select   id="seleccionCaja__cambiosCaja__metodo"  class="inputRegistener1">
+                    <option>Efectivo</option>
+                    <option>Tarjeta</option>
+                </select>
+                <input    id="seleccionCaja__cambiosCaja__monto"   class="inputRegistener1">
+                <textarea id="seleccionCaja__cambiosCaja__observacion"></textarea>
+                <button   id="seleccionCaja__cambiosCaja__button" class="botonRegistener3">Confirmar</button>
+            </div>
+            <div class="contenedorRegistener2" id="seleccionCaja__registros">
+                <h2                                                class="seleccionCaja__h2">Ultimos arqueos</h3>
+                <div id="seleccionCaja__tablaSaldos"></div>
             </div>
         </div>
     </section>

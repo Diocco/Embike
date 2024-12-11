@@ -93,6 +93,7 @@ let carrito1 = new Carrito()
 
 const botonesDesplazamiento=()=>{
     // Boton para cargar la seleccion de productos
+    const contenedorGeneral = document.getElementById("seleccionProductos")!
     const contenedorSeleccionProductos = document.getElementById('seleccionProductos__div-contenedorSeleccionarProductos')!
     const contenedorPago = document.getElementById('seleccionProductos__div-pago')!
     const botonIrSeleccionProductos = document.getElementById('botonIrSeleccionProductos')!
@@ -100,18 +101,34 @@ const botonesDesplazamiento=()=>{
 
     // Boton para cargar la seccion de pago
     botonIrPago.onclick=()=>{
-        contenedorPago.scrollIntoView(({block: 'start' ,behavior:'smooth'}));
         botonIrPago.classList.add('nodisponible')
         botonIrSeleccionProductos.classList.remove('nodisponible')
+        let loop=0
+        const intervalo = setInterval(()=>{
+            contenedorGeneral.scrollLeft+=contenedorGeneral.clientWidth/40
+            loop+=1
+            if(loop>40) clearInterval(intervalo)
+        },5)
+
+
     }
 
     // Boton para cargar la seleccion de productos
     botonIrSeleccionProductos.onclick=()=>{
-        contenedorSeleccionProductos.scrollIntoView(({block: 'start' ,behavior:'smooth'}));
+        contenedorGeneral.scrollLeft=0
         botonIrPago.classList.remove('nodisponible')
         botonIrSeleccionProductos.classList.add('nodisponible')
+        let loop=0
+        contenedorGeneral.scrollLeft=contenedorGeneral.clientWidth
+        const intervalo = setInterval(()=>{
+            console.log(contenedorGeneral.scrollLeft)
+            contenedorGeneral.scrollLeft-=contenedorGeneral.clientWidth/40
+            loop+=1
+            if(loop>40) clearInterval(intervalo)
+        },5)
     }
 }
+
 
 const inputBusqueda=()=>{
     // Escucha si el usuario busca un SKU especifico

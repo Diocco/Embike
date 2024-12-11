@@ -12,6 +12,7 @@ import { url, usuarioVerificado } from "../global.js"
 import { usuario } from "../../../models/interfaces/usuario.js"
 import { cargarVentaPublico } from "./ventaPublico.js"
 import { cargarRegistrosDOM } from "./registroVentas.js"
+import { cargarSeccionCaja } from "./seccionCaja.js"
 
 
 
@@ -95,6 +96,7 @@ const cargarBotonesBarraLateral=()=>{
     //Carga y le da funciones a la barra lateral
     const configuracionProductosVentana = document.getElementById("contenedorConfiguracionProductos")!
     const seleccionProductosVentana = document.getElementById("seleccionProductos")!
+    const seleccionCaja = document.getElementById("seleccionCaja")!
     const registroVentas = document.getElementById("registroVentas")!
     const configuracion = document.getElementById("configuracion")!
 
@@ -108,6 +110,11 @@ const cargarBotonesBarraLateral=()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
         seleccionProductosVentana.classList.remove('noActivo')
         cargarVentaPublico()
+    });
+    document.getElementById("barraLateral__caja")!.addEventListener("click",()=>{
+        ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
+        seleccionCaja.classList.remove('noActivo')
+        cargarSeccionCaja()
     });
     document.getElementById("barraLateral_C__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
