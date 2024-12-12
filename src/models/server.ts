@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url); // Obtiene el nombre del arch
 const __dirname = path.dirname(__filename); // Obtiene el directorio del archivo actual
 
 // Base de datos
-import { conexionDB } from '../../database/config.js';
+import  conexionDB  from '../routes/conexionConServidor.js'
 
 // Controladores
 import { 
@@ -46,6 +46,7 @@ class Server {
     variantesPath:string
     registroVentasPath:string
     metodoPagoPath:string
+    conexionConServidor:string
 
     app: express.Application;
     port: string | number;
@@ -58,23 +59,18 @@ class Server {
         this.variantesPath = '/api/variantes';
         this.registroVentasPath = '/api/registroVentas';
         this.metodoPagoPath = '/api/metodoPago';
+        this.conexionConServidor = '/api/conexion';
         
         this.app = express(); // Instancia de Express
         this.port = process.env.PORT || 8080; // Puerto con valor predeterminado
-        this.conectarDB() // Conecta la base de datos
         this.configureMiddleware();
         this.routes(); // Configura las rutas
     }
 
-    async conectarDB(){
-        await conexionDB(); // Conecta la base de datos
-    }
 
     // Configura middleware globalnpm
     configureMiddleware() {
 
-
-        
         // Aplica las opciones de CORS a todas las rutas
         this.app.use(cors());
 
@@ -101,6 +97,7 @@ class Server {
     routes() {
         
         // API
+        this.app.use(this.conexionConServidor,conexionDB)
         this.app.use(this.usuariosPath, usuariosRoutes);
         this.app.use(this.authPath, authRoutes);
         this.app.use(this.categoriasPath, categoriasRoutes);
@@ -127,6 +124,7 @@ class Server {
             console.log(`Servidor escuchando en http://localhost:${this.port}`);
         });
     }
+    
 }
 
 export default Server;

@@ -1,5 +1,5 @@
-import { usuario } from "../../../models/interfaces/usuario"
-import { usuarioVerificado } from "../global"
+import { usuario } from "../../../models/interfaces/usuario.js"
+import { usuarioVerificado } from "../global.js"
 
 export const cargarSeccionCaja=()=>{
     

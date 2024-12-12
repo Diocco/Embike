@@ -13,6 +13,7 @@ import { usuario } from "../../../models/interfaces/usuario.js"
 import { cargarVentaPublico } from "./ventaPublico.js"
 import { cargarRegistrosDOM } from "./registroVentas.js"
 import { cargarSeccionCaja } from "./seccionCaja.js"
+import { conexionConServidor } from "../services/conexionAPI.js"
 
 
 
@@ -132,8 +133,6 @@ const cargarBotonesBarraLateral=()=>{
 
 
 
-
-
 document.addEventListener("DOMContentLoaded", async function() {
 
     // Busca y carga los productos en el contenedor pasado como argumento
@@ -142,13 +141,15 @@ document.addEventListener("DOMContentLoaded", async function() {
     
 
 
-
-    [usuarioInformacion,,categorias] = await Promise.all([
+    let esConexionExitosa:boolean
+    [usuarioInformacion,,categorias,,esConexionExitosa] = await Promise.all([
         usuarioVerificado,
         buscarCargarProductos(), // Busca y carga los productos
         buscarCargarCategorias(contenedorCategorias,contenedorOpcionesCategorias), // Busca y carga las categorias
-        cargarBotonesBarraLateral()
-    ]);
+        cargarBotonesBarraLateral(),
+        conexionConServidor()
+    ])
+
 
     // Si no se inicio sesion reedirije al usuario a la pagina de inicio de sesion
     if(!usuarioInformacion) {
@@ -156,12 +157,22 @@ document.addEventListener("DOMContentLoaded", async function() {
         window.location.assign(url+'/inicioSesion') // Redirije al usuario al inicio de sesion
         return
     }
+
     // Si el usuario no tiene los permisos necesarios entonces lo devuelve al inicio de la pagina
     if(usuarioInformacion.rol!=='admin') {
         localStorage.setItem('mostrarMensajeError',"Usted no posee los permisos necesarios") // Define un mensaje de error para que sea mostrado al usuario una vez que carge la pagina a la que se redirige
         window.location.assign(url+'/') // Redirije al usuario al inicio de sesion
     }
-    
+
+    // Si la conexion es exitosa y el usuario que inicio sesion es admin entonces retira la ventana de carga
+    if(esConexionExitosa){
+        document.getElementById('ventanaCarga')!.classList.add('ventanaCarga-desaparecer')
+        setTimeout(() => {
+            document.getElementById('ventanaCarga')!.classList.add('noActivo')
+        }, 500);
+    }
+
+
 
     cargarVentaPublico()
 });

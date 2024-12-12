@@ -9,6 +9,57 @@ body{
     color: var(--colorLetra);
 }
 
+/* Contenedor de la ventana de carga*/
+#ventanaCarga{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--colorFondo);
+    z-index: 1000000;
+}
+.ventanaCarga-desaparecer{
+    animation: desaparecer 0.5s linear 0s forwards;
+
+}
+@keyframes desaparecer {
+    0% {   
+        filter: opacity(1);
+    }
+    100% {
+        filter: opacity(0);
+    }
+}
+
+#ventanaCarga__barraCarga-fondo{
+    display: flex;
+    width: 30%;
+    height: 7%;
+    border-radius: 5000px;
+    align-items: center;
+    background-color: var(--colorFondoVentana);
+}
+#ventanaCarga__barraCarga{
+    width: 22%;
+    height: 78%;
+    margin: 2%;
+    border-radius: 5000px;
+    background-color: var(--colorFondo);
+    animation: alternarHorizontal 1s cubic-bezier(0.6, 0.01, 0.36, 0.99) 0s infinite alternate ;
+
+}
+
+
+@keyframes alternarHorizontal {
+    0% {
+        transform: translateX(0%);
+    }
+    100% {
+        transform: translateX(340%);
+    }
+}
 
 /*Barra lateral*/
 #barraLateral{
