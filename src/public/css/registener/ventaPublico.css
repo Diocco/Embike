@@ -188,6 +188,7 @@
     align-content: flex-start;
     font-size: 20px;
     grid-row: 2/3;
+    overflow-y: auto;
 }
 /*Contenedor de observacion y confirmar*/
 #div-pago__confirmar{

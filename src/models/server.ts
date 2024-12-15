@@ -34,6 +34,7 @@ import variantesRoutes from '../routes/variantes.js';
 import registroVentasRoutes from '../routes/registroVentas.js';
 
 import fileUpload from 'express-fileupload';
+import mongoose from 'mongoose';
 
 
 
@@ -66,6 +67,8 @@ class Server {
         this.configureMiddleware();
         this.routes(); // Configura las rutas
     }
+
+    async conectarDB(){ await mongoose.connect(process.env.MONGO_DB!); } // Esta linea es para que haya una conexion con los endpoits sin estar en la aplicacion, esta linea debe eliminarse en modo produccion
 
 
     // Configura middleware globalnpm

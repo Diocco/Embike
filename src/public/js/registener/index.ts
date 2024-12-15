@@ -14,6 +14,10 @@ import { cargarVentaPublico } from "./ventaPublico.js"
 import { cargarRegistrosDOM } from "./registroVentas.js"
 import { cargarSeccionCaja } from "./seccionCaja.js"
 import { conexionConServidor } from "../services/conexionAPI.js"
+import { MetodoPagoI } from "../../../models/interfaces/metodosPago.js"
+import { verMetodosPago } from '../../../controllers/metodosPago';
+import { solicitudObtenerMetodosPago } from "../services/metodosPagoAPI.js"
+import { cargarSeccionConfiguracion } from "./configuracion.js"
 
 
 
@@ -22,9 +26,9 @@ import { conexionConServidor } from "../services/conexionAPI.js"
 //Variables globales
 const contenedorProductos: HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__productos')!
 export let productos:producto[]
-
 export let categorias:CategoriaI[]|undefined
 export let usuarioInformacion:usuario|undefined
+export let metodosPago: MetodoPagoI[]
 
 export const buscarCargarProductos =async()=>{ 
     // Define los query params para enviarlos en el fetch y asi filtrar los productos
@@ -115,7 +119,6 @@ const cargarBotonesBarraLateral=()=>{
     document.getElementById("barraLateral__caja")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
         seleccionCaja.classList.remove('noActivo')
-        cargarSeccionCaja()
     });
     document.getElementById("barraLateral_C__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
@@ -138,16 +141,18 @@ document.addEventListener("DOMContentLoaded", async function() {
     // Busca y carga los productos en el contenedor pasado como argumento
     const contenedorCategorias:HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__categorias')!
     const contenedorOpcionesCategorias = document.getElementById('modificarProducto__caracteristicas__select__categoria')! as HTMLSelectElement
-    
+    const textoErrorCarga = document.getElementById('ventanaCarga__texto')!
 
 
     let esConexionExitosa:boolean
-    [usuarioInformacion,,categorias,,esConexionExitosa] = await Promise.all([
+
+    [usuarioInformacion,,categorias,,esConexionExitosa,metodosPago] = await Promise.all([
         usuarioVerificado,
         buscarCargarProductos(), // Busca y carga los productos
         buscarCargarCategorias(contenedorCategorias,contenedorOpcionesCategorias), // Busca y carga las categorias
         cargarBotonesBarraLateral(),
-        conexionConServidor()
+        conexionConServidor(),
+        solicitudObtenerMetodosPago()
     ])
 
 
@@ -164,17 +169,28 @@ document.addEventListener("DOMContentLoaded", async function() {
         window.location.assign(url+'/') // Redirije al usuario al inicio de sesion
     }
 
-    // Si la conexion es exitosa y el usuario que inicio sesion es admin entonces retira la ventana de carga
-    if(esConexionExitosa){
-        document.getElementById('ventanaCarga')!.classList.add('ventanaCarga-desaparecer')
-        setTimeout(() => {
-            document.getElementById('ventanaCarga')!.classList.add('noActivo')
-        }, 500);
+    // Si se obtuvieron los metodos de pago carga la seccion de caja
+    if(!metodosPago){
+        textoErrorCarga.textContent='Error al cargar. Porfavor reinicie'
+        console.error("Error al obtener los metodos de pago")
+        return
     }
 
+    // Si la conexion es exitosa y el usuario que inicio sesion es admin entonces retira la ventana de carga
+    if(!esConexionExitosa){
+        textoErrorCarga.textContent='Error al cargar. Porfavor reinicie'
+        console.error("Error al conectar con la base de datos")
+        return
+    }
 
-
+    cargarSeccionConfiguracion()
+    cargarSeccionCaja()
     cargarVentaPublico()
+
+    document.getElementById('ventanaCarga')!.classList.add('ventanaCarga-desaparecer')
+    setTimeout(() => {
+        document.getElementById('ventanaCarga')!.classList.add('noActivo')
+    }, 500);
 });
 
 

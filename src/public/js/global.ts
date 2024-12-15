@@ -31,6 +31,7 @@ export const urlRegistro:string = url + '/api/usuarios'
 export const urlVariantes:string = url + '/api/variantes'
 export const urlRegistroVentas:string = url + '/api/registroVentas'
 export const urlConexionConServidor:string = url + '/api/conexion';
+export const urlMetodoPago:string = url + '/api/metodoPago';
 
 
 

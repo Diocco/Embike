@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import MetodoPago from "../models/metodosPago.js";
 import { usuario } from "../models/interfaces/usuario.js";
 import { MetodoPagoI } from "../models/interfaces/metodosPago.js";
+import VentaRegistro from "../models/registroVenta.js";
 
 export const verMetodosPago = async(req: Request, res: Response) =>{
 
@@ -44,6 +45,54 @@ export const crearMetodoPago = async(req: Request, res: Response) =>{
     } catch (error) {
         const errors:error[]=[{
             msg: "Error al crear el metodo de pago",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
+}
+
+export const eliminarMetodoPago = async(req: Request, res: Response) =>{
+
+    const {metodoNombre} = req.params  // Obtiene el nombre del metodo de pago que se quiere eliminar
+    try {
+        // Busca si hay registros de ventas con ese metodo de pago
+        const registrosCantidad = await VentaRegistro.countDocuments({$and: [ { metodo1:metodoNombre }]}) // Devuelve la cantidad de objetos que hay que cumplen con la condiciones
+
+        // Si hay almenos un registro entonces desactiva el metodo de pago, con opcion de volverlo a activar
+        if(registrosCantidad>0){
+            await MetodoPago.updateOne({nombre:metodoNombre},{estado:false})
+            res.status(200).json(registrosCantidad)
+        }else{ // Si el metodo no tiene registros asociados entonces lo elimina por completo
+            await MetodoPago.deleteOne({nombre:metodoNombre})
+            res.status(200).json(0)
+        }
+
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al eliminar el metodo de pago",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
+
+}
+
+export const activarMetodoPago = async(req: Request, res: Response) =>{
+
+    const {metodoNombre} = req.params  // Obtiene el nombre del metodo de pago que se quiere eliminar
+
+    try {
+        // Busca y activa el metodo de pago
+        MetodoPago.findOneAndUpdate({nombre:metodoNombre},{estado:true})
+        res.status(200).json(0)
+
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al activar el metodo de pago",
             path: "Servidor",
             value: (error as Error).message
         }]

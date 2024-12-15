@@ -29,6 +29,7 @@
         <div id="ventanaCarga__barraCarga-fondo">
             <div id="ventanaCarga__barraCarga"></div>
         </div>
+        <div id="ventanaCarga__texto"></div>
     </div>
 
     {{>  mensajeEmergente }}
@@ -289,7 +290,7 @@
         <div class="contenedorRegistener2" id="seleccionProductos__div-pago">
             <h2 id="seleccionProductos__div-pago__h2">Pago</h2>
             <div id="div-pago__metodoPago">
-                <h4>Modo de pago</h4>
+                <h4>Modo de pago</h4>   
             </div>
             <div id="div-pago__modificacion">
                 <h4>Modificacion</h4>
@@ -329,57 +330,7 @@
                     <div>Observado</div>
                     <div>Diferencia</div>
                 </div>
-                <div id="seleccionCaja__tablaSaldos">
-                    <div class="seleccionCaja__tablaSaldos__fila">
-                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
-                        <div>$ 800.000</div>
-                        <div>-$ 100.000</div>
-                    </div>
-                    <div class="seleccionCaja__tablaSaldos__fila">
-                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
-                        <div>$ 800.000</div>
-                        <div>-$ 100.000</div>
-                    </div>
-                    <div class="seleccionCaja__tablaSaldos__fila">
-                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
-                        <div>$ 800.000</div>
-                        <div>-$ 100.000</div>
-                    </div>
-                    <div class="seleccionCaja__tablaSaldos__fila">
-                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
-                        <div>$ 800.000</div>
-                        <div>-$ 100.000</div>
-                    </div>
-                    <div class="seleccionCaja__tablaSaldos__fila">
-                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
-                        <div>$ 800.000</div>
-                        <div>-$ 100.000</div>
-                    </div>
-                    <div class="seleccionCaja__tablaSaldos__fila">
-                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
-                        <div>$ 800.000</div>
-                        <div>-$ 100.000</div>
-                    </div>
-                    <div class="seleccionCaja__tablaSaldos__fila">
-                        <div class="seleccionCaja__tablaSaldos__metodo">Efectivo</div>
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 500.000">
-                        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input" value="$ 700.000">
-                        <div>$ 800.000</div>
-                        <div>-$ 100.000</div>
-                    </div>
-                </div>
+                <div id="seleccionCaja__tablaSaldos"></div>
             </div>
             <div class="contenedorRegistener2" id="seleccionCaja__cambiosCaja">
                 <h2       id="seleccionCaja__cambiosCaja__h2"      class="seleccionCaja__h2"> Cambios de caja</h3>
@@ -458,6 +409,18 @@
         </div>
         <div id="configuracion__ventaPublico" class="configuracion__div">
             <h3 class="configuracion__h3">Venta al publico</h3>
+        </div>
+        <div id="configuracion__caja" class="configuracion__div">
+            <h3 class="configuracion__h3">Caja</h3>
+            <h4> Metodos de pago </h4>
+            <div id="configuracion__caja__metodos-encabezado" class="configuracion__caja__metodos-fila">
+                    <div>Nombre</div>
+                    <div>Tipo</div>
+            </div>
+            <div id="configuracion__caja__metodos"></div>
+            <button id="configuracion__caja__metodos-agregar" class="botonRegistener3">
+                <i class="fa-solid fa-plus"></i>
+            </button>
         </div>
     </section> 
 

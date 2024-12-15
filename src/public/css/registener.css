@@ -12,6 +12,7 @@ body{
 /* Contenedor de la ventana de carga*/
 #ventanaCarga{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: absolute;
@@ -48,7 +49,13 @@ body{
     border-radius: 5000px;
     background-color: var(--colorFondo);
     animation: alternarHorizontal 1s cubic-bezier(0.6, 0.01, 0.36, 0.99) 0s infinite alternate ;
+}
 
+/* Texto que contiene los errores si los hay*/
+#ventanaCarga__texto{
+    margin-top: 20px;
+    font-size: 20px;
+    color: var(--colorLetraTenue);
 }
 
 

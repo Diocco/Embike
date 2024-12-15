@@ -10,7 +10,7 @@ import { actualizarVariante, aplicarVenta } from "../services/variantesAPI.js"
 
 
 import { mostrarMensaje } from "../helpers/mostrarMensaje.js"
-import { usuarioInformacion } from "../registener/index.js"
+import { metodosPago, usuarioInformacion } from "../registener/index.js"
 import { registrarVenta } from "../services/registroVentasAPI.js"
 import { ElementoCarritoI } from "../../../interfaces/elementoCarrito.js"
 
@@ -129,7 +129,6 @@ const botonesDesplazamiento=()=>{
     }
 }
 
-
 const inputBusqueda=()=>{
     // Escucha si el usuario busca un SKU especifico
     const inputBuscarSKU = document.getElementById('seleccionProductos__input-buscarSKU')! as HTMLInputElement
@@ -180,42 +179,41 @@ const checkboxAgrupadores=()=>{
     /////////////////////
 }
 
-const botonesModosPago=()=>{
+const botonesMetodosPago=()=>{
     // Carga y le da funcion a los botones de medios de pago
     const contenedorMediosPago = document.getElementById('div-pago__metodoPago')!
-    const mediosPago = usuarioInformacion!.preferencias.metodosPago
     const fragmento = document.createDocumentFragment()
 
     contenedorMediosPago.innerHTML='<h4>Modo de pago</h4>' // Vacia el contenedor
 
-    // Primero crea un input inicial para medios de pago no contemplados
-    const inputMedioPago = document.createElement('input')
-    inputMedioPago.className='inputRegistener1'
-    inputMedioPago.placeholder='Ingrese un metodo'
+    // // Primero crea un input inicial para medios de pago no contemplados
+    // const inputMedioPago = document.createElement('input')
+    // inputMedioPago.className='inputRegistener1'
+    // inputMedioPago.placeholder='Ingrese un metodo'
 
-    // Cuando se realiza un cambio en le input:
-    inputMedioPago.addEventListener('input',()=>{
-        const esVacio = inputMedioPago.value?false:true
-        contenedorMediosPago.querySelectorAll('*').forEach(opcionMedio=>opcionMedio.classList.remove('boton__activo')) // Desactiva cualquier boton activo previamente
-        if(esVacio){ // Si el input esta vacio elimina su estado activo
-            inputMedioPago.classList.remove('boton__activo')
-            sessionStorage.setItem('metodoSeleccionado','') 
-        }else{ // Si el input no esta vacio lo coloca en estado activo y almacena su valor 
-            inputMedioPago.classList.add('boton__activo')
-            sessionStorage.setItem('metodoSeleccionado',inputMedioPago.value) 
-        }
-        calcularTotal() // Vuelve a calcular el total del carrito
-    })
+    // // Cuando se realiza un cambio en le input:
+    // inputMedioPago.addEventListener('input',()=>{
+    //     const esVacio = inputMedioPago.value?false:true
+    //     contenedorMediosPago.querySelectorAll('*').forEach(opcionMedio=>opcionMedio.classList.remove('boton__activo')) // Desactiva cualquier boton activo previamente
+    //     if(esVacio){ // Si el input esta vacio elimina su estado activo
+    //         inputMedioPago.classList.remove('boton__activo')
+    //         sessionStorage.setItem('metodoSeleccionado','') 
+    //     }else{ // Si el input no esta vacio lo coloca en estado activo y almacena su valor 
+    //         inputMedioPago.classList.add('boton__activo')
+    //         sessionStorage.setItem('metodoSeleccionado',inputMedioPago.value) 
+    //     }
+    //     calcularTotal() // Vuelve a calcular el total del carrito
+    // })
 
-    fragmento.appendChild(inputMedioPago) // Agrega el input al fragmento
+    // fragmento.appendChild(inputMedioPago) // Agrega el input al fragmento
 
     // Recorre los medios de pago que posee el usuario en sus preferencias
-    mediosPago.forEach(medioPago=>{ 
+    metodosPago.forEach(medio=>{ 
 
         // Crea un nuevo boton y le asigna todas las propiedades
         const botonMedioPago = document.createElement('button') 
         botonMedioPago.classList.add('botonRegistener3')
-        botonMedioPago.textContent=medioPago
+        botonMedioPago.textContent=medio.nombre
 
         // Si se hace click en el boton:
         botonMedioPago.onclick=()=>{
@@ -224,9 +222,9 @@ const botonesModosPago=()=>{
                 botonMedioPago.classList.remove('boton__activo') // Desactiva el estado de actividad
                 sessionStorage.setItem('metodoSeleccionado','') // Vacia la variable que contiene el metodo de pago
             }else{
-                inputMedioPago.value='' // Vacia el input inicial
+                // inputMedioPago.value='' // Vacia el input inicial
                 contenedorMediosPago.querySelectorAll('*').forEach(opcionMedio=>opcionMedio.classList.remove('boton__activo')) // Desactiva cualquier boton activo previamente
-                sessionStorage.setItem('metodoSeleccionado',medioPago) // Se almacena el medio seleccionado
+                sessionStorage.setItem('metodoSeleccionado',medio.nombre) // Se almacena el medio seleccionado
                 botonMedioPago.classList.add('boton__activo') // Se refleja visualmente que el metodo esta activo
             }
             calcularTotal() // Vuelve a calcular el total del carrito
@@ -351,17 +349,15 @@ const cargarBotonConfirmar=()=>{
     }
 }
 
-const cargarBotonesVentaPublico=()=>{
+export const cargarBotonesVentaPublico=()=>{
     botonesDesplazamiento()
     inputBusqueda()
     checkboxAgrupadores()
-    botonesModosPago()
+    botonesMetodosPago()
     botonesModificacionPago()
     contenedorVuelto()
     cargarBotonConfirmar()
 }
-
-
 
 export const cargarVentaPublico =async()=>{
     // Define los query params para enviarlos en el fetch y asi filtrar los productos

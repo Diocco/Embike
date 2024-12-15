@@ -1,6 +1,6 @@
 import express from 'express'; // Express
 import { check } from 'express-validator'; // Validaciones
-import { crearMetodoPago, verMetodosPago } from '../controllers/metodosPago.js';
+import { activarMetodoPago, crearMetodoPago, eliminarMetodoPago, verMetodosPago } from '../controllers/metodosPago.js';
 import { validarJWT } from '../middlewares/validarJWT.js';
 import { validarRolJWT } from '../middlewares/validarRolJWT.js';
 import { validarCampos } from '../middlewares/validarCampos.js';
@@ -23,5 +23,19 @@ router.post('/', // Crear metodo de pago - Admin
     check('tipo').custom(metodoPagoTipoValido),
     validarCampos,
     crearMetodoPago)
+
+router.put('/:metodoNombre', // Elimina un metodo de pago - Admin
+    validarJWT, // Valida que el usuario que realiza la accion sea valido
+    validarRolJWT('admin'), // Valida que el usuario tenga permisos de administrador
+
+    validarCampos,
+    activarMetodoPago)
+
+router.delete('/:metodoNombre', // Elimina un metodo de pago - Admin
+    validarJWT, // Valida que el usuario que realiza la accion sea valido
+    validarRolJWT('admin'), // Valida que el usuario tenga permisos de administrador
+
+    validarCampos,
+    eliminarMetodoPago)
 
 export default router;

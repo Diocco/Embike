@@ -21,6 +21,9 @@
 #seleccionCaja__contenedorSaldos{
     display: grid; 
     grid-template-columns: 1fr 200px;
+    grid-template-rows: min-content min-content;
+    align-self: start;
+    height: 95%;
 }
 
 /* Encabezado de la tabla de arqueo de caja*/
