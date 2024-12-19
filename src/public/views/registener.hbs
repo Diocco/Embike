@@ -11,6 +11,7 @@
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/registroVentas.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/seccionCaja.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/ventaPublico.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/seccionRegistros.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/modificarVenta.css'>
 
 
@@ -218,7 +219,7 @@
             <div class="ayudaRegistener1">Productos</div>
             <div class="ayudaRegistener1">Venta al publico</div>
             <div class="ayudaRegistener1">Caja</div>
-            <div class="ayudaRegistener1">Registro de ventas</div>
+            <div class="ayudaRegistener1">Registros</div>
             <div class="ayudaRegistener1">Estadisticas</div>
             <div class="ayudaRegistener1">Registro de empleados</div>
             <div  class="ayudaRegistener1">Configuracion</div>
@@ -226,7 +227,7 @@
     </aside>
 
     {{!-- Contenedor general de categorias, indice y productos --}}
-    <section id="contenedorConfiguracionProductos" class="contenedorRegistener1 noActivo">
+    <section id="contenedorConfiguracionProductos" class="contenedorRegistener1  noActivo">
         <div id="contenedorConfiguracionProductos__contenido">
             {{!-- Contenedor de categorias --}}
             <div id="contenedorConfiguracionProductos__contenido__categorias"></div>
@@ -318,11 +319,14 @@
     </section>
 
     {{!-- Control de caja --}}
-    <section id="seleccionCaja" class="contenedorRegistener1">
+    <section id="seleccionCaja" class="contenedorRegistener1 noActivo">
         <div id="seleccionCaja__contenedorGeneral">
             <div class="contenedorRegistener2" id="seleccionCaja__contenedorSaldos">
                 <h2 class="seleccionCaja__h2">Caja</h3>
-                <button class="botonRegistener3">Movimientos de caja</button>
+                <div id="seccionCaja__estado">
+                    <h3>Estado:</h3> <h3 class="letra__activo">Activo</h3>
+                </div>
+                <button class="botonRegistener3" id="seccionCaja__movimientosCaja">Movimientos de caja</button>
                 <div id="seleccionCaja__tablaSaldos__encabezado" class="seleccionCaja__tablaSaldos__fila">
                     <div class="seleccionCaja__tablaSaldos__metodo">Metodo</div>
                     <div>Saldo inicial</div>
@@ -331,6 +335,12 @@
                     <div>Diferencia</div>
                 </div>
                 <div id="seleccionCaja__tablaSaldos"></div>
+            </div>
+            <div class="contenedorRegistener2" id="seleccionCaja__abrirCerrar">
+                <button class="botonRegistener3" id="seccionCaja__abrirCaja">Abrir caja</button>
+                <button class="botonRegistener3" id="seccionCaja__cerrarCaja">Cerrar caja</button>
+                <div id="seccionCaja__ultimoInicio" >Ultimo inicio: 7/13/2024 15:00</div>
+                <div id="seccionCaja__ultimoCierre" >Ultimo cierre: 7/13/2024 13:00</div>
             </div>
             <div class="contenedorRegistener2" id="seleccionCaja__cambiosCaja">
                 <h2       id="seleccionCaja__cambiosCaja__h2"      class="seleccionCaja__h2"> Cambios de caja</h3>
@@ -342,15 +352,23 @@
                 <textarea id="seleccionCaja__cambiosCaja__observacion"></textarea>
                 <button   id="seleccionCaja__cambiosCaja__button" class="botonRegistener3">Confirmar</button>
             </div>
-            <div class="contenedorRegistener2" id="seleccionCaja__registros">
-                <h2                                                class="seleccionCaja__h2">Ultimos arqueos</h3>
-                <div id="seleccionCaja__tablaSaldos"></div>
-            </div>
+        </div>
+    </section>
+
+    {{!-- Ventana para seleccionar el registro que se quiere ver --}}
+    <section id="registros" class="contenedorRegistener1 noActivo">
+        <div id="registros__botonVentas" class="registros__opcion">
+            <h2 class="registros__h2">Registro de ventas</h2>
+            <div class="registros__imagen"></div>
+        </div>
+        <div id="registros__botonArqueos" class="registros__opcion">
+            <h2 class="registros__h2">Registro de arqueos</h2>
+            <div class="registros__imagen"></div>
         </div>
     </section>
 
     {{!-- Registro de ventas --}}
-    <section id="registroVentas" class="contenedorRegistener1">
+    <section id="registroVentas" class="contenedorRegistener1 noActivo">
         <div id="registroVentas__contenido">
             <h2>Registro de ventas</h2>
             <div id="registroVentas__filtros">
@@ -396,8 +414,12 @@
             <div id="registroVentas__indice"></div>
     </section>
 
+    {{!-- Registro de arqueo de caja --}}
+    <section id="registroCaja" class="contenedorRegistener1 noActivo">
+    </section>
+
     {{!-- Configuracion --}}
-    <section id="configuracion" class="contenedorRegistener1">
+    <section id="configuracion" class="contenedorRegistener1 noActivo">
         <div id="configuracion__global" class="configuracion__div">
             <h3 class="configuracion__h3">Preferencias</h3>
             <h4 class="configuracion__h4">Tema</h4>

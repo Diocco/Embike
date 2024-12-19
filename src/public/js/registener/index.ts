@@ -18,6 +18,7 @@ import { MetodoPagoI } from "../../../models/interfaces/metodosPago.js"
 import { verMetodosPago } from '../../../controllers/metodosPago';
 import { solicitudObtenerMetodosPago } from "../services/metodosPagoAPI.js"
 import { cargarSeccionConfiguracion } from "./configuracion.js"
+import { cargarSeccionRegistros } from "./registros.js"
 
 
 
@@ -102,7 +103,7 @@ const cargarBotonesBarraLateral=()=>{
     const configuracionProductosVentana = document.getElementById("contenedorConfiguracionProductos")!
     const seleccionProductosVentana = document.getElementById("seleccionProductos")!
     const seleccionCaja = document.getElementById("seleccionCaja")!
-    const registroVentas = document.getElementById("registroVentas")!
+    const contenedorRegistros = document.getElementById('registros')! as HTMLElement
     const configuracion = document.getElementById("configuracion")!
 
     const ventanas = document.querySelectorAll('.contenedorRegistener1')
@@ -122,8 +123,7 @@ const cargarBotonesBarraLateral=()=>{
     });
     document.getElementById("barraLateral_C__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
-        registroVentas.classList.remove('noActivo')
-        cargarRegistrosDOM()
+        contenedorRegistros.classList.remove('noActivo')
     });
     document.getElementById("barraLateral_AA__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
@@ -186,6 +186,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     cargarSeccionConfiguracion()
     cargarSeccionCaja()
     cargarVentaPublico()
+    cargarSeccionRegistros()
 
     document.getElementById('ventanaCarga')!.classList.add('ventanaCarga-desaparecer')
     setTimeout(() => {

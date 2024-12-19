@@ -1,8 +1,4 @@
 
-//TODO
-// Encabezados: IDVenta, Fecha y hora, Precio total, Metodo pago, Obervaciones
-// Ventana de venta: Registro de cambios, Listado de productos, Listado de precios y descuentos, Pago combinado (si aplica)
-// Opciones:Anular venta, buscar por IDVenta, rango de fechas, paginacion, modificar venta
 
 import { convertirAInput } from "../helpers/convertirElemento.js"
 import { eliminarRegistro, verRegistroVentas } from "../services/registroVentasAPI.js"
@@ -23,6 +19,7 @@ const indiceObservacion=()=>{
         if(sessionStorage.getItem('registroVentas-buscaObservacion')) convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',false,cargarRegistrosDOM)
     }
 }
+
 const indiceID=()=>{
     const indiceID = document.getElementById('registroVentas__indiceTabla__ID') as HTMLButtonElement|undefined
     if(indiceID) {
@@ -33,6 +30,7 @@ const indiceID=()=>{
         if(sessionStorage.getItem('registroVentas-IDVenta')) convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',false,cargarRegistrosDOM)
     }
 }
+
 const indiceEstado=()=>{
     const indiceEstado = document.getElementById('registroVentas__indiceTabla__estado')!
     const contenedorOpciones = document.getElementById('registroVentas__indiceTabla__estado__opciones')!
@@ -40,7 +38,7 @@ const indiceEstado=()=>{
     const checkModificado = document.getElementById('estado__opciones__modificado')! as HTMLInputElement
     const checkAnulado = document.getElementById('estado__opciones__anulado')! as HTMLInputElement
 
-    let checkEstados = sessionStorage.getItem('registroVentas-estado')||'' // Los estados se almacenan en un arreglo donde un digito particular representa el estado activo de un check
+    let checkEstados = sessionStorage.getItem('registroVentas-estado')! // Los estados se almacenan en un arreglo donde un digito particular representa el estado activo de un check
     // 1: Exitoso
     // 2: Modificado
     // 3: Anulado
@@ -75,7 +73,7 @@ const indiceEstado=()=>{
 }
 
 const alternarEstado=(estadoAlternar:string)=>{
-    let checkEstados = sessionStorage.getItem('registroVentas-estado')||''
+    let checkEstados = sessionStorage.getItem('registroVentas-estado')!
     if(checkEstados.includes(estadoAlternar)) checkEstados=checkEstados.replace(estadoAlternar,'') // Si estaba activo lo desactiva
     else checkEstados=checkEstados+estadoAlternar // Si estaba desactivado lo activa
     sessionStorage.setItem('registroVentas-estado',checkEstados) // Guarda los cambios
@@ -97,6 +95,7 @@ const botonModificarVenta=()=>{
         }
     })
 }
+
 const botoneliminarRegistro=()=>{
     const botonesAnularVenta = document.querySelectorAll(".registroVentas__botonAnular") as NodeListOf<HTMLButtonElement>
     botonesAnularVenta.forEach((boton)=>{
@@ -109,6 +108,7 @@ const botoneliminarRegistro=()=>{
         }
     })
 }
+
 const selectCantidadPaginas=()=>{
     const select = document.getElementById('registroVentas__filtros__cantidad')! as HTMLSelectElement
     const selectCantidad = sessionStorage.getItem('registroVentas-cantidadElementos')||'25'
@@ -119,6 +119,7 @@ const selectCantidadPaginas=()=>{
         cargarRegistrosDOM()
     })
 }
+
 const inputFechas=()=>{
     /* Inputs */
     const fechaDesdeInput= document.getElementById('registroVentas__filtros__fechaDesde')! as HTMLInputElement
@@ -148,21 +149,27 @@ const inputFechas=()=>{
 }
 
 export const cargarRegistrosDOM=async ()=>{
+
     /* Contenedores */
     const contenedorRegistros = document.getElementById('registroVentas__contenedorTabla')!
+    const contenedorRegistroVenta = document.getElementById('registroVentas') as HTMLElement
+
+    /* Activa la seccion */
+    contenedorRegistroVenta.classList.remove('noActivo')
 
     /* Parametros de busqueda */
     const desde = sessionStorage.getItem('registroVentas-desde')||undefined
     const cantidadElementos = sessionStorage.getItem('registroVentas-cantidadElementos')||'25'
     const IDVenta = sessionStorage.getItem('registroVentas-IDVenta')||undefined
     const metodo = sessionStorage.getItem('registroVentas-metodo')||undefined
-    let estados = sessionStorage.getItem('registroVentas-estado')||''
+    let estados = sessionStorage.getItem('registroVentas-estado')
+    if(estados===undefined||estados===null) {
+        sessionStorage.setItem('registroVentas-estado','123')
+        estados='123'
+    }
     estados = estados.replace('1','Exitoso,')
     estados = estados.replace('2','Modificado,')
     estados = estados.replace('3','Anulado,')
-
-    console.log(estados)
-
 
     const buscaObservacion = sessionStorage.getItem('registroVentas-buscaObservacion')||undefined
     const pagina = sessionStorage.getItem('registroVentas-pagina')||undefined
