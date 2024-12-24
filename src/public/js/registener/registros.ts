@@ -1,4 +1,5 @@
-import { cargarRegistrosDOM } from "./registroVentas.js"
+import { cargarRegistrosCajaDOM } from "./registroCaja.js"
+import { cargarRegistrosVentaDOM } from "./registroVentas.js"
 
 export const cargarSeccionRegistros=()=>{
     const contenedorRegistros = document.getElementById('registros') as HTMLElement
@@ -8,10 +9,10 @@ export const cargarSeccionRegistros=()=>{
 
     botonVentas.onclick=()=>{
         contenedorRegistros.classList.add('noActivo')
-        cargarRegistrosDOM()
+        cargarRegistrosVentaDOM()
     }
     botonArqueos.onclick=()=>{
         contenedorRegistros.classList.add('noActivo')
-        contenedorRegistroCaja.classList.remove('noActivo')
+        cargarRegistrosCajaDOM()
     }
 }

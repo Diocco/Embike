@@ -163,46 +163,74 @@ const asignarBotonAgregarMetodo=()=>{
     }
 }
 
+export const cambiarTema=(temaSeleccionado:string)=>{
+    switch (temaSeleccionado) {
+        case 'Escala de grises':
+            
+            document.documentElement.style.setProperty('--colorLetra', 'rgb(207, 207, 207)');
+            document.documentElement.style.setProperty('--colorLetraTenue', 'rgba(207, 207, 207, 0.5)');
+            document.documentElement.style.setProperty('--colorLetraError', 'rgba(255, 0, 0, 1)');
+            
+            document.documentElement.style.setProperty('--colorFondo', 'rgba(40, 40, 40)');
+            document.documentElement.style.setProperty('--colorBarraLateral', 'rgba(50, 50, 50)');
+
+            document.documentElement.style.setProperty('--colorFondoVentana', 'rgba(70, 70, 70)');
+            document.documentElement.style.setProperty('--colorVentana', 'rgba(80, 80, 80)');
+
+            document.documentElement.style.setProperty('--colorBotones', 'rgba(100, 100, 100)');
+
+            break;
+        case 'Azul oscuro':
+            document.documentElement.style.setProperty('--colorLetra', 'rgb(207, 207, 207)');
+            document.documentElement.style.setProperty('--colorLetraTenue', 'rgba(255 244 244 / 45%)');
+            document.documentElement.style.setProperty('--colorLetraError', 'rgba(255, 0, 0, 1)');
+            
+            document.documentElement.style.setProperty('--colorFondo', '#2b1d4d');
+            document.documentElement.style.setProperty('--colorBarraLateral', '#3B2869');
+
+            document.documentElement.style.setProperty('--colorFondoVentana', '#453576');
+            document.documentElement.style.setProperty('--colorVentana', '#1a60a0');
+
+            document.documentElement.style.setProperty('--colorBotones', '#18548b');
+
+            break;
+        case 'Oscuro':
+            document.documentElement.style.setProperty('--colorLetra', 'rgb(207, 207, 207)');
+            document.documentElement.style.setProperty('--colorLetraTenue', 'rgba(207, 207, 207, 0.5)');
+            document.documentElement.style.setProperty('--colorLetraError', 'rgba(255, 0, 0, 1)');
+            
+            document.documentElement.style.setProperty('--colorFondo', '#06141B');
+            document.documentElement.style.setProperty('--colorBarraLateral', '#11212D');
+
+            document.documentElement.style.setProperty('--colorFondoVentana', '#253745');
+            document.documentElement.style.setProperty('--colorVentana', '#4A5C6A');
+
+            document.documentElement.style.setProperty('--colorBotones', '#50666c');
+
+            break;
+        case 'Rojo chino':
+            document.documentElement.style.setProperty('--colorLetra', 'rgb(207, 207, 207)');
+            document.documentElement.style.setProperty('--colorLetraTenue', 'rgba(207, 207, 207, 0.5)');
+            document.documentElement.style.setProperty('--colorLetraError', 'rgba(255, 255, 0, 1)');
+            
+            document.documentElement.style.setProperty('--colorFondo', '#230708');
+            document.documentElement.style.setProperty('--colorBarraLateral', '#550f11');
+
+            document.documentElement.style.setProperty('--colorFondoVentana', '#640508');
+            document.documentElement.style.setProperty('--colorVentana', '#f42c1d');
+
+            document.documentElement.style.setProperty('--colorBotones', '#AE1918');
+
+            break;
+    }
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
     /* Selecciona el tema de la aplicacion */
     const selectorTema = document.getElementById('configuracion__global__select-tema')! as HTMLSelectElement
+
     selectorTema.addEventListener('change',()=>{
-        const temaSeleccionado = selectorTema.value
-
-        switch (temaSeleccionado) {
-            case 'Oscuro':
-                
-                document.documentElement.style.setProperty('--colorFondo', 'rgba(40, 40, 40)');
-                document.documentElement.style.setProperty('--colorBarraLateral', 'rgba(50, 50, 50)');
-
-                document.documentElement.style.setProperty('--colorFondoVentana', 'rgba(70, 70, 70)');
-                document.documentElement.style.setProperty('--colorVentana', 'rgba(80, 80, 80)');
-
-                document.documentElement.style.setProperty('--colorBotones', 'rgba(100, 100, 100)');
-
-                break;
-            case 'Azul oscuro':
-                
-                document.documentElement.style.setProperty('--colorFondo', '#2b1d4d');
-                document.documentElement.style.setProperty('--colorBarraLateral', '#3B2869');
-
-                document.documentElement.style.setProperty('--colorFondoVentana', '#453576');
-                document.documentElement.style.setProperty('--colorVentana', '#4F4698');
-
-                document.documentElement.style.setProperty('--colorBotones', '#3B82C4');
-
-                break;
-            case 'Rojo chino':
-                
-                document.documentElement.style.setProperty('--colorFondo', '#070709');
-                document.documentElement.style.setProperty('--colorBarraLateral', '#4b2d2e');
-
-                document.documentElement.style.setProperty('--colorFondoVentana', '#824334');
-                document.documentElement.style.setProperty('--colorVentana', '#f42c1d');
-
-                document.documentElement.style.setProperty('--colorBotones', '#AE1918');
-
-                break;
-        }
+        cambiarTema(selectorTema.value)
+        localStorage.setItem('temaSeleccionado',selectorTema.value)
     })
 })

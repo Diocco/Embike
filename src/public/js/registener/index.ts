@@ -11,18 +11,20 @@ import { preguntar } from "./ventanasEmergentes/preguntar.js"
 import { url, usuarioVerificado } from "../global.js"
 import { usuario } from "../../../models/interfaces/usuario.js"
 import { cargarVentaPublico } from "./ventaPublico.js"
-import { cargarRegistrosDOM } from "./registroVentas.js"
-import { cargarSeccionCaja } from "./seccionCaja.js"
+import { cargarRegistrosVentaDOM } from "./registroVentas.js"
+import { actualizarIngresos, cargarSeccionCaja } from "./seccionCaja.js"
 import { conexionConServidor } from "../services/conexionAPI.js"
 import { MetodoPagoI } from "../../../models/interfaces/metodosPago.js"
 import { verMetodosPago } from '../../../controllers/metodosPago';
 import { solicitudObtenerMetodosPago } from "../services/metodosPagoAPI.js"
-import { cargarSeccionConfiguracion } from "./configuracion.js"
+import { cambiarTema, cargarSeccionConfiguracion } from "./configuracion.js"
 import { cargarSeccionRegistros } from "./registros.js"
 
 
-
-
+// Cambia el tema de la aplicacion
+cambiarTema(localStorage.getItem('temaSeleccionado')||'Escala de grises')
+document.getElementById('ventanaCarga')!.classList.remove('noActivo')
+document.getElementById('ventanaNegra')!.classList.add('noActivo')
 
 //Variables globales
 const contenedorProductos: HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__productos')!
@@ -120,6 +122,7 @@ const cargarBotonesBarraLateral=()=>{
     document.getElementById("barraLateral__caja")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones
         seleccionCaja.classList.remove('noActivo')
+        actualizarIngresos()
     });
     document.getElementById("barraLateral_C__icono")!.addEventListener("click",()=>{
         ventanas.forEach(contenedor=>contenedor.classList.add('noActivo')) // Esconde todos las secciones

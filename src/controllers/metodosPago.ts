@@ -87,7 +87,7 @@ export const activarMetodoPago = async(req: Request, res: Response) =>{
 
     try {
         // Busca y activa el metodo de pago
-        MetodoPago.findOneAndUpdate({nombre:metodoNombre},{estado:true})
+        await MetodoPago.findOneAndUpdate({nombre:metodoNombre},{estado:true})
         res.status(200).json(0)
 
     } catch (error) {

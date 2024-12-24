@@ -15,6 +15,7 @@ export interface RegistroVentaI{
     descuento?:number
     promocion?:mongoose.Schema.Types.ObjectId,
     observacion?:string
+    etiqueta?:string
     cliente?:mongoose.Schema.Types.ObjectId,
     carrito?:ElementoCarritoI[]
     vendedor?:string

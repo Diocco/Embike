@@ -10,6 +10,7 @@ export const registrarVenta = async(
     total:number,
     metodo1:string,
     estado:string,
+    etiqueta:string,
     pago1?:number,
     pago2?:number,
     metodo2?:string,
@@ -22,11 +23,13 @@ export const registrarVenta = async(
 
     // Estructura la informacion y le da formato de string
     const fechaVenta = new Date()
+    if(!pago1) pago1=total
     const data = JSON.stringify({
         fechaVenta,
         total,
         pago1,
         pago2,
+        etiqueta,
         metodo1,
         metodo2,
         estado,
@@ -100,6 +103,30 @@ export const verRegistroVentas =async(
     })
 
     return respuesta
+}
+
+export const solicitudObtenerIngresos =async (fechaDesde:Date)=>{
+    let ingresos:[{
+        metodo:string,
+        monto:number
+    }] | undefined
+    
+    await fetch(urlRegistroVentas+`/ingresos/:${fechaDesde}`, { 
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json',
+            'tokenAcceso':`${tokenAcceso}`},
+        })
+    .then(response => response.json()) // Parsea la respuesta 
+    .then(data=> { // Maneja la respuesta del servidor
+        if(data.errors) mostrarErroresConsola (data.errors) // Si hay errores de tipeo los muestra en consola 
+        else ingresos = data.ingresos // Si el servidor no devuelve errores guarda la respuesta
+    })
+    .catch(error => { // Si hay un error se manejan 
+        console.error(error);
+        mostrarMensaje('2',true);
+    })
+
+    return ingresos
 }
 
 export const obtenerRegistro =async (id:string)=>{

@@ -32,6 +32,7 @@ import categoriasRoutes from '../routes/categorias.js';
 import productosRoutes from '../routes/productos.js'; 
 import variantesRoutes from '../routes/variantes.js';
 import registroVentasRoutes from '../routes/registroVentas.js';
+import registroCajaRoutes from '../routes/registroCaja.js';
 
 import fileUpload from 'express-fileupload';
 import mongoose from 'mongoose';
@@ -44,6 +45,7 @@ class Server {
     authPath: string
     categoriasPath:string
     productosPath:string
+    registroCajaPath:string
     variantesPath:string
     registroVentasPath:string
     metodoPagoPath:string
@@ -59,6 +61,7 @@ class Server {
         this.productosPath = '/api/productos';
         this.variantesPath = '/api/variantes';
         this.registroVentasPath = '/api/registroVentas';
+        this.registroCajaPath = '/api/registroCaja';
         this.metodoPagoPath = '/api/metodoPago';
         this.conexionConServidor = '/api/conexion';
         
@@ -108,6 +111,7 @@ class Server {
         this.app.use(this.productosPath, productosRoutes);
         this.app.use(this.variantesPath, variantesRoutes);
         this.app.use(this.registroVentasPath, registroVentasRoutes);
+        this.app.use(this.registroCajaPath, registroCajaRoutes);
         
         // HTML
         this.app.get('/', cargarIndex); // Configura la ruta

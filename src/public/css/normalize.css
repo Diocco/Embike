@@ -22,10 +22,16 @@
   --colorLetra:  rgb(207, 207, 207);
   --colorLetra-invertida:  rgb(0, 0, 0);
   --colorLetraTenue:  rgba(207, 207, 207, 0.5);
+  --colorLetraError: rgba(214, 0, 0, 0.733);
 
   --crema-logo: #DFC5B4; 
   --azul-logo: #033452;
 
+}
+
+/* Estilo de todos los placeholder*/
+*::placeholder{
+  color: var(--colorLetraTenue)
 }
 
 /* Estilo de la barra de desplazamiento */
@@ -51,11 +57,11 @@
   display: none !important;
 }
 .nodisponible{
-  filter: brightness(0.5) !important;
+  filter: brightness(0.7) !important;
   cursor: default !important;
 }
 .nodisponible:hover{
-  filter: brightness(0.5) !important;
+  filter: brightness(0.7) !important;
 }
 
 .imagenProducto{
@@ -88,6 +94,14 @@
   background-color: var(--colorFondoVentana);
   border-radius: 23px;
   margin: 8px;
+}
+
+.contenedorRegistener3{
+  width: 100%;
+  background-color: var(--colorBotones);
+  border-radius: 20px;
+  padding: 2px 20px;
+  margin: 5px 0px;
 }
 
 .ayudaRegistener1{
@@ -158,7 +172,7 @@
 }
 
 .letra__enError{
-  color: red !important;
+  color: var(--colorLetraError) !important;
 }
 .letra__enAdvertencia{
   color: yellow !important;
@@ -169,7 +183,7 @@
 
 .boton__enError{
   border:2px solid !important;
-  border-color: red !important;
+  border-color: var(--colorLetraError) !important;
 }
 .boton__enAdvertencia{
   border:1px solid !important;

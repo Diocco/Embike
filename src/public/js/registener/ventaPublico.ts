@@ -121,7 +121,6 @@ const botonesDesplazamiento=()=>{
         let loop=0
         contenedorGeneral.scrollLeft=contenedorGeneral.clientWidth
         const intervalo = setInterval(()=>{
-            console.log(contenedorGeneral.scrollLeft)
             contenedorGeneral.scrollLeft-=contenedorGeneral.clientWidth/40
             loop+=1
             if(loop>40) clearInterval(intervalo)
@@ -335,7 +334,7 @@ const cargarBotonConfirmar=()=>{
 
         if(!total||!metodo1) return;
 
-        registrarVenta(total,metodo1,'Exitoso',pago1,pago2,metodo2,'',descuento,modificacionNombre,observacion,carrito);
+        registrarVenta(total,metodo1,'Exitoso','Venta',pago1,pago2,metodo2,'',descuento,modificacionNombre,observacion,carrito);
 
         const respuesta = await aplicarVenta(carrito)
         if(respuesta==0) { // Si todo sale bien:

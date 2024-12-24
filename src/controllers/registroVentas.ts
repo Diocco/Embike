@@ -15,6 +15,7 @@ export const registrarVenta = async(req: Request, res: Response) =>{
         total,
         metodo1,
         metodo2,
+        etiqueta,
         pago1,
         pago2,
         descuento,
@@ -34,7 +35,8 @@ export const registrarVenta = async(req: Request, res: Response) =>{
         fechaVenta,
         total,
         metodo1,
-        estado
+        estado,
+        etiqueta
     }
 
     try{
@@ -108,7 +110,7 @@ export const verRegistroVentas = async(req: Request, res: Response)=>{
         // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
         const [registroVentas, registroVentasCantidad]:[RegistroVentaI[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
             VentaRegistro.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condiciones
-                .select('_id fechaVenta total metodo1 metodo2 estado observacion') // Indica los elementos que se requieren y descarta los demas
+                .select('_id etiqueta fechaVenta total metodo1 metodo2 estado observacion') // Indica los elementos que se requieren y descarta los demas
                 .skip(desde+((pagina-1)*cantidadElementos)).sort({fechaVenta:-1}).limit(cantidadElementos),
             VentaRegistro.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condiciones
         ])
@@ -287,6 +289,79 @@ export const modificarRegistro= async(req: Request, res: Response)=>{
             console.log(error)
             return res.status(500).json(errors)
         }
+}
+
+export const verIngresos = async(req: Request, res: Response)=>{
+
+    // Define la busqueda para registros que vayan desde la fecha pasada como parametro hasta la fecha actual, y que no esten anulados
+    const { fechaDesde } = req.params;  
+    const estados:string[] = ["Modificado","Exitoso"] // Valor que filtra por estado de la venta
+
+    try{
+        const filtros = {
+            $and: [
+                { fechaVenta: { $gte: fechaDesde }},  // Rango de precios
+                { estado: {$in:estados} }
+            ]
+        };
+
+        // Realiza la busqueda
+        const registroVentas = await VentaRegistro.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condiciones
+                                                .select('pago1 pago2 metodo1 metodo2') // Indica los elementos que se requieren y descarta los demas
+
+
+        if(registroVentas.length<1) return res.status(200).json({ingresos:undefined}) // Si no se encontraron registros entonces devuelve undefined
+
+        // Obtiene todos los metodos de pago
+        const metodosPagoSet:Set<string> = new Set 
+        registroVentas.forEach(registro => {
+            metodosPagoSet.add(registro.metodo1)
+            if(registro.metodo2) metodosPagoSet.add(registro.metodo2)
+        });
+        const metodosPago = Array.from(metodosPagoSet);
+
+
+        // Inicializa el array de objetos que contendran los ingresos por metodo de pago
+        let ingresos:[{
+            metodo:string,
+            monto:number
+        }] = [{
+            metodo:'Vacio',
+            monto:0
+        }]
+
+        for (let i = 0; i < metodosPago.length; i++) {
+            const nuevoMetodo = {
+                metodo:metodosPago[i],
+                monto:0
+            }
+            ingresos[i] = nuevoMetodo
+        }
+
+        // Calcula el monto ingresado de cada medio de pago
+        registroVentas.forEach(registro=>{
+            // Primer metodo de pago
+            let metodo = ingresos.find(m => m.metodo === registro.metodo1)! // Busca el objeto que tenga como nombre el metodo de pago
+            metodo.monto = metodo.monto + (registro.pago1 || 0) // Agrega el monto
+
+            // Segundo metodo de pago
+            if(registro.metodo2){
+                metodo = ingresos.find(m => m.metodo === registro.metodo2)! 
+                metodo.monto = metodo.monto + (registro.pago2 || 0)
+            }
+        })
+
+        res.status(200).json({ingresos})
+
+    } catch (error) {
+        const errors:error[]=[{
+            msg: "Error al calcular los ingresos por metodo de pago",
+            path: "Servidor",
+            value: (error as Error).message
+        }]
+        console.log(error)
+        return res.status(500).json(errors)
+    }
 }
 
 // Elimina un registro de venta con el id pasado como parametro

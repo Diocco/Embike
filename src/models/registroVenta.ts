@@ -1,6 +1,5 @@
 import mongoose, { Model } from "mongoose";
 import { RegistroVentaI } from './interfaces/registroVentas.js';
-import { ElementoCarritoI } from '../interfaces/elementoCarrito';
 
 const ventaSchema = new mongoose.Schema<RegistroVentaI>({
     lugarVenta:{ 
@@ -38,6 +37,9 @@ const ventaSchema = new mongoose.Schema<RegistroVentaI>({
         type: mongoose.Schema.Types.ObjectId,
     },
     observacion: { 
+        type: String
+    },
+    etiqueta: { 
         type: String
     },
     cliente:{

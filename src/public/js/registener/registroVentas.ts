@@ -1,6 +1,7 @@
 
 
 import { convertirAInput } from "../helpers/convertirElemento.js"
+import { cargarPaginadoRegistros } from "../helpers/paginadoRegistros.js"
 import { eliminarRegistro, verRegistroVentas } from "../services/registroVentasAPI.js"
 import { ventanaModificarVenta } from "./ventanasEmergentes/modificarVenta.js"
 import { preguntar } from "./ventanasEmergentes/preguntar.js"
@@ -8,15 +9,18 @@ import { preguntar } from "./ventanasEmergentes/preguntar.js"
 //TODO proximo
 // Vendedor,Cliente,estado(completado,anulado),exportar a excel,imprimir recibo o factura,devolucion en efectivo
 
+/* Inputs */
+const fechaDesdeInput= document.getElementById('registroVentas__filtros__fechaDesde')! as HTMLInputElement
+const fechaHastaInput= document.getElementById('registroVentas__filtros__fechaHasta')! as HTMLInputElement
 
 const indiceObservacion=()=>{
     const indiceObservacion = document.getElementById('registroVentas__indiceTabla__observacion') as HTMLButtonElement|undefined
     if(indiceObservacion){
         indiceObservacion.onclick=()=> {
-            const inputFinal = convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',false,cargarRegistrosDOM)
+            const inputFinal = convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',false,cargarRegistrosVentaDOM)
             inputFinal.focus() // Le hace focus inmediatamente al input recien creado
         }
-        if(sessionStorage.getItem('registroVentas-buscaObservacion')) convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',false,cargarRegistrosDOM)
+        if(sessionStorage.getItem('registroVentas-buscaObservacion')) convertirAInput(indiceObservacion,'registroVentas__indiceTabla__observacion-input','registroVentas-buscaObservacion','text',false,cargarRegistrosVentaDOM)
     }
 }
 
@@ -24,10 +28,10 @@ const indiceID=()=>{
     const indiceID = document.getElementById('registroVentas__indiceTabla__ID') as HTMLButtonElement|undefined
     if(indiceID) {
         indiceID.onclick=()=> {
-            const inputFinal = convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',false,cargarRegistrosDOM)
+            const inputFinal = convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',false,cargarRegistrosVentaDOM)
             inputFinal.focus() // Le hace focus inmediatamente al input recien creado
         }
-        if(sessionStorage.getItem('registroVentas-IDVenta')) convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',false,cargarRegistrosDOM)
+        if(sessionStorage.getItem('registroVentas-IDVenta')) convertirAInput(indiceID,'registroVentas__indiceTabla__ID-input','registroVentas-IDVenta','text',false,cargarRegistrosVentaDOM)
     }
 }
 
@@ -38,7 +42,7 @@ const indiceEstado=()=>{
     const checkModificado = document.getElementById('estado__opciones__modificado')! as HTMLInputElement
     const checkAnulado = document.getElementById('estado__opciones__anulado')! as HTMLInputElement
 
-    let checkEstados = sessionStorage.getItem('registroVentas-estado')! // Los estados se almacenan en un arreglo donde un digito particular representa el estado activo de un check
+    let checkEstados = sessionStorage.getItem('registroVentas-estado')! || '123' // Los estados se almacenan en un arreglo donde un digito particular representa el estado activo de un check
     // 1: Exitoso
     // 2: Modificado
     // 3: Anulado
@@ -73,11 +77,11 @@ const indiceEstado=()=>{
 }
 
 const alternarEstado=(estadoAlternar:string)=>{
-    let checkEstados = sessionStorage.getItem('registroVentas-estado')!
+    let checkEstados = sessionStorage.getItem('registroVentas-estado')! || '123'
     if(checkEstados.includes(estadoAlternar)) checkEstados=checkEstados.replace(estadoAlternar,'') // Si estaba activo lo desactiva
     else checkEstados=checkEstados+estadoAlternar // Si estaba desactivado lo activa
     sessionStorage.setItem('registroVentas-estado',checkEstados) // Guarda los cambios
-    cargarRegistrosDOM() // Actualiza los registros mostrados en el DOM
+    cargarRegistrosVentaDOM() // Actualiza los registros mostrados en el DOM
 
     // Cambia el numero de la cantidad de estados activos para mostrar en la busqueda
     const contenedorCantidadEstados = document.getElementById('registroVentas__indiceTabla__estado-cantidad')! // Contenedor del contador
@@ -104,7 +108,7 @@ const botoneliminarRegistro=()=>{
             if(!respuesta) return
             const IDVenta = boton.parentElement!.firstElementChild!.textContent!
             await eliminarRegistro(IDVenta)
-            cargarRegistrosDOM() // Recarga la seccion para visualizar los cambios
+            cargarRegistrosVentaDOM() // Recarga la seccion para visualizar los cambios
         }
     })
 }
@@ -116,14 +120,12 @@ const selectCantidadPaginas=()=>{
 
     select.addEventListener('input',()=>{
         sessionStorage.setItem('registroVentas-cantidadElementos',select.value)
-        cargarRegistrosDOM()
+        cargarRegistrosVentaDOM()
     })
 }
 
 const inputFechas=()=>{
-    /* Inputs */
-    const fechaDesdeInput= document.getElementById('registroVentas__filtros__fechaDesde')! as HTMLInputElement
-    const fechaHastaInput= document.getElementById('registroVentas__filtros__fechaHasta')! as HTMLInputElement
+
 
     // Coloca las fechas en los inputs
     const fechaHasta  = sessionStorage.getItem('registroVentas-fechaHasta') ? new Date(new Date().setDate(new Date(sessionStorage.getItem('registroVentas-fechaHasta') as string).getDate() - 1)).toISOString().slice(0, 10) // La fecha almacenada tiene un dia mas sumado, para asi mostrar los resultados de la fecha seleccionada inclusive, por lo tanto se le resta un dia
@@ -138,21 +140,22 @@ const inputFechas=()=>{
     fechaDesdeInput.addEventListener('input',()=>{ 
         const fechaInput = new Date(fechaDesdeInput.value+'T00:00:00-03:00').toString().substring(0,15) // Se obtiene la fecha del input
         sessionStorage.setItem('registroVentas-fechaDesde',fechaInput ||'')
-        cargarRegistrosDOM()
+        cargarRegistrosVentaDOM()
     })
 
     fechaHastaInput.addEventListener('input',()=>{ 
         const fechaInput = new Date(new Date(fechaHastaInput.value+'T00:00:00-03:00').setDate(new Date(fechaHastaInput.value+'T00:00:00-03:00').getDate() + 1)).toString().substring(0,15); // Se obtiene la fecha del input y se le suma un dia para obtener los resultados del dia seleccionado
         sessionStorage.setItem('registroVentas-fechaHasta',fechaInput ||'') 
-        cargarRegistrosDOM()
+        cargarRegistrosVentaDOM()
     })
 }
 
-export const cargarRegistrosDOM=async ()=>{
+export const cargarRegistrosVentaDOM=async ()=>{
 
     /* Contenedores */
     const contenedorRegistros = document.getElementById('registroVentas__contenedorTabla')!
     const contenedorRegistroVenta = document.getElementById('registroVentas') as HTMLElement
+    const contenedorPaginado = document.getElementById('registroVentas__indice') as HTMLElement
 
     /* Activa la seccion */
     contenedorRegistroVenta.classList.remove('noActivo')
@@ -208,6 +211,7 @@ export const cargarRegistrosDOM=async ()=>{
             <div>${fecha.toLocaleString('es-AR',{hour12: false})||''}</div>
             <div>$ ${registro.total.toLocaleString('es-AR')||''}</div>
             <div>${registro.metodo2?'Combinado':registro.metodo1||''}</div>
+            <div>${registro.etiqueta||''}</div>
             <div class="${registro.estado==='Modificado'?'letra__enAdvertencia':(registro.estado==='Anulado'?'letra__enError':'')}">${registro.estado}</div>
             <div class="registroVentas__fila__observacion" title="${registro.observacion||''}">${registro.observacion||''}</div>
             <button class="botonRegistener1 registroVentas__botonModificar" ><i class="fa-solid fa-pencil" aria-hidden="true"></i></button>
@@ -219,98 +223,13 @@ export const cargarRegistrosDOM=async ()=>{
     contenedorRegistros.appendChild(fragmento)
 
 
-    cargarPaginadoRegistros(respuesta.paginasCantidad)
-    botonModificarVenta()
-    botoneliminarRegistro()
+    cargarPaginadoRegistros(respuesta.paginasCantidad,contenedorPaginado,'registroVentas',cargarRegistrosVentaDOM);
+    botonModificarVenta();
+    botoneliminarRegistro();
+    fechaDesdeInput.value = new Date(sessionStorage.getItem('registroVentas-fechaDesde') as string).toISOString().slice(0, 10); // Actualiza la fecha del input con la fecha almacena 
 
 }
 
-const cargarPaginadoRegistros =(cantidadPaginas:number /* Cantidad de paginas total necesarias para ver todos los resultados*/)=>{
-    // Agrega las paginas de los elementos
-    const contenedorGeneral = document.getElementById('registroVentas__contenido')!
-    const contenedorPaginas = document.getElementById('registroVentas__indice')!
-    contenedorPaginas.innerHTML='' // Vacia el contenedor previo
-
-    // Calcula el rango de paginado
-    let paginaDecena = Number(sessionStorage.getItem('registroVentas-paginaDecena'))||0
-    const desdePagina = paginaDecena===0?1:paginaDecena*10 // El inicio de la pagina esta en el rango: [1,10,20,30,...,N]
-    let paginaSeleccionada = Number(sessionStorage.getItem('registroVentas-pagina')); // Pagina seleccionada actual
-    const paginaHasta = cantidadPaginas>paginaDecena*10+9?paginaDecena*10+9:cantidadPaginas // El final del rango es 9 mas que la inicial en el caso de que la cantidad de paginas sea mayor que eso, sino el final es la cantidad de paginas 
-    
-    if(!(desdePagina<=paginaSeleccionada&&paginaSeleccionada<=paginaHasta)) { // Verifica que la pagina seleccionada actual se encuentre dentro de la cantidad de paginas actuales
-        paginaSeleccionada=paginaDecena===0?1:paginaDecena*10;
-        sessionStorage.setItem('registroVentas-pagina',`${paginaSeleccionada}`)
-    }
-    
-
-    if(paginaDecena>1){ // Si las decenas del paginado es mayor que 1 entonces agrega un boton para volver al principio
-        const botonReducirPaginado = document.createElement('button')
-        botonReducirPaginado.className='botonRegistener2'
-        botonReducirPaginado.innerHTML=`<i class="fa-solid fa-angles-left"></i>`
-        botonReducirPaginado.onclick=()=>{
-            paginaDecena=paginaDecena-1
-            sessionStorage.setItem('registroVentas-paginaDecena',`0`) // Vuelve a la primera pagina
-            sessionStorage.setItem('registroVentas-pagina',`1`) // Deja seleccionado la primera pagina
-            cargarRegistrosDOM() // Recarga los registros
-        }
-        contenedorPaginas.appendChild(botonReducirPaginado)
-    }
-
-    if(paginaDecena>0){ // Si las decenas del paginado es mayor que cero entonces agrega un boton para reducirlo
-        const botonReducirPaginado = document.createElement('button')
-        botonReducirPaginado.className='botonRegistener2'
-        botonReducirPaginado.innerHTML=`<i class="fa-solid fa-angle-left"></i>`
-        botonReducirPaginado.onclick=()=>{
-            paginaDecena=paginaDecena-1
-            sessionStorage.setItem('registroVentas-paginaDecena',`${paginaDecena}`) // Aumenta el valor de la decena en el indice de paginas
-            sessionStorage.setItem('registroVentas-pagina',`${paginaDecena===0?1:paginaDecena*10}`)       
-            cargarRegistrosDOM() // Recarga los registros
-        }
-        contenedorPaginas.appendChild(botonReducirPaginado)
-    }
-
-    // Agrega los indices dentro del contenedor
-    for (let i = desdePagina; i < paginaHasta+1; i++) {
-        const indice = document.createElement('button')
-        indice.className='botonRegistener2'
-        if(paginaSeleccionada===i) indice.classList.add('boton__activo2') // Si el boton representa a la pagina actualmente activa entonces le da el estilo de activado
-        indice.innerText=i.toString();
-        indice.onclick=()=>{
-            sessionStorage.setItem('registroVentas-pagina',i.toString())
-            cargarRegistrosDOM()
-        }
-        
-        contenedorPaginas.appendChild(indice)
-    }
-    if(paginaHasta<cantidadPaginas){ // Si la cantidad de paginas para seleccionar es menor a la cantidad de paginas totales entonces agrega un boton para aumentar la cantidad de paginas seleccionables
-        const botonAumentarPaginado = document.createElement('button')
-        botonAumentarPaginado.className='botonRegistener2'
-        botonAumentarPaginado.innerHTML=`<i class="fa-solid fa-angle-right"></i>`
-        botonAumentarPaginado.onclick=()=>{
-            paginaDecena=paginaDecena+1
-            sessionStorage.setItem('registroVentas-paginaDecena',`${paginaDecena}`) // Aumenta el valor de la decena en el indice de paginas
-            sessionStorage.setItem('registroVentas-pagina',`${paginaDecena===0?1:paginaDecena*10}`)
-            cargarRegistrosDOM() // Recarga los registros
-        }
-        contenedorPaginas.appendChild(botonAumentarPaginado)
-    }
-
-    if(paginaHasta<cantidadPaginas-10){ // Si la cantidad de paginas para seleccionar es menor a la cantidad de paginas totales entonces agrega un boton para aumentar la cantidad de paginas seleccionables
-        const botonAumentarPaginado = document.createElement('button')
-        botonAumentarPaginado.className='botonRegistener2'
-        botonAumentarPaginado.innerHTML=`<i class="fa-solid fa-angles-right"></i>`
-        botonAumentarPaginado.onclick=()=>{
-            paginaDecena=paginaDecena+1
-            sessionStorage.setItem('registroVentas-paginaDecena',`${cantidadPaginas}`) // Aumenta el valor de la decena en el indice de paginas
-            sessionStorage.setItem('registroVentas-pagina',`${paginaDecena===0?1:paginaDecena*10}`)
-            cargarRegistrosDOM() // Recarga los registros
-        }
-        contenedorPaginas.appendChild(botonAumentarPaginado)
-    }
-
-
-    contenedorGeneral.appendChild(contenedorPaginas)
-}
 
 document.addEventListener('DOMContentLoaded',()=>{
     selectCantidadPaginas()

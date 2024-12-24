@@ -2,7 +2,7 @@ import { ElementoCarritoI } from "../../../../interfaces/elementoCarrito.js"
 import { RegistroVentaI } from "../../../../models/interfaces/registroVentas.js"
 import { convertirAInput } from "../../helpers/convertirElemento.js"
 import { modificarRegistro, obtenerRegistro } from "../../services/registroVentasAPI.js"
-import { cargarRegistrosDOM } from "../registroVentas.js"
+import { cargarRegistrosVentaDOM } from "../registroVentas.js"
 
 export const ventanaModificarVenta =async (IDVenta:string)=>{
     const registro = await obtenerRegistro(IDVenta)
@@ -248,7 +248,7 @@ const cargarBotonesRespuesta=()=>{
         await modificarRegistro(formData)
         
         /* Refleja los resultados en el DOM*/
-        cargarRegistrosDOM()
+        cargarRegistrosVentaDOM()
 
         // Desactiva la ventana emergente para modificar la venta
         document.getElementById('ventanaEmergenteFondo')!.classList.add('noActivo')

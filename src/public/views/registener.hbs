@@ -9,6 +9,7 @@
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/configuracion.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/registroVentas.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/registroCaja.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/seccionCaja.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/ventaPublico.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/seccionRegistros.css'>
@@ -25,8 +26,11 @@
 </head>
 <body>
 
+    {{!-- Ventana negra para antes de cargar el tema de la aplicacion --}}
+    <div id="ventanaNegra"></div>
+
     {{!-- Contenedor de carga inicial --}}
-    <div id="ventanaCarga" >
+    <div id="ventanaCarga" class="noActivo">
         <div id="ventanaCarga__barraCarga-fondo">
             <div id="ventanaCarga__barraCarga"></div>
         </div>
@@ -324,46 +328,55 @@
             <div class="contenedorRegistener2" id="seleccionCaja__contenedorSaldos">
                 <h2 class="seleccionCaja__h2">Caja</h3>
                 <div id="seccionCaja__estado">
-                    <h3>Estado:</h3> <h3 class="letra__activo">Activo</h3>
+                    <h3>Estado:</h3> <h3 id="seccionCaja__estado-text" class="letra__enError">Inactivo</h3>
                 </div>
-                <button class="botonRegistener3" id="seccionCaja__movimientosCaja">Movimientos de caja</button>
+                <button class="botonRegistener3 nodisponible" id="seccionCaja__movimientosCaja" disabled>Movimientos de caja</button>
                 <div id="seleccionCaja__tablaSaldos__encabezado" class="seleccionCaja__tablaSaldos__fila">
                     <div class="seleccionCaja__tablaSaldos__metodo">Metodo</div>
                     <div>Saldo inicial</div>
                     <div>Saldo final</div>
-                    <div>Observado</div>
+                    <div>Esperado</div>
                     <div>Diferencia</div>
                 </div>
                 <div id="seleccionCaja__tablaSaldos"></div>
             </div>
             <div class="contenedorRegistener2" id="seleccionCaja__abrirCerrar">
                 <button class="botonRegistener3" id="seccionCaja__abrirCaja">Abrir caja</button>
-                <button class="botonRegistener3" id="seccionCaja__cerrarCaja">Cerrar caja</button>
-                <div id="seccionCaja__ultimoInicio" >Ultimo inicio: 7/13/2024 15:00</div>
-                <div id="seccionCaja__ultimoCierre" >Ultimo cierre: 7/13/2024 13:00</div>
+                <button class="botonRegistener3 nodisponible" id="seccionCaja__cerrarCaja" disabled>Cerrar caja</button>
+                <div id="seccionCaja__ultimoInicio" class="noActivo" >Ultimo inicio: 7/13/2024 15:00</div>
+                <div id="seccionCaja__ultimoCierre" class="noActivo" >Ultimo cierre: 7/13/2024 13:00</div>
             </div>
             <div class="contenedorRegistener2" id="seleccionCaja__cambiosCaja">
-                <h2       id="seleccionCaja__cambiosCaja__h2"      class="seleccionCaja__h2"> Cambios de caja</h3>
-                <select   id="seleccionCaja__cambiosCaja__metodo"  class="inputRegistener1">
-                    <option>Efectivo</option>
-                    <option>Tarjeta</option>
+                <h2       id="seleccionCaja__cambiosCaja__h2"      class="seleccionCaja__h2">Cambios de caja</h3>
+                <select   id="seleccionCaja__cambiosCaja__metodo"  class="inputRegistener1"></select>
+                <select   id="seleccionCaja__cambiosCaja__etiqueta"  class="inputRegistener1">
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    <option>Ajuste de Inventario</option>
+                    <option>Reembolso</option>
+                    <option>Proveedor</option>
+                    <option>Materia Prima</option>
+                    <option>Venta</option>
+                    <option>Otro</option>
                 </select>
-                <input    id="seleccionCaja__cambiosCaja__monto"   class="inputRegistener1">
-                <textarea id="seleccionCaja__cambiosCaja__observacion"></textarea>
-                <button   id="seleccionCaja__cambiosCaja__button" class="botonRegistener3">Confirmar</button>
+                <input    id="seleccionCaja__cambiosCaja__monto"   class="inputRegistener1" placeholder="$ 0">
+                <textarea id="seleccionCaja__cambiosCaja__observacion" placeholder="Escribe una descripcion del cambio"></textarea>
+                <button   id="seleccionCaja__cambiosCaja__button" class="botonRegistener3 nodisponible" disabled>Confirmar</button>
             </div>
         </div>
     </section>
 
     {{!-- Ventana para seleccionar el registro que se quiere ver --}}
     <section id="registros" class="contenedorRegistener1 noActivo">
-        <div id="registros__botonVentas" class="registros__opcion">
-            <h2 class="registros__h2">Registro de ventas</h2>
-            <div class="registros__imagen"></div>
-        </div>
-        <div id="registros__botonArqueos" class="registros__opcion">
-            <h2 class="registros__h2">Registro de arqueos</h2>
-            <div class="registros__imagen"></div>
+        <div class="contenedorRegistener2">
+            <div id="registros__botonVentas" class="registros__opcion">
+                <h2 class="registros__h2">Registro de ventas</h2>
+                <div class="registros__imagen"></div>
+            </div>
+            <div id="registros__botonArqueos" class="registros__opcion">
+                <h2 class="registros__h2">Registro de arqueos</h2>
+                <div class="registros__imagen"></div>
+            </div>
+
         </div>
     </section>
 
@@ -390,6 +403,7 @@
                 <div id="registroVentas__indiceTabla__hora">Hora</div>
                 <div id="registroVentas__indiceTabla__total">Total</div>
                 <div id="registroVentas__indiceTabla__metodo">Metodo</div>
+                <div id="registroVentas__indiceTabla__etiqueta">Etiqueta</div>
                 <div id="registroVentas__indiceTabla__contenedorEstado">
                     <div id="registroVentas__indiceTabla__estado">Estados<br>
                         <div id="registroVentas__indiceTabla__estado__opciones" class="noActivo">
@@ -402,37 +416,96 @@
                 </div>
                 <div id="registroVentas__indiceTabla__observacion">Observaciones</div>
             </div>
-            <div id="registroVentas__contenedorTabla">
-                <div id="registroVentas__indiceTabla" class="registroVentas__fila">
-                    <div id="registroVentas__indiceTabla__ID">ID</div>
-                    <div id="registroVentas__indiceTabla__hora">Hora</div>
-                    <div id="registroVentas__indiceTabla__total">Total</div>
-                    <div id="registroVentas__indiceTabla__metodo">Metodo</div>
-                    <div id="registroVentas__indiceTabla__observacion">Observaciones</div>
-                </div>
-            </div>
+            <div id="registroVentas__contenedorTabla"></div>
             <div id="registroVentas__indice"></div>
     </section>
 
     {{!-- Registro de arqueo de caja --}}
     <section id="registroCaja" class="contenedorRegistener1 noActivo">
+        <div id="registroCaja__contenedorRegistro" class="contenedorRegistener2">
+            <h2>Registro de arqueo de caja</h2>
+            <div id="registroCaja__filtros">
+                <h3 class="registroCaja__filtros__h3">Desde</h3>
+                <input class="inputRegistener1" id="registroCaja__filtros__fechaDesde" type="date" >
+                <h3 class="registroCaja__filtros__h3">Hasta</h3>
+                <input class="inputRegistener1" id="registroCaja__filtros__fechaHasta" type="date" >
+                <h3 class="registroCaja__filtros__h3">Cantidad</h3>
+                <select id="registroCaja__filtros__cantidad" class="inputRegistener1">
+                    <option>5</option>
+                    <option>10</option>
+                    <option>25</option>
+                    <option>50</option>
+                    <option>100</option>
+                </select>
+            </div>
+            <div id="registroCaja__indiceTabla">
+                <div id="registroCaja__indiceTabla__hora">Hora</div>
+                <div id="registroCaja__indiceTabla__metodo">Vendedor</div>
+                <div id="registroCaja__indiceTabla__total">Diferencia total</div>
+            </div>
+            <div id="registroCaja__contenedorTabla">
+                <div class="registroCaja__fila contenedorRegistener3">
+                    <div>23/12/2024, 17:16:36</div>
+                    <div>Diego</div>
+                    <div>$ 10.000.000</div>
+                </div>
+                <div class="registroCaja__fila contenedorRegistener3">
+                    <div>23/12/2024, 17:16:36</div>
+                    <div>Diego</div>
+                    <div>$ 10.000.000</div>
+                </div>
+                <div class="registroCaja__fila contenedorRegistener3">
+                    <div>23/12/2024, 17:16:36</div>
+                    <div>Diego</div>
+                    <div>$ 10.000.000</div>
+                </div>
+            </div>
+            <div id="registroCaja__indice"></div>
+        </div>
+        <div id="registroCaja__contenedorVisualizador" class="contenedorRegistener2">
+            <h2>Ver registro</h2>
+            <p id="registroCaja__contenedorVisualizador-mensaje">Seleccione un registro para verlo en detalle</p>
+            <div id="registroCaja__registro" class="noActivo">
+                <h4>Vendedor apertura</h4>
+                <h4>Fecha de apertura</h4>
+                <div class="registroCaja__registro-info" id="registroCaja__registro-vendedor1">Diego</div>
+                <div class="registroCaja__registro-info" id="registroCaja__registro-fecha1">24/12/2024 12:33</div>
+                <h4>Vendedor cierre</h4>
+                <h4>Fecha de cierre</h4>
+                <div class="registroCaja__registro-info" id="registroCaja__registro-vendedor2">Diego</div>
+                <div class="registroCaja__registro-info" id="registroCaja__registro-fecha2">24/12/2024 12:33</div>
+                <div id="registroCaja__registro-metodosPago">
+                    <h4>Metodos de pago</h4>
+                    <div id="registroCaja__registro-indice">
+                        <div>Nombre</div>
+                        <div>Saldo Inicial</div>
+                        <div>Saldo Final</div>
+                        <div>Saldo Esperado</div>
+                        <div>Diferencia</div>
+                    </div>
+                    <div id="registroCaja__registro-metodosPago__tabla"></div>
+                </div>
+            </div>
+        </div>
+        </div>
     </section>
 
     {{!-- Configuracion --}}
     <section id="configuracion" class="contenedorRegistener1 noActivo">
-        <div id="configuracion__global" class="configuracion__div">
+        <div id="configuracion__global" class="contenedorRegistener2">
             <h3 class="configuracion__h3">Preferencias</h3>
             <h4 class="configuracion__h4">Tema</h4>
-            <select id="configuracion__global__select-tema">
+            <select id="configuracion__global__select-tema" class="inputRegistener2">
+                <option>Escala de grises</option>
                 <option>Oscuro</option>
                 <option>Azul oscuro</option>
                 <option>Rojo chino</option>
             </select>
         </div>
-        <div id="configuracion__ventaPublico" class="configuracion__div">
+        {{!-- <div id="configuracion__ventaPublico" class="configuracion__div">
             <h3 class="configuracion__h3">Venta al publico</h3>
-        </div>
-        <div id="configuracion__caja" class="configuracion__div">
+        </div> --}}
+        <div id="configuracion__caja" class="contenedorRegistener2">
             <h3 class="configuracion__h3">Caja</h3>
             <h4> Metodos de pago </h4>
             <div id="configuracion__caja__metodos-encabezado" class="configuracion__caja__metodos-fila">

@@ -9,8 +9,13 @@ body{
     color: var(--colorLetra);
 }
 
+/* Ventana negra previa a la ventana de carga*/
+#ventanaNegra{
+    background: black;
+}
+
 /* Contenedor de la ventana de carga*/
-#ventanaCarga{
+#ventanaCarga, #ventanaNegra{
     display: flex;
     flex-direction: column;
     justify-content: center;

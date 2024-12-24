@@ -1,5 +1,6 @@
 /* Contenedor de seccion*/
 #registros{
+    background: initial;
     flex-direction: column;
     align-content: center;
     justify-content: center;
