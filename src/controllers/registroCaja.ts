@@ -65,7 +65,7 @@ export const verRegistroCaja = async(req: Request, res: Response)=>{
         // Crea un array de promesas que son independientes entre ellas para procesarlas en paralelo
         const [registroCaja, registroCajaCantidad]:[RegistroCajaI[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
             CajaRegistro.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condiciones
-                .skip(desde+((pagina-1)*cantidadElementos)).sort({fechaVenta:-1}).limit(cantidadElementos),
+                .skip(desde+((pagina-1)*cantidadElementos)).sort({fechaCierre:-1}).limit(cantidadElementos),
             CajaRegistro.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condiciones
         ]);
 

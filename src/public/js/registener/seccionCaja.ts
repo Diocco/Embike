@@ -398,6 +398,6 @@ const cerrarCaja=()=>{
     contenedoresMontoEsperado.forEach(cont=>cont.textContent=`$ 0`)
 
     const mediosDePago = obtenerMediosPago()
-    if(mediosDePago) solicitudRegistrarCaja(fechaDesde!,fechaHasta!,"Diego","Diego",mediosDePago)
+    if(mediosDePago) solicitudRegistrarCaja(fechaDesde!,fechaHasta!,"","",mediosDePago)
     reiniciarVariables()
 }

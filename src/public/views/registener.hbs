@@ -425,41 +425,34 @@
         <div id="registroCaja__contenedorRegistro" class="contenedorRegistener2">
             <h2>Registro de arqueo de caja</h2>
             <div id="registroCaja__filtros">
-                <h3 class="registroCaja__filtros__h3">Desde</h3>
-                <input class="inputRegistener1" id="registroCaja__filtros__fechaDesde" type="date" >
-                <h3 class="registroCaja__filtros__h3">Hasta</h3>
-                <input class="inputRegistener1" id="registroCaja__filtros__fechaHasta" type="date" >
-                <h3 class="registroCaja__filtros__h3">Cantidad</h3>
-                <select id="registroCaja__filtros__cantidad" class="inputRegistener1">
-                    <option>5</option>
-                    <option>10</option>
-                    <option>25</option>
-                    <option>50</option>
-                    <option>100</option>
-                </select>
+                <div class="registroCaja__filtros-div">
+                    <h3>Desde</h3>
+                    <input class="inputRegistener1" id="registroCaja__filtros__fechaDesde" type="date" >
+                </div>
+                <div class="registroCaja__filtros-div">
+                    <h3>Hasta</h3>
+                    <input class="inputRegistener1" id="registroCaja__filtros__fechaHasta" type="date" >
+                </div>
+                <div class="registroCaja__filtros-div">
+                    <h3>Cantidad</h3>
+                    <select id="registroCaja__filtros__cantidad" class="inputRegistener1">
+                        <option>5</option>
+                        <option>10</option>
+                        <option>25</option>
+                        <option>50</option>
+                        <option>100</option>
+                    </select>
+                </div>
+                
+                
+                
             </div>
-            <div id="registroCaja__indiceTabla">
+            <div id="registroCaja__indiceTabla" class="registroCaja__fila contenedorRegistener3">
                 <div id="registroCaja__indiceTabla__hora">Hora</div>
                 <div id="registroCaja__indiceTabla__metodo">Vendedor</div>
-                <div id="registroCaja__indiceTabla__total">Diferencia total</div>
+                <div id="registroCaja__indiceTabla__total" class="registroCaja__fila__diferencia">Diferencia total</div>
             </div>
-            <div id="registroCaja__contenedorTabla">
-                <div class="registroCaja__fila contenedorRegistener3">
-                    <div>23/12/2024, 17:16:36</div>
-                    <div>Diego</div>
-                    <div>$ 10.000.000</div>
-                </div>
-                <div class="registroCaja__fila contenedorRegistener3">
-                    <div>23/12/2024, 17:16:36</div>
-                    <div>Diego</div>
-                    <div>$ 10.000.000</div>
-                </div>
-                <div class="registroCaja__fila contenedorRegistener3">
-                    <div>23/12/2024, 17:16:36</div>
-                    <div>Diego</div>
-                    <div>$ 10.000.000</div>
-                </div>
-            </div>
+            <div id="registroCaja__contenedorTabla"></div>
             <div id="registroCaja__indice"></div>
         </div>
         <div id="registroCaja__contenedorVisualizador" class="contenedorRegistener2">
@@ -468,19 +461,19 @@
             <div id="registroCaja__registro" class="noActivo">
                 <h4>Vendedor apertura</h4>
                 <h4>Fecha de apertura</h4>
-                <div class="registroCaja__registro-info" id="registroCaja__registro-vendedor1">Diego</div>
-                <div class="registroCaja__registro-info" id="registroCaja__registro-fecha1">24/12/2024 12:33</div>
+                <div class="registroCaja__registro-info" id="registroCaja__registro-vendedor1"></div>
+                <div class="registroCaja__registro-info" id="registroCaja__registro-fecha1"></div>
                 <h4>Vendedor cierre</h4>
                 <h4>Fecha de cierre</h4>
-                <div class="registroCaja__registro-info" id="registroCaja__registro-vendedor2">Diego</div>
-                <div class="registroCaja__registro-info" id="registroCaja__registro-fecha2">24/12/2024 12:33</div>
+                <div class="registroCaja__registro-info" id="registroCaja__registro-vendedor2"></div>
+                <div class="registroCaja__registro-info" id="registroCaja__registro-fecha2"></div>
                 <div id="registroCaja__registro-metodosPago">
                     <h4>Metodos de pago</h4>
-                    <div id="registroCaja__registro-indice">
-                        <div>Nombre</div>
-                        <div>Saldo Inicial</div>
-                        <div>Saldo Final</div>
-                        <div>Saldo Esperado</div>
+                    <div id="registroCaja__registro-indice" class="contenedorRegistener3 registroCaja__registro-fila">
+                        <div class="registroCaja__registro-nombre" >Nombre</div>
+                        <div>Inicial</div>
+                        <div>Final</div>
+                        <div>Esperado</div>
                         <div>Diferencia</div>
                     </div>
                     <div id="registroCaja__registro-metodosPago__tabla"></div>

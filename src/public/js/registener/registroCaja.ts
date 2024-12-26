@@ -2,14 +2,13 @@ import { ObjectId } from "mongoose";
 import { RegistroCajaI } from "../../../models/interfaces/registroCaja.js";
 import { cargarPaginadoRegistros } from "../helpers/paginadoRegistros.js";
 import { solicitudObtenerRegistrosCaja } from "../services/registroCajaAPI.js";
+import { obtenerFechaActual } from "../helpers/formatearFecha.js";
 
 
 /* Inputs */
 const fechaDesdeInput= document.getElementById('registroCaja__filtros__fechaDesde')! as HTMLInputElement
 const fechaHastaInput= document.getElementById('registroCaja__filtros__fechaHasta')! as HTMLInputElement
 
-/* Registros */
-let registrosCaja 
 
 export const cargarRegistrosCajaDOM=async ()=>{
 
@@ -35,6 +34,7 @@ export const cargarRegistrosCajaDOM=async ()=>{
         respuesta = await solicitudObtenerRegistrosCaja(desde,cantidadElementos,'1',fechaDesde,fechaHasta)
         sessionStorage.setItem('registroCaja-pagina','1')
     }
+
 
     // Vacia el contenedor 
     contenedorRegistros.innerHTML=``
@@ -62,7 +62,7 @@ export const cargarRegistrosCajaDOM=async ()=>{
         contenedorRegistro.innerHTML=`
             <div>${fecha.toLocaleString('es-AR',{hour12: false})||''}</div>
             <div>${registro.usuarioCierre||''}</div>
-            <div>$ ${diferenciaTotal.toLocaleString('es-AR')||''}</div>
+            <div class="registroCaja__fila__diferencia">$ ${diferenciaTotal.toLocaleString('es-AR')||''}</div>
         `
         contenedorRegistro.onclick=()=>visualizarRegistro(registro)
         fragmento.appendChild(contenedorRegistro)
@@ -94,8 +94,8 @@ const visualizarRegistro=(registro: RegistroCajaI)=>{
     contenedorVisualizador.classList.remove('noActivo') // Activa el visualizador de registros
 
     // Coloca la informacion del registro
-    document.getElementById('registroCaja__registro-fecha1')!.textContent = registro.fechaApertura.toLocaleString('es-AR',{hour12: false})||'' // Fecha de apertura
-    document.getElementById('registroCaja__registro-fecha2')!.textContent = registro.fechaCierre.toLocaleString('es-AR',{hour12: false})||'' // Fecha de apertura
+    document.getElementById('registroCaja__registro-fecha1')!.textContent = obtenerFechaActual(registro.fechaApertura)||'' // Fecha de apertura
+    document.getElementById('registroCaja__registro-fecha2')!.textContent = obtenerFechaActual(registro.fechaCierre)||'' // Fecha de apertura
     document.getElementById('registroCaja__registro-vendedor1')!.textContent = registro.usuarioApertura // Usuario que abrio el arqueo
     document.getElementById('registroCaja__registro-vendedor2')!.textContent = registro.usuarioCierre // Usuario que cerro el arqueo
 
@@ -117,7 +117,7 @@ const visualizarRegistro=(registro: RegistroCajaI)=>{
         const metodoPagoDIV = document.createElement('div')
         metodoPagoDIV.className="registroCaja__registro-fila contenedorRegistener3"
         metodoPagoDIV.innerHTML=`
-        <div>${metodo.medio}</div>
+        <div class="registroCaja__registro-nombre">${metodo.medio}</div>
         <div>$ ${(metodo.saldoInicial).toLocaleString('es-AR')}</div>
         <div>$ ${(metodo.saldoFinal).toLocaleString('es-AR')}</div>
         <div>$ ${(metodo.saldoEsperado).toLocaleString('es-AR')}</div>

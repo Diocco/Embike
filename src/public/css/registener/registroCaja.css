@@ -1,14 +1,14 @@
 /* Contenedor de la seccion*/
 #registroCaja{
     display: grid;
-    grid-template-columns: max-content 1fr;
+    grid-template-columns: 1fr 1fr;
     background: initial;
 }
 
 /*Contenido de la seccion*/
 #registroCaja__contenedorRegistro{
     display: grid;
-    grid-template-columns: 660px;
+    grid-template-columns: 1fr;
     grid-template-rows: 40px 50px 35px 1fr;
     justify-content: space-between;
 }
@@ -21,8 +21,8 @@
     align-items: center;
 }
 /* Titulos de filtros*/
-.registroCaja__filtros__h3{
-    margin: 0 10px
+.registroCaja__filtros-div{
+    margin: 5px
 }
 
 /*Contenedor general de la tabla*/
@@ -38,13 +38,9 @@
 
 /*Indice de la tabla*/
 #registroCaja__indiceTabla{
-    display: grid;
-    align-items: center;
-    grid-template-columns: 240px 200px 213px;
-    font-size: 19px;
-    height: 54px;
-
+    background-color: initial;
     color: var(--colorLetraTenue);
+    margin: 15px 0px 0px 0px;
 }
 
 /*Mensaje en caso de no haber encontrado elementos para mostrar*/
@@ -60,8 +56,8 @@
 /*Fila de la tabla*/
 .registroCaja__fila{
     display: grid;
-    align-items: center;
-    grid-template-columns: 240px 200px 213px;
+    justify-items: start;
+    grid-template-columns: 210px 150px minmax(max-content,1fr);
     padding: 0.25% 0.5%;
     cursor: pointer;
     background-color: var(--colorBotones)
@@ -70,10 +66,8 @@
     filter: brightness(1.1);
 }
 
-.registroCaja__fila__observacion {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+.registroCaja__fila__diferencia {
+    justify-self: end;
 }
 
 /*Indice de las paginas de los registros*/
@@ -92,6 +86,7 @@
     grid-template-columns: 100%;
     grid-template-rows: 40px;
     align-items: start;
+    min-width: 600px;
 }
 
 #registroCaja__contenedorVisualizador-mensaje{
@@ -105,7 +100,7 @@
 
 #registroCaja__registro{
     display: grid;
-    grid-template-columns: 265px 265px;
+    grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(4, min-content);
 }
 
@@ -119,10 +114,15 @@
     grid-column: 1/3;
 }
 #registroCaja__registro-indice{
-    color: var(--colorLetraTenue)
+    color: var(--colorLetraTenue);
+    background-color: initial;
 }
 
-#registroCaja__registro-indice,.registroCaja__registro-fila{
+.registroCaja__registro-fila{
     display: grid;
-    grid-template-columns: repeat(5, 105px);
+    grid-template-columns: repeat(5, 1fr);
+    justify-items: end;
+}
+.registroCaja__registro-nombre{
+    justify-self: start;
 }
