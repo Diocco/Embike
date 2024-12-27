@@ -10,13 +10,12 @@ import { actualizarProducto } from "../services/productosAPI.js";
 
 export const agregarProductosDOM = async(productos:producto[],contenedorProductos:HTMLElement) => {
 
-
-    if(productos.length<0){ // Si no se encontraron productos da aviso al usuario
+    if(productos.length<1){ // Si no se encontraron productos da aviso al usuario
         // Vacia el contenedor y muestra un mensaje de error
         contenedorProductos.innerHTML=`
-        <div id="mensajeSinProductos">
-            <i id="mensajeSinProductos__logo" class="fa-solid fa-triangle-exclamation"></i>
-            <p id="mensajeSinProductos__mensaje" >No se encontraron productos para los parametros de busqueda</p>
+        <div id="configProductos__productos__vacio">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p>No se encontraron productos para los parametros de busqueda</p>
         </div>
         `
         return 
@@ -42,18 +41,18 @@ export const agregarProductosDOM = async(productos:producto[],contenedorProducto
             }
             
             agregarElemento.id=producto._id.toString()
-            agregarElemento.classList.add("productos__div")
+            agregarElemento.className="contenedorRegistener3 configProductos__producto"
             
-            let claseProductoDisponible = 'botonPositivo'
+            let claseProductoDisponible = 'boton__activo'
             if (producto.disponible===false) claseProductoDisponible='' // Si el producto no esta disponible entonces no coloca ninguna clase
 
             agregarElemento.innerHTML=` 
-            <div class="producto__div__nombre">${producto.nombre}</div>
-            <div class="producto__div__precio">${(Number(producto.precio)).toLocaleString('es-AR')}</div>
-            <div class="producto__div__stock">${stockTotal}</div>
-            <div class="producto__div__opciones">
+            <div>${producto.nombre}</div>
+            <div>$ ${(Number(producto.precio)).toLocaleString('es-AR')}</div>
+            <div class="configProductos__producto-stock">${stockTotal}</div>
+            <div class="configProductos__producto-opciones">
                 <button class="fa-solid fa-eye       producto__opciones botonRegistener3 producto__disponibilidad ${claseProductoDisponible}" ></button>
-                <button class="fa-solid fa-trash-can producto__opciones botonRegistener3 producto__eliminar       botonNegativo             " ></button>
+                <button class="fa-solid fa-trash-can producto__opciones botonRegistener3 producto__eliminar       boton__negativo             " ></button>
             </div>
             `
             
@@ -72,7 +71,7 @@ export const alternarDisponibilidadProducto =async (idProducto:string,estaDispon
     const formData = new FormData
     formData.append('disponible',JSON.stringify(!estaDisponible))
     const productoActualizado = await actualizarProducto(formData,idProducto)
-    if(productoActualizado) boton.classList.toggle('botonPositivo') // Alterna visualmente la disponibilidad del producto para reflejar los cambios efectuados
+    if(productoActualizado) boton.classList.toggle('boton__activo') // Alterna visualmente la disponibilidad del producto para reflejar los cambios efectuados
 }
 
 

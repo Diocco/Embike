@@ -380,26 +380,18 @@ const eliminarFotoProducto = async(producto:producto,URLImagenVieja:string)=>{
         
         // Elimina el URL del array de imagenes del producto
         const indiceImagen = producto.imagenes.indexOf(URLImagenVieja);
-        if (indiceImagen === -1) {
-            reject(new Error('No se encontró el URL en el array de imágenes'));
-        } else {
-            producto.imagenes.splice(indiceImagen, 1); // Elimina el elemento del array de imágenes del producto
-            resolve(producto);
-        }
+        if (indiceImagen !== -1) producto.imagenes.splice(indiceImagen, 1); // Elimina el elemento del array de imágenes del producto
 
+        // Verifica si el archivo existe antes de intentar eliminarlo, si no existe entonces lanza un error 
         try {
-            // Verifica si el archivo existe antes de intentar eliminarlo, si no existe entonces lanza un error 
             await fs.promises.access(pathImagenVieja, fs.constants.F_OK);
-            
             // Si existe, procede a eliminarlo
             fs.unlink(pathImagenVieja, (err) => {
                 if (err) reject(new Error('No se pudo eliminar la imagen en el servidor'));
             });
+        } catch (error) {}
 
-        } catch {
-            // Si el archivo no existe, simplemente resuelve sin hacer nada
-            resolve(producto);
-        }
+        resolve(producto);
     });
     
 }

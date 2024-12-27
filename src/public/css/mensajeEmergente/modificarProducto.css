@@ -1,24 +1,26 @@
 /*Ventana de modificacion de productos*/
-#modificarProducto{
+#ventana__modProd{
     display: grid;
     grid-template-columns: 239px 300px 650px;
-    grid-template-rows: 300px 300px 60px;
+    grid-template-rows: repeat(3, min-content);
     background-color: var(--colorFondoVentana);
     color: var(--colorLetra);
     padding: 20px;
     width: min-content;
-    height: min-content;
+    height: 100%;
+    max-height: max-content;
     border-radius: 10px;
     justify-items: center;
+    overflow: hidden auto;
 }
 
 /*Contenedor de la imagen y la descripcion del producto*/
-#modificarProducto__fotoDescripcion{
+#ventana__modProd__fotoDescripcion{
     grid-row: 1/3;
 }
 
 /*Imagen del producto*/
-#modificarProducto__fotoDescripcion__img{
+#ventana__modProd__fotoDescripcion__img{
     margin: 10px;
     width: 200px;
     height: 200px;
@@ -26,7 +28,7 @@
 }
 
 /*Descripcion del producto*/
-#modificarProducto__fotoDescripcion__textarea{
+#ventana__modProd__fotoDescripcion__textarea{
     margin: 10px;
     padding: 5px;
     width: 200px;
@@ -39,18 +41,18 @@
 }
 
 /*Contenedor de caracteristicas del producto*/
-#modificarProducto__caracteristicas{
+#ventana__modProd__caracteristicas{
     display: flex;
     flex-direction: column;
     align-items: center;
     grid-row: 1/3;
 }
 /*Titulos de los elementos individuales*/
-.modificarProducto__caracteristicas__h4{
+.ventana__modProd-h4{
     width: 100%;
 }
 /*Elemento individuales dentro de las caracteristicas del producto*/
-.modificarProducto__caracteristicas__input{
+.ventana__modProd__caracteristicas__input{
     display: flex;
     font-size: 19px;
     margin: 5px 15px 5px 5px;
@@ -58,29 +60,18 @@
     width: 100%;
     background-color: var(--colorVentana);
     border: solid black 1px;
-    border-radius: 0.5vw;
+    border-radius: 5px;
     color: var(--colorLetra);
+    overflow-x: auto;
+    max-width: 250px;
 }
 /*Input donde se coloca el ID del producto*/
-#modificarProducto__caracteristicas__input__id{
+#ventana__modProd__caracteristicas__input__id{
     filter: brightness(0.8);
 }
 
-/*Contenedor del contador de imagenes de una variante*/
-.caracteristicas__imagen{
-    margin-right: 5px;
-    width: 22px;
-    text-align: center;
-    padding: 1px;
-    border: 1px solid black;
-    border-radius: 5px;
-    background-color: var(--colorBotones);
-    cursor: pointer;
-}
-
-
 /*Ventana emergente para visualizar o cargar una imagen de un producto*/
-#imagenVariantesProducto{
+#ventana__cargarFoto{
     display: flex;
     width: 450px;
     flex-direction: row;
@@ -93,7 +84,7 @@
 }
 
 /*Contenedor de la imagen del producto en la ventana emergente*/
-#imagenVariantesProducto__img{
+#ventana__cargarFoto-img{
     margin: 10px;
     min-width: 400px;
     min-height: 400px;
@@ -103,13 +94,13 @@
 }
 
 /*Boton para eliminar la imagen en la ventana emergente*/
-#producto__eliminarImagen{
+#ventana__cargarFoto-eliminar{
     position: absolute;
     transform: translate(176px, 10px);
 }
 
 /*Input para subir una nueva imagen en la ventana emergente*/
-#imagenVariantesProducto__input{
+#ventana__cargarFoto-input{
     width: 176px;
     margin: 0 100%;
     padding: 5px;
@@ -118,18 +109,19 @@
 
 /*Ventana de variaste de productos*/
 /*Contenedor general de la ventana de modificar variantes*/
-#variantesProducto,#especificacionesProducto{
+#ventana__modProd__modVar,#ventana__modProd__modEspecif{
     display: flex;
     background-color: var(--colorFondoVentana);
     flex-direction: column;
     align-items: center;
+    max-height: 275px;
 }
 
 /*Indice para las variantes del producto*/
-#variantesProducto__indice,
-#especificacionesProducto__indice,
-#variantesProducto__variantes,
-#especificacionesProducto__especificaciones{ 
+#ventana__modProd__modVar__indice,
+#ventana__modProd__modEspecif__indice,
+#ventana__modProd__modVar__variantes,
+#ventana__modProd__modEspecif__especificaciones{ 
     margin: 3px;
     border-radius: 6px;
     border: 1px solid black;
@@ -141,14 +133,14 @@
     padding: 5px 0px;
 }
 
-#variantesProducto__variantes,
-#especificacionesProducto__especificaciones{ 
+#ventana__modProd__modVar__variantes,
+#ventana__modProd__modEspecif__especificaciones{ 
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 /*Contenedor de vantiantes*/
-.variantesProducto__variantes__div,#variantesProducto__indice{
+.ventana__modProd__modVar__variantes__div,#ventana__modProd__modVar__indice{
     display: grid;
     grid-template-columns: 235px 150px 100px 50px 50px;
     align-items: center;
@@ -158,7 +150,7 @@
 
 
 /*Mensaje de advertencia al no haber variantes para mostrar*/
-#mensajeSinVariantes,#mensajeSinEspecificaciones {
+#ventana__modProd__modVar__vacio,#ventana__modProd__modEspecif__especificaciones__vacio {
     display: flex;
     height: 52px;
     justify-content: center;
@@ -168,7 +160,7 @@
 
 
 /*Ventana de especificaciones de producto*/
-#especificacionesProducto__indice,.especificacionesProducto__especificacion{
+#ventana__modProd__modEspecif__indice,.ventana__modProd__modEspecif__especificacion{
     display: grid;
     grid-template-columns: 200px 334px 50px;
     align-items: center;
@@ -176,6 +168,6 @@
 }
 
 /*Boton para volver*/
-#modificarProducto__respuesta{
+#ventana__modProd__respuesta{
     grid-column: 1/4;
 }

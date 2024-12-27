@@ -28,7 +28,7 @@ export function cargarCategorias(categorias:CategoriaI[],contenedorCategorias:HT
         categoriaDIV.textContent=nombresCategorias[i]; // Le da el mismo nombre que el de la categoria
         categoriaDIV.classList.add('categorias__div') // Le da la clase de boton de categoria
         categoriaDIV.classList.add('botonRegistener3') // Le da la clase de boton de categoria
-        if(esCategoriaActiva(nombresCategorias[i])) categoriaDIV.classList.add('botonPositivo') // Evalua si la categoria esta activa, si lo esta, le da el estilo de categoria activa
+        if(esCategoriaActiva(nombresCategorias[i])) categoriaDIV.classList.add('boton__activo') // Evalua si la categoria esta activa, si lo esta, le da el estilo de categoria activa
 
         fragmento.appendChild(categoriaDIV); // Agrega la categoria al fragmento
     }
@@ -39,7 +39,7 @@ export function cargarCategorias(categorias:CategoriaI[],contenedorCategorias:HT
     categoriasDOM.forEach(categoriaDOM => {// Recorre los contenedores de categorias
         categoriaDOM.onclick! = function(){ // Le da la funcionalidad
 
-            categoriaDOM.classList.toggle(`botonPositivo`); // Alterna el estilo activo
+            categoriaDOM.classList.toggle(`boton__activo`); // Alterna el estilo activo
 
             const nombreCategoriaPresionada:string = categoriaDOM.textContent! // Obtiene la categoria presionada
             const urlObjeto = new URL(window.location.href);    // Define el objeto para manejar los query params
@@ -91,7 +91,7 @@ const cargarCategoriasVentanaModificar =(categorias:CategoriaI[],contenedorOpcio
     contenedorOpciones.innerHTML=opcionesHTML+'<option>Agregar Categoria</option>'
 
     // Le da la funcion al boton de agregar categoria
-    const inputAgregarCategoria = document.getElementById('modificarProducto__caracteristicas__input__categoria')! as HTMLInputElement
+    const inputAgregarCategoria = document.getElementById('ventana__modProd__caracteristicas__input__categoria')! as HTMLInputElement
     contenedorOpciones.onclick = ()=>{
         const categoriaSeleccionada:string = contenedorOpciones.value
 

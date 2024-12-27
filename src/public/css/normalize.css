@@ -89,7 +89,6 @@
 }
 
 .contenedorRegistener2{
-  display: grid;
   padding: 10px;
   background-color: var(--colorFondoVentana);
   border-radius: 23px;
@@ -137,6 +136,7 @@
   user-select: none;
   border: 0;
   border-radius: 10px;
+  text-align: center;
 }
 .botonRegistener2:hover{
   filter: brightness(1.05)
@@ -190,8 +190,14 @@
   border-color: yellow !important;
 }
 .boton__activo{
-  background-color: green !important;
+  background-color: var(--colorBotones-positivo)!important;
 }
+
+.boton__negativo{
+  background-color: var(--colorBotones-negativo) !important;
+}
+
+
 
 .boton__activo2{
   filter: brightness(1.2) !important;

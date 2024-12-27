@@ -15,29 +15,29 @@ import { buscarCargarCategorias } from "../../helpers/categorias.js";
 
 // Contenedores de la ventana emergente
 const contenedorVentanaEmergente:HTMLElement = document.getElementById('ventanaEmergenteFondo')!
-const ventanaEmergente:HTMLElement = document.getElementById('modificarProducto')!
+const ventanaEmergente:HTMLElement = document.getElementById('ventana__modProd')!
 
 // Contenedor de variantes de producto
-const contenedorVariantes = document.getElementById('variantesProducto__variantes')! as HTMLDivElement;
+const contenedorVariantes = document.getElementById('ventana__modProd__modVar__variantes')! as HTMLDivElement;
 
 // Contenedor de las especificaciones de producto
-const contenedorEspecificaciones = document.getElementById('especificacionesProducto__especificaciones')! as HTMLDivElement;
+const contenedorEspecificaciones = document.getElementById('ventana__modProd__modEspecif__especificaciones')! as HTMLDivElement;
 
 // Input en donde el usuario agregara las diferentes caracteristicas del producto
-const id = document.getElementById("modificarProducto__caracteristicas__input__id")! as HTMLInputElement ;
-const nombre = document.getElementById("modificarProducto__caracteristicas__input__nombre")! as HTMLInputElement ;
-const precio = document.getElementById("modificarProducto__caracteristicas__input__precio")! as HTMLInputElement;
-const marca = document.getElementById("modificarProducto__caracteristicas__input__marca")! as HTMLInputElement;
-const modelo = document.getElementById("modificarProducto__caracteristicas__input__modelo")! as HTMLInputElement;
-const categoria = document.getElementById("modificarProducto__caracteristicas__select__categoria")! as HTMLSelectElement;
-const categoriaIngresada = document.getElementById("modificarProducto__caracteristicas__input__categoria")! as HTMLInputElement;
-const descripcion = document.getElementById("modificarProducto__fotoDescripcion__textarea")! as HTMLTextAreaElement;
+const id = document.getElementById("ventana__modProd__caracteristicas__input__id")! as HTMLInputElement ;
+const nombre = document.getElementById("ventana__modProd__caracteristicas__input__nombre")! as HTMLInputElement ;
+const precio = document.getElementById("ventana__modProd__caracteristicas__input__precio")! as HTMLInputElement;
+const marca = document.getElementById("ventana__modProd__caracteristicas__input__marca")! as HTMLInputElement;
+const modelo = document.getElementById("ventana__modProd__caracteristicas__input__modelo")! as HTMLInputElement;
+const categoria = document.getElementById("ventana__modProd__caracteristicas__select__categoria")! as HTMLSelectElement;
+const categoriaIngresada = document.getElementById("ventana__modProd__caracteristicas__input__categoria")! as HTMLInputElement;
+const descripcion = document.getElementById("ventana__modProd__fotoDescripcion__textarea")! as HTMLTextAreaElement;
 
 // Botones
-const aceptar:HTMLElement = document.getElementById("modificarProducto__aceptar")!;
-const cancelar:HTMLElement = document.getElementById("modificarProducto__cancelar")!;
-const botonAgregarVariante = document.getElementById('variantesProducto__agregarVariante')! as HTMLButtonElement
-const botonAgregarEspecificacion = document.getElementById('especificacionesProducto__button')! as HTMLButtonElement
+const aceptar:HTMLElement = document.getElementById("ventana__modProd__aceptar")!;
+const cancelar:HTMLElement = document.getElementById("ventana__modProd__cancelar")!;
+const botonAgregarVariante = document.getElementById('ventana__modProd__modVar__agregarVariante')! as HTMLButtonElement
+const botonAgregarEspecificacion = document.getElementById('ventana__modProd__modEspecif__button')! as HTMLButtonElement
 
 
 
@@ -78,7 +78,7 @@ export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
 
     // Espera que el usuario aprete el boton "volver" antes de guardar todos los cambios, el bucle se repite hasta que el usuario introduzca todos los datos necesarios correctamente
     let nodosEnError:NodeListOf<HTMLInputElement>
-    const formularioProducto = document.getElementById('modificarProducto__caracteristicas')! as HTMLFormElement
+    const formularioProducto = document.getElementById('ventana__modProd__caracteristicas')! as HTMLFormElement
     do {
 
         // Espera la respuesta del usuario
@@ -90,6 +90,7 @@ export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
                 // Desactiva la ventana emergente
                 contenedorVentanaEmergente.classList.add('noActivo')
                 ventanaEmergente.classList.add('noActivo')
+                buscarCargarProductos()
                 return 
             };
         })
@@ -147,40 +148,46 @@ export const ventanaEmergenteModificarProducto = async(producto?:producto) =>{
 // Informacion del producto
 export const agregarImagenesDOM = async(productoInformacion:producto)=>{
     // Imagen principal
-    let imagen = document.getElementById("modificarProducto__fotoDescripcion__img")! as HTMLImageElement;
+    let imagen = document.getElementById("ventana__modProd__fotoDescripcion__img")! as HTMLImageElement;
     imagen.style.backgroundImage=''
     imagen.style.backgroundImage = `url('${productoInformacion.imagenes[0]}')`;
 
     // Contenedor de las imagenes de la variante
-    const contenedorImagenes= document.getElementById('modificarProducto__caracteristicas__div-imagenes')!
+    const contenedorImagenes = document.getElementById('ventana__modProd__caracteristicas__div-imagenes')!
     contenedorImagenes.innerHTML='' // Vacia el contenedor de imagenes
 
     let contadorImagenes:number=1
+    const fragmento = document.createDocumentFragment()
+
     // Agregar elementos que representan a las imagenes del producto
     productoInformacion.imagenes.forEach(imagenURL =>{ // Agrega las imagenes a la variante
-        contenedorImagenes.innerHTML=contenedorImagenes.innerHTML+`<div id="${imagenURL}" class="caracteristicas__imagen">${contadorImagenes}</div>`
-        contadorImagenes++
-    })
-    // Luego de los elementos agrega un elemento mas para agregar una nueva imagen
-    contenedorImagenes.innerHTML=contenedorImagenes.innerHTML+`<button class="botonRegistener2" id="caracteristicas__agregarImagen">+</button>`
-    
-    // Le da la funcion a los botones de las imagenes de las variantes
-    const botonesVerImagen = document.querySelectorAll('.caracteristicas__imagen') as NodeListOf<HTMLDivElement>
-    botonesVerImagen.forEach((botonVerImagen)=>{
-        botonVerImagen.addEventListener('click',(event)=>{
+        const imagenDIV = document.createElement('div')
+        imagenDIV.id=imagenURL
+        imagenDIV.className="botonRegistener2"
+        imagenDIV.textContent=contadorImagenes.toString()
+        imagenDIV.onclick=(event)=>{
             event.preventDefault()
-            // Envia a la funcion el URL de la imagen presionada
-            const imagenActualURL:string = botonVerImagen.id
-            ventanaEmergenteCargarImagenProducto(productoInformacion,imagenActualURL)
-        })
+            ventanaEmergenteCargarImagenProducto(productoInformacion,imagenURL)
+        }
+
+        contadorImagenes++
+        fragmento.appendChild(imagenDIV)
     })
 
-    // Le da la funcion al boton de agregar imagenes al producto
-    const botonAgregarImagen = document.getElementById('caracteristicas__agregarImagen')!
-    botonAgregarImagen.addEventListener('click',(event)=>{
+    // Agrega un boton al final para agregar mas imagenes
+    const botonAgregarImagen = document.createElement('button')
+    botonAgregarImagen.id="caracteristicas__agregarImagen"
+    botonAgregarImagen.className="botonRegistener2"
+    botonAgregarImagen.textContent="+"
+    botonAgregarImagen.onclick=(event)=>{
         event.preventDefault()
         ventanaEmergenteCargarImagenProducto(productoInformacion)
-    })
+    }
+    fragmento.appendChild(botonAgregarImagen)
+
+    // Agrega los elementos al DOM
+    contenedorImagenes.appendChild(fragmento)
+
 }
 
 const cargarProductoDOM =(producto:producto)=>{
@@ -211,8 +218,8 @@ const validarCaracteristicasDOM = async(datosFormulario:FormData)=>{
             datosFormulario.set('categoria',categoriaNueva) // Agrega la categoria al FormData para enviarlo junto con la demas informacion del producto
             
             // Vuelve a cargar las categorias para reflejar los cambios TODO la categoria no aparece hasta recien que se actualiza la pagina, lo cual es un error
-            const contenedorCategorias:HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__categorias')!
-            const contenedorOpcionesCategorias = document.getElementById('modificarProducto__caracteristicas__select__categoria')! as HTMLSelectElement
+            const contenedorCategorias:HTMLElement = document.getElementById('configProductos__categorias')!
+            const contenedorOpcionesCategorias = document.getElementById('ventana__modProd__caracteristicas__select__categoria')! as HTMLSelectElement
             buscarCargarCategorias(contenedorCategorias,contenedorOpcionesCategorias) 
         }
     }
@@ -231,19 +238,21 @@ export const cargarVariantesDOM=async(productoInformacion:producto) =>{
 
     contenedorVariantes.innerHTML=''; // Vacia el contenedor con informacion previa
     
+    // Agrega el mensaje de "sin variantes" para activarlo dado el caso
+    const contenedorMensaje = document.createElement('div')
+    contenedorMensaje.id='ventana__modProd__modVar__vacio';
+
+    contenedorMensaje.textContent='No hay ninguna variante para mostrar'
+    contenedorVariantes.appendChild(contenedorMensaje)
+
     // Carga las distintas variables del producto, si existen
     if(productoInformacion.variantes.length>0){ // Carga las variantes del producto
         (productoInformacion.variantes as variante[]).forEach(variante => {
             agregarVarianteDOM(contenedorVariantes,variante)
         });
-    }else{// Si el producto no tiene variantes entonces muestra un mensaje de error
-        // Contenedor de la variante
-        const contenedorVariante = document.createElement('div')
-        contenedorVariante.id='mensajeSinVariantes';
-        contenedorVariante.textContent='No hay ninguna variante para mostrar'
-    
-        contenedorVariantes.appendChild(contenedorVariante)
+        contenedorMensaje.className="noActivo" // Desactiva el mensaje de "sin variantes"
     }
+
 
     // Carga la funcion de agregar variante en la ventana de variantes de producto
     botonAgregarVariante.onclick=async(event)=>{
@@ -271,7 +280,7 @@ export const agregarVarianteDOM =(contenedor:HTMLElement,variante:variante)=>{
     // Agrega la variante al DOM
     const contenedorVariante = document.createElement('div') // Contenedor de la variante
     if(variante._id) contenedorVariante.id = variante._id.toString() // Si la variante existe en la base de datos deberia tener un id, asi que id del contenedor es el mismo id que el de la variante
-    contenedorVariante.classList.add('variantesProducto__variantes__div');
+    contenedorVariante.classList.add('ventana__modProd__modVar__variantes__div');
 
     let opcionesColores:string = `
     <option>Rojo</option>
@@ -291,34 +300,35 @@ export const agregarVarianteDOM =(contenedor:HTMLElement,variante:variante)=>{
     // Define cual es el color seleccionado
     opcionesColores = opcionesColores.replace(`>${variante.color}`,` selected>${variante.color}`)
     contenedorVariante.innerHTML=`
-        <input class="inputRegistener1 variantesProducto__input-SKU" value="${variante.SKU}">
-        <select class="inputRegistener1 variantesProducto__select-color" name="color"> ${opcionesColores}</select>
-        <input class="inputRegistener1 variantesProducto__input-talle" value="${variante.talle}">
-        <input class="inputRegistener1 variantesProducto__input-stock" value="${variante.stock}"  type="number">
+        <input  placeholder="Ingrese un SKU" class="inputRegistener1 ventana__modProd__modVar__input-SKU" value="${variante.SKU}">
+        <select class="inputRegistener1 ventana__modProd__modVar__select-color" name="color"> ${opcionesColores}</select>
+        <input class="inputRegistener1 ventana__modProd__modVar__input-talle" value="${variante.talle}">
+        <input placeholder="0" class="inputRegistener1 ventana__modProd__modVar__input-stock" value="${variante.stock}"  type="number">
     `
 
     // Crea el boton para eliminar la variante
     const botonEliminarVariante = document.createElement('button')
-    botonEliminarVariante.classList.add('fa-solid')
-    botonEliminarVariante.classList.add('fa-trash')
-    botonEliminarVariante.classList.add('botonRegistener3')
-    botonEliminarVariante.classList.add('variante__eliminar')
-    botonEliminarVariante.classList.add('botonNegativo')
-
-    
-    contenedorVariante.appendChild(botonEliminarVariante) // Agrega el boton al contenedor
-    contenedor.appendChild(contenedorVariante) // Agrega el contenedor al DOM
+    botonEliminarVariante.innerHTML=`<i class="fa-solid fa-trash"></i>`
+    botonEliminarVariante.className="botonRegistener3 variante__eliminar boton__negativo" 
     botonEliminarVariante.onclick=async()=>{
         const varianteId:string|undefined = botonEliminarVariante.parentElement!.id;
         if(!varianteId) botonEliminarVariante.parentElement!.className="noActivo"; // Si la variante no esta en la base de datos simplemente la oculta en el DOM
         else{ // Si esta en la base de datos se envia una solicitud al servidor
             const respuesta = await eliminarVariante(varianteId);
             if(respuesta===0) botonEliminarVariante.parentElement!.classList.add('noActivo'); // Si la variante se elimino de forma exitosa oculta la variante
+        
         }
+        // Verifica si existen mas especificaciones, si no existen mas activa el mensaje la advertencia de que no hay especificaciones
+        const contenedoresVariantes = document.querySelectorAll(".ventana__modProd__modVar__variantes__div")
+        if(contenedoresVariantes.length<1) document.getElementById("ventana__modProd__modVar__vacio")!.classList.remove('noActivo')
     }
+
+    
+    contenedorVariante.appendChild(botonEliminarVariante) // Agrega el boton al contenedor
+    contenedor.appendChild(contenedorVariante) // Agrega el contenedor al DOM
     
 
-    document.getElementById('mensajeSinVariantes')?.classList.add('noActivo') // Si el mensaje de "sin variantes" esta activo entonces lo desactiva
+    document.getElementById('ventana__modProd__modVar__vacio')!.classList.add('noActivo') // Si el mensaje de "sin variantes" esta activo entonces lo desactiva
 }
 
 const obtenerVariantesDOM =(productoID:string):variante[]=>{
@@ -327,16 +337,16 @@ const obtenerVariantesDOM =(productoID:string):variante[]=>{
     // Inicializa la variable que almacena todas las variantes del producto, el indice de los colores dentro de la variable "variantes" y "arrayColoresVariables" comparten el mismo orden
     let variantes:variante[]=[]
 
-    const contenedoresVariantesProducto = document.querySelectorAll('.variantesProducto__variantes__div') as NodeListOf<HTMLDivElement> // Almacena todos los contenedores de las variantes del producto
+    const contenedoresventana__modProd__modVar = document.querySelectorAll('.ventana__modProd__modVar__variantes__div') as NodeListOf<HTMLDivElement> // Almacena todos los contenedores de las variantes del producto
 
     // Recorre todos los contenedores de variantes de un producto
-    contenedoresVariantesProducto.forEach(contenedorVariante=>{
+    contenedoresventana__modProd__modVar.forEach(contenedorVariante=>{
 
 
-        const SKU:string = (contenedorVariante.querySelector('.variantesProducto__input-SKU')! as HTMLInputElement).value
-        const color:string = (contenedorVariante.querySelector('.variantesProducto__select-color')! as HTMLSelectElement).value
-        const talle:string = (contenedorVariante.querySelector('.variantesProducto__input-talle')! as HTMLInputElement).value
-        const stock:number = Number((contenedorVariante.querySelector('.variantesProducto__input-stock')! as HTMLInputElement).value)
+        const SKU:string = (contenedorVariante.querySelector('.ventana__modProd__modVar__input-SKU')! as HTMLInputElement).value
+        const color:string = (contenedorVariante.querySelector('.ventana__modProd__modVar__select-color')! as HTMLSelectElement).value
+        const talle:string = (contenedorVariante.querySelector('.ventana__modProd__modVar__input-talle')! as HTMLInputElement).value
+        const stock:number = Number((contenedorVariante.querySelector('.ventana__modProd__modVar__input-stock')! as HTMLInputElement).value)
 
         const varianteNueva:variante={
             producto:productoID,
@@ -367,8 +377,8 @@ const validarVariantesDOM =async(productoId:string)=>{
     // Marca en error los inputs correspondientes.
     errores.forEach(error=>{
         const contenedorVarianteEnError = document.getElementById(`${error.value}`)
-        if(error.path==='SKU') contenedorVarianteEnError?.querySelector('.variantesProducto__input-SKU')!.classList.add('boton__enError')
-        if(error.path==='stock') contenedorVarianteEnError?.querySelector('.variantesProducto__input-stock')!.classList.add('boton__enError')
+        if(error.path==='SKU') contenedorVarianteEnError?.querySelector('.ventana__modProd__modVar__input-SKU')!.classList.add('boton__enError')
+        if(error.path==='stock') contenedorVarianteEnError?.querySelector('.ventana__modProd__modVar__input-stock')!.classList.add('boton__enError')
     })
 }
 
@@ -376,19 +386,19 @@ const validarVariantesDOM =async(productoId:string)=>{
 const cargarEspecificacionesDOM =(productoInformacion:producto)=>{
     
     contenedorEspecificaciones.innerHTML=''; // Vacia el contenedor con informacion previa
+
+    // Contenedor del mensaje de "sin especificaciones" para mostrarlo dado el caso
+    const contenedorMensaje = document.createElement('div')
+    contenedorMensaje.id='ventana__modProd__modEspecif__especificaciones__vacio';
+    contenedorMensaje.textContent='No hay ninguna especificacion para mostrar'
+    contenedorEspecificaciones.appendChild(contenedorMensaje)
     
     // Carga las distintas variables del producto, si existen
     if(productoInformacion.especificaciones.length>0){ // Carga las variantes del producto
         productoInformacion.especificaciones.forEach(especificacion => {
             agregarEspecificacionDOM(especificacion)
         });
-    }else{// Si el producto no tiene especificaciones entonces muestra un mensaje de error
-        // Contenedor de la variante
-        const contenedorEspecificacion = document.createElement('div')
-        contenedorEspecificacion.id='mensajeSinEspecificaciones';
-        contenedorEspecificacion.textContent='No hay ninguna especificacion para mostrar'
-    
-        contenedorEspecificaciones.appendChild(contenedorEspecificacion)
+        contenedorMensaje.className="noActivo" // Desactiva el mensaje de "sin especificaciones"
     }
 
     // Carga la funcion de agregar una especificacion en la ventana de especificaciones de producto
@@ -407,31 +417,30 @@ const cargarEspecificacionesDOM =(productoInformacion:producto)=>{
 const agregarEspecificacionDOM=(especificacion:EspecificacionI)=>{
     // Agrega la especificacion al DOM
     const contenedorEspecificacion = document.createElement('div') // Contenedor de la variante
-    contenedorEspecificacion.classList.add('especificacionesProducto__especificacion');
+    contenedorEspecificacion.classList.add('ventana__modProd__modEspecif__especificacion');
 
     contenedorEspecificacion.innerHTML=`
-        <input class="inputRegistener1 especificacion__input-nombre" value='${especificacion.nombre?especificacion.nombre:''}'>
-        <input class="inputRegistener1 especificacion__input-descripcion" value='${especificacion.descripcion?especificacion.descripcion:''}'>
+        <input placeholder="Ingrese un nombre" class="inputRegistener1 especificacion__input-nombre" value='${especificacion.nombre?especificacion.nombre:''}'>
+        <input placeholder="Ingrese una descripcion" class="inputRegistener1 especificacion__input-descripcion" value='${especificacion.descripcion?especificacion.descripcion:''}'>
     `
 
     // Boton para eliminar una especificacion
     const botonEliminarEspecificacion = document.createElement('button')
-    botonEliminarEspecificacion.classList.add('fa-solid')
-    botonEliminarEspecificacion.classList.add('fa-trash-can')
-    botonEliminarEspecificacion.classList.add('botonRegistener3')
-    botonEliminarEspecificacion.classList.add('especificacion__eliminar')
-    botonEliminarEspecificacion.classList.add('botonNegativo')
+    botonEliminarEspecificacion.innerHTML=`<i class="fa-solid fa-trash-can"></i>`
+    botonEliminarEspecificacion.className="botonRegistener3 especificacion__eliminar boton__negativo" 
     botonEliminarEspecificacion.onclick=()=>{
         botonEliminarEspecificacion.parentElement!.classList.add('noActivo')
-        botonEliminarEspecificacion.parentElement!.classList.remove('especificacionesProducto__especificacion')
+        botonEliminarEspecificacion.parentElement!.classList.remove('ventana__modProd__modEspecif__especificacion')
+
+        // Verifica si existen mas especificaciones, si no existen mas activa el mensaje la advertencia de que no hay especificaciones
+        const contenedoresEspecificaciones = document.querySelectorAll(".ventana__modProd__modEspecif__especificacion")
+        if(contenedoresEspecificaciones.length<1) document.getElementById("ventana__modProd__modEspecif__especificaciones__vacio")!.classList.remove('noActivo')
     }
 
     contenedorEspecificacion.appendChild(botonEliminarEspecificacion) // Agrega el boton al contenedor de la especificacion
     contenedorEspecificaciones.appendChild(contenedorEspecificacion) // Agrega la especificacion al DOM
 
-
-
-    document.getElementById('mensajeSinEspecificaciones')?.classList.add('noActivo') // Si el mensaje de "sin variantes" esta activo entonces lo desactiva
+    document.getElementById('ventana__modProd__modEspecif__especificaciones__vacio')?.classList.add('noActivo') // Si el mensaje de "sin variantes" esta activo entonces lo desactiva
 }
 
 const obtenerEspecificacionesDOM=()=>{
@@ -440,10 +449,10 @@ const obtenerEspecificacionesDOM=()=>{
     // Inicializa la variable que almacena todas las especificaciones del producto
     let especificaciones:EspecificacionI[]=[]
 
-    const contenedoresEspecificacionesProducto = document.querySelectorAll('.especificacionesProducto__especificacion') as NodeListOf<HTMLDivElement> // Almacena todos los contenedores de las variantes del producto
+    const contenedoresventana__modProd__modEspecif = document.querySelectorAll('.ventana__modProd__modEspecif__especificacion') as NodeListOf<HTMLDivElement> // Almacena todos los contenedores de las variantes del producto
 
     // Recorre todos los contenedores de variantes de un producto
-    contenedoresEspecificacionesProducto.forEach(contenedorEspecificacion=>{
+    contenedoresventana__modProd__modEspecif.forEach(contenedorEspecificacion=>{
 
 
         const nombre:string = (contenedorEspecificacion.querySelector('.especificacion__input-nombre')! as HTMLInputElement).value

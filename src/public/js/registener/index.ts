@@ -27,7 +27,7 @@ document.getElementById('ventanaCarga')!.classList.remove('noActivo')
 document.getElementById('ventanaNegra')!.classList.add('noActivo')
 
 //Variables globales
-const contenedorProductos: HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__productos')!
+const contenedorProductos: HTMLElement = document.getElementById('configProductos__productos')!
 export let productos:producto[]
 export let categorias:CategoriaI[]|undefined
 export let usuarioInformacion:usuario|undefined
@@ -54,7 +54,7 @@ export const buscarCargarProductos =async()=>{
 
 //Carga la seccion de seleccion de productos, se ejecuta cada vez que se hace click sobre la barra lateral para desplazarse a este mismo
 function botonesSeccionProductos(productos:producto[]) {
-    const botonAgregarProductos = document.getElementById('contenedorConfiguracionProductos__contenido__agregarProducto')! as HTMLButtonElement
+    const botonAgregarProductos = document.getElementById('configProductos__agregarProducto')! as HTMLButtonElement
     botonAgregarProductos.onclick=(event)=>{
         event.stopPropagation()
         ventanaEmergenteModificarProducto() // Abre la ventana emergente para modificar un producto, al no pasarle ningun ID la funcion crea un producto nuevo.
@@ -65,13 +65,13 @@ function botonesSeccionProductos(productos:producto[]) {
         boton.onclick =(event)=>{
             event.stopPropagation()
             const idProducto = boton.parentElement!.parentElement!.id!
-            const estaDisponible = boton.classList.contains('botonPositivo')
+            const estaDisponible = boton.classList.contains('boton__activo')
             alternarDisponibilidadProducto(idProducto,estaDisponible,boton)
         }
     })
 
     // Le da la funcion a los botones de modificar un producto
-    const productosDOM: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.productos__div')
+    const productosDOM: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.configProductos__producto')
     productosDOM.forEach((productoDOM)=>{
         productoDOM.onclick =(event)=>{
             event.stopPropagation()
@@ -102,7 +102,7 @@ function botonesSeccionProductos(productos:producto[]) {
 
 const cargarBotonesBarraLateral=()=>{
     //Carga y le da funciones a la barra lateral
-    const configuracionProductosVentana = document.getElementById("contenedorConfiguracionProductos")!
+    const configuracionProductosVentana = document.getElementById("configProductos")!
     const seleccionProductosVentana = document.getElementById("seleccionProductos")!
     const seleccionCaja = document.getElementById("seleccionCaja")!
     const contenedorRegistros = document.getElementById('registros')! as HTMLElement
@@ -142,8 +142,8 @@ const cargarBotonesBarraLateral=()=>{
 document.addEventListener("DOMContentLoaded", async function() {
 
     // Busca y carga los productos en el contenedor pasado como argumento
-    const contenedorCategorias:HTMLElement = document.getElementById('contenedorConfiguracionProductos__contenido__categorias')!
-    const contenedorOpcionesCategorias = document.getElementById('modificarProducto__caracteristicas__select__categoria')! as HTMLSelectElement
+    const contenedorCategorias:HTMLElement = document.getElementById('configProductos__categorias')!
+    const contenedorOpcionesCategorias = document.getElementById('ventana__modProd__caracteristicas__select__categoria')! as HTMLSelectElement
     const textoErrorCarga = document.getElementById('ventanaCarga__texto')!
 
 

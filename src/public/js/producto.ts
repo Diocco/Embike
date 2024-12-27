@@ -102,8 +102,8 @@ const cargarInformacionProducto =(productoInformacion:producto)=>{
 
     // Carga las especificaciones del producto
     let contenedorespEspecificaciones = document.getElementById('informacionGeneralProducto__div-especificaciones')!
-    let especificacionesProducto = Object.entries(productoInformacion.especificaciones)
-    especificacionesProducto.forEach(especificacion =>{
+    let ventana__modProd__modEspecif = Object.entries(productoInformacion.especificaciones)
+    ventana__modProd__modEspecif.forEach(especificacion =>{
         const especificacionNombre = especificacion[0];
         const especificacionValor = especificacion[1];
         const HTMLProducto:string = `<h4 class="div-especificaciones__h4">${especificacionNombre}</h4>

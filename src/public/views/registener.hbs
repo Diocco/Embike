@@ -13,14 +13,14 @@
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/seccionCaja.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/ventaPublico.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/seccionRegistros.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='../css/registener/seccionProductos.css'>
+
+    {{!-- Estilos de ventanas emergentes en registener --}}
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/modificarVenta.css'>
-
-
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/mensajeEmergente.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/modificarProducto.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/varianteProducto.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/mensajeEmergente/ventanaEmergente.css'>
-    <link rel='stylesheet' type='text/css' media='screen' href='../css/ventanaProductos.css'>
     <link rel='stylesheet' type='text/css' media='screen' href='../css/normalize.css'>
     <script src="https://kit.fontawesome.com/d292c2d48e.js" crossorigin="anonymous"></script>
 </head>
@@ -56,83 +56,85 @@
         </div>
 
         {{!-- Ventana emergente para modificar un producto --}}
-        <div id="modificarProducto" class="noActivo">
+        <div id="ventana__modProd" class="noActivo">
 
-            <div id="modificarProducto__fotoDescripcion">
+            <div id="ventana__modProd__fotoDescripcion">
                 <h4>Foto</h4>
-                <img id="modificarProducto__fotoDescripcion__img" class="imagenProducto"></img>
+                <img id="ventana__modProd__fotoDescripcion__img" class="imagenProducto"></img>
                 <h4>Descripcion</h4>
-                <textarea id="modificarProducto__fotoDescripcion__textarea"></textarea>
+                <textarea id="ventana__modProd__fotoDescripcion__textarea" placeholder="Ingrese una descripcion"></textarea>
             </div>
 
-            <form id="modificarProducto__caracteristicas">
-                <h4 class="modificarProducto__caracteristicas__h4" >ID</h4>
-                <input  class="modificarProducto__caracteristicas__input"  name="_id"    id="modificarProducto__caracteristicas__input__id" readonly>
-                <h4 class="modificarProducto__caracteristicas__h4" >Nombre</h4>
-                <input  class="modificarProducto__caracteristicas__input"  name="nombre"    id="modificarProducto__caracteristicas__input__nombre">
-                <h4 class="modificarProducto__caracteristicas__h4" >Precio Unitario</h4>
-                <input  class="modificarProducto__caracteristicas__input"  name="precio"    id="modificarProducto__caracteristicas__input__precio" type="number">
-                <h4 class="modificarProducto__caracteristicas__h4" >Marca</h4>
-                <input  class="modificarProducto__caracteristicas__input"  name="marca"     id="modificarProducto__caracteristicas__input__marca">
-                <h4 class="modificarProducto__caracteristicas__h4" >Modelo</h4>
-                <input  class="modificarProducto__caracteristicas__input"  name="modelo"    id="modificarProducto__caracteristicas__input__modelo">
-                <h4 class="modificarProducto__caracteristicas__h4" >Categoria</h4>
-                <select class="modificarProducto__caracteristicas__input" name="categoria"  id="modificarProducto__caracteristicas__select__categoria">
+            <form id="ventana__modProd__caracteristicas">
+                <h4 class="ventana__modProd-h4" >ID</h4>
+                <input  class="ventana__modProd__caracteristicas__input"  name="_id"    id="ventana__modProd__caracteristicas__input__id" readonly>
+                <h4 class="ventana__modProd-h4" >Nombre</h4>
+                <input  class="ventana__modProd__caracteristicas__input"  name="nombre"    id="ventana__modProd__caracteristicas__input__nombre">
+                <h4 class="ventana__modProd-h4" >Precio Unitario</h4>
+                <input  class="ventana__modProd__caracteristicas__input"  name="precio"    id="ventana__modProd__caracteristicas__input__precio" type="number">
+                <h4 class="ventana__modProd-h4" >Marca</h4>
+                <input  class="ventana__modProd__caracteristicas__input"  name="marca"     id="ventana__modProd__caracteristicas__input__marca">
+                <h4 class="ventana__modProd-h4" >Modelo</h4>
+                <input  class="ventana__modProd__caracteristicas__input"  name="modelo"    id="ventana__modProd__caracteristicas__input__modelo">
+                <h4 class="ventana__modProd-h4" >Categoria</h4>
+                <select class="ventana__modProd__caracteristicas__input" name="categoria"  id="ventana__modProd__caracteristicas__select__categoria">
                     <option>BMX</option>
                     <option>MTB</option>
                     <option>Niños</option>
                     <option>Accesorios</option>
                     <option>Agregar Categoria</option>
                 </select>
-                <input  class="modificarProducto__caracteristicas__input noActivo" name="categoria" placeholder="Ingrese una nueva categoria" id="modificarProducto__caracteristicas__input__categoria">
-                <h4 class="modificarProducto__caracteristicas__h4" >Imagenes</h4>
-                <div    class="modificarProducto__caracteristicas__input"                   id="modificarProducto__caracteristicas__div-imagenes" ></div>
+                <input  class="ventana__modProd__caracteristicas__input noActivo" name="categoria" placeholder="Ingrese una nueva categoria" id="ventana__modProd__caracteristicas__input__categoria">
+                <h4 class="ventana__modProd-h4" >Imagenes</h4>
+                <div    class="ventana__modProd__caracteristicas__input"                   id="ventana__modProd__caracteristicas__div-imagenes" ></div>
             </form>
 
-            <div id="variantesProducto">
-                <h4 class="modificarProducto__caracteristicas__h4" >Variantes</h4>
+            <div id="ventana__modProd__modVar">
+                <h4 class="ventana__modProd-h4" >Variantes</h4>
                 {{!-- Indice de categorias --}}
-                <div id="variantesProducto__indice">
+                <div id="ventana__modProd__modVar__indice">
                     <h5>SKU</h5>
                     <h5>Color</h5>
                     <h5>Talle</h5>
                     <h5>Stock</h5>
                 </div>
-                <div id="variantesProducto__variantes"></div>
-                <button id="variantesProducto__agregarVariante" class="botonRegistener3" >Agregar Variante</button>
+                <div id="ventana__modProd__modVar__variantes"></div>
+                <button id="ventana__modProd__modVar__agregarVariante" class="botonRegistener3" >Agregar Variante</button>
             </div>
 
-            <div id="especificacionesProducto">
-                <h4 class="modificarProducto__caracteristicas__h4" >Especficaciones</h4>
+            <div id="ventana__modProd__modEspecif">
+                <h4 class="ventana__modProd-h4" >Especficaciones</h4>
                 {{!-- Indice de categorias --}}
-                <div id="especificacionesProducto__indice">
+                <div id="ventana__modProd__modEspecif__indice">
                     <h5>Nombre</h5>
                     <h5>Descripcion</h5>
                 </div>
-                <div id="especificacionesProducto__especificaciones"></div>
-                <button id="especificacionesProducto__button" class="botonRegistener3" >Agregar especificacion</button>
+                <div id="ventana__modProd__modEspecif__especificaciones"></div>
+                <button id="ventana__modProd__modEspecif__button" class="botonRegistener3" >Agregar especificacion</button>
             </div>
 
-            <div id="modificarProducto__respuesta">
-                <button id="modificarProducto__aceptar" class="botonRegistener3">Aceptar</button>
-                <button id="modificarProducto__cancelar" class="botonRegistener3">Cancelar</button>
+            <div id="ventana__modProd__respuesta">
+                <button id="ventana__modProd__aceptar" class="botonRegistener3">Aceptar</button>
+                <button id="ventana__modProd__cancelar" class="botonRegistener3">Cancelar</button>
             </div>
         </div>
 
         {{!-- Ventana emergente para visualizar o cargar una imagen de un producto --}}
-        <div id="imagenVariantesProducto" class="noActivo">
+        <div id="ventana__cargarFoto" class="noActivo">
             {{!-- Contenedor de la imagen --}}
-            <img id="imagenVariantesProducto__img" class="imagenProducto">
+            <img id="ventana__cargarFoto-img" class="imagenProducto">
             {{!-- Boton para eliminar la imagen actual --}}
-            <i class="fa-solid fa-trash-can botonNegativo botonRegistener3" id="producto__eliminarImagen" aria-hidden="true"></i>
+            <button id="ventana__cargarFoto-eliminar" class="boton__negativo botonRegistener3">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
             {{!-- Input para agregar una nueva imagen --}}
-            <input id="imagenVariantesProducto__input" class="botonRegistener1" type="file">
+            <input id="ventana__cargarFoto-input" class="botonRegistener1" type="file">
             {{!-- Botones para guardar o volver --}}
             <div>
                 {{!-- Boton para guardar la imagen --}}
-                <button id="imagenVariantesProducto__guardar" class="botonRegistener3">Guardar</button>
+                <button id="ventana__cargarFoto-guardar" class="botonRegistener3">Guardar</button>
                 {{!-- Boton para volver --}}
-                <button id="imagenVariantesProducto__volver" class="botonRegistener3">Volver</button>
+                <button id="ventana__cargarFoto-volver" class="botonRegistener3">Volver</button>
             </div>
         </div>
 
@@ -231,23 +233,22 @@
     </aside>
 
     {{!-- Contenedor general de categorias, indice y productos --}}
-    <section id="contenedorConfiguracionProductos" class="contenedorRegistener1  noActivo">
-        <div id="contenedorConfiguracionProductos__contenido">
+    <section id="configProductos" class="contenedorRegistener1  noActivo">
+        <div id="configProductos-div" class="contenedorRegistener2">
             {{!-- Contenedor de categorias --}}
-            <div id="contenedorConfiguracionProductos__contenido__categorias"></div>
+            <div id="configProductos__categorias" ></div>
 
-            {{!-- Indice de categorias --}}
-            <div class="tipo__categoria__producto">
+            {{!-- Indice de la tabla con los productos --}}
+            <div id="configProductos__indice" class="contenedorRegistener3 configProductos__producto">
                 <div>Nombre</div>
                 <div>Precio</div>
-                <div>Stock</div>
+                <div class="configProductos__producto-stock">Stock</div>
                 {{!-- Boton para agregar un producto --}}
-                <button id="contenedorConfiguracionProductos__contenido__agregarProducto" class="botonRegistener3"> + </button>
+                <button id="configProductos__agregarProducto" class="botonRegistener3"> + </button>
             </div>
             
-
             {{!-- Contenedor de productos --}}
-            <div id="contenedorConfiguracionProductos__contenido__productos" ></div>
+            <div id="configProductos__productos" ></div>
         </div>
     </section>
 

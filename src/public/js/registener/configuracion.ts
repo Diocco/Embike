@@ -27,7 +27,7 @@ const cargarMetodosPago=()=>{
             <div class="configuracion__caja__metodos-nombre">${metodo.nombre}</div>
             <div>${metodo.tipo}</div>
             ${metodo.estado?`
-            <button class="configuracion__caja__metodos-eliminar botonNegativo botonRegistener3 ">
+            <button class="configuracion__caja__metodos-eliminar boton__negativo botonRegistener3 ">
                 <i class="fa-solid fa-trash-can " aria-hidden="true"></i>
             </button>`:`
             <button class="configuracion__caja__metodos-activar botonRegistener3 ">
@@ -108,7 +108,7 @@ const asignarBotonAgregarMetodo=()=>{
 
         // Crea el boton para confirmar el nuevo metodo de pago
         const botonConfirmar = document.createElement('button')
-        botonConfirmar.className="configuracion__caja__metodos-confirmar botonPositivo botonRegistener3"
+        botonConfirmar.className="configuracion__caja__metodos-confirmar boton__activo botonRegistener3"
         botonConfirmar.innerHTML=`<i class="fa-solid fa-check"></i>`
         botonConfirmar.onclick=async ()=>{
             // Obtiene los contenedores
