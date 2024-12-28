@@ -128,7 +128,7 @@
   font-size: 25px;
   height: 45px;
   width: 45px;
-  padding: 8px;
+  padding: 10px;
   margin: 5px;
   background-color: var(--colorBotones);
   color: var(--colorLetra);
@@ -159,6 +159,7 @@
   white-space: nowrap;
   cursor: pointer;
   user-select: none;
+  overflow: hidden;
 }
 .botonRegistener3:hover{
   filter: brightness(1.05)

@@ -191,8 +191,8 @@ export const agregarImagenesDOM = async(productoInformacion:producto)=>{
 }
 
 const cargarProductoDOM =(producto:producto)=>{
-
     const categoriaCompleta = categorias!.find(categoria=>categoria._id===producto.categoria)!
+
 
     // Coloca la informacion en los inputs correspondientes
     id.value = producto._id.toString();
@@ -252,26 +252,6 @@ export const cargarVariantesDOM=async(productoInformacion:producto) =>{
         });
         contenedorMensaje.className="noActivo" // Desactiva el mensaje de "sin variantes"
     }
-
-
-    // Carga la funcion de agregar variante en la ventana de variantes de producto
-    botonAgregarVariante.onclick=async(event)=>{
-        event.preventDefault()
-
-        // Crea una variable nueva con variables por default
-        let varianteNueva:variante = {
-            producto: productoInformacion._id,
-            color: '',
-            talle: '',
-            SKU: (new Date().getTime()).toString(), // Crea un SKU por default, el usuario luego puede definir uno diferente
-            stock: 0,
-            'esFavorito':false
-        }
-
-        agregarVarianteDOM(contenedorVariantes,varianteNueva) // Crea la variante en el DOM
-        
-    }
-
 
 }
 
@@ -368,7 +348,11 @@ const validarVariantesDOM =async(productoId:string)=>{
     // Verifica las variantes
 
     const variantes = obtenerVariantesDOM(productoId) // Devuelve las variantes que hay en el DOM
-    if(variantes.length<1) return // Si no hay variantes entonces termina la ejecucion de la funcion
+    if(variantes.length<1) { // Verifica que exista al menos una variante
+        contenedorVariantes.classList.add('boton__enError')
+        return 
+    }
+    
 
     // Si hay almenos una variante entonces la envia al servidor para ser guardada
     const errores = await actualizarVariantes(variantes,productoId)
@@ -401,17 +385,7 @@ const cargarEspecificacionesDOM =(productoInformacion:producto)=>{
         contenedorMensaje.className="noActivo" // Desactiva el mensaje de "sin especificaciones"
     }
 
-    // Carga la funcion de agregar una especificacion en la ventana de especificaciones de producto
-    botonAgregarEspecificacion.onclick=async(event)=>{
-        event.preventDefault()
 
-        // Crea una nueva especificacion por default
-        let especificacionNueva:EspecificacionI = {
-            nombre:'',
-            descripcion:''
-        }
-        agregarEspecificacionDOM(especificacionNueva)
-    }
 }
 
 const agregarEspecificacionDOM=(especificacion:EspecificacionI)=>{
@@ -468,4 +442,55 @@ const obtenerEspecificacionesDOM=()=>{
         
     })
     return especificaciones
+}
+
+// Carga los botones de la ventana
+
+export const cargarVentanaModificarProducto=()=>{
+    asignaBotonAgregarVariante()
+    asignaBotonAgregarEspecificacion()
+    asignaInputsInfoProducto()
+}
+
+const asignaBotonAgregarVariante=()=>{
+    // Carga la funcion de agregar variante en la ventana de variantes de producto
+    botonAgregarVariante.onclick=async(event)=>{
+        event.preventDefault()
+        contenedorVariantes.classList.remove('boton__enError') // Remueve el estado de error del contenedor de las variantes, si existe
+        
+        const productoID = document.getElementById('ventana__modProd__caracteristicas__input__id')!.textContent! 
+        // Crea una variable nueva con variables por default
+        let varianteNueva:variante = {
+            producto: productoID,
+            color: '',
+            talle: '',
+            SKU: (new Date().getTime()).toString(), // Crea un SKU por default, el usuario luego puede definir uno diferente
+            stock: 0,
+            'esFavorito':false
+        }
+
+        agregarVarianteDOM(contenedorVariantes,varianteNueva) // Crea la variante en el DOM
+        
+    }
+
+}
+
+const asignaBotonAgregarEspecificacion=()=>{
+    // Carga la funcion de agregar una especificacion en la ventana de especificaciones de producto
+    botonAgregarEspecificacion.onclick=async(event)=>{
+        event.preventDefault()
+
+        // Crea una nueva especificacion por default
+        let especificacionNueva:EspecificacionI = {
+            nombre:'',
+            descripcion:''
+        }
+        agregarEspecificacionDOM(especificacionNueva)
+    }
+}
+
+const asignaInputsInfoProducto=()=>{
+    // Elimina el estado de error de los inputs a los cuales se les hace click
+    const inputsInfoProducto = document.querySelectorAll('.ventana__modProd__caracteristicas__input') as NodeListOf<HTMLInputElement>
+    inputsInfoProducto.forEach(input=>input.addEventListener('click',()=>input.classList.remove('boton__enError')))
 }

@@ -8,21 +8,17 @@ import { error } from '../interfaces/error.js';
 
 // Devuelve todas las categorias
 const verCategorias = async(req: Request, res: Response)=>{
-    const desde:number = Math.abs(Number(req.query.desde)) || 0;  // Valor por defecto 0 si no se pasa el parámetro o es invalido
-    const cantidad:number = Math.abs(Number(req.query.cantidad)) || 10;  // Valor por defecto 10 si no se pasa el parámetro o es invalido
     const nombres:string[]|null = req.query.nombres as string[] || null;
     const condicion = {estado:true}; // Condicion/es que debe cumplir la busqueda
 
     try {
         // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
         let [categorias, categoriasCantidad]:[ CategoriaI[] | string[] , number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
-            Categoria.find(condicion).populate('usuario')  // Busca a todos los categorias en la base de datos que cumplen la condicion
-                .skip(desde).limit(cantidad),
+            Categoria.find(condicion),  // Busca a todos los categorias en la base de datos que cumplen la condicion
             Categoria.countDocuments(condicion) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
         ])
 
-        // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
-        const paginasCantidad = Math.ceil(categoriasCantidad/cantidad); 
+
 
         if(nombres){ // Si nombres es "true" entonces devuelve la solicitud solo un array con los nombres de las categorias
             categorias = categorias.map(categoria => categoria.nombre)
@@ -30,7 +26,6 @@ const verCategorias = async(req: Request, res: Response)=>{
 
         res.status(200).json({
             categoriasCantidad,
-            paginasCantidad,
             categorias
         })
     } catch (error) {

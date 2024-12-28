@@ -114,7 +114,6 @@ export const verRegistroVentas = async(req: Request, res: Response)=>{
                 .skip(desde+((pagina-1)*cantidadElementos)).sort({fechaVenta:-1}).limit(cantidadElementos),
             VentaRegistro.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condiciones
         ])
-
         // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
         const paginasCantidad:number = Math.ceil(registroVentasCantidad/cantidadElementos); 
 

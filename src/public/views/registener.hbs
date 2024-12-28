@@ -67,17 +67,17 @@
 
             <form id="ventana__modProd__caracteristicas">
                 <h4 class="ventana__modProd-h4" >ID</h4>
-                <input  class="ventana__modProd__caracteristicas__input"  name="_id"    id="ventana__modProd__caracteristicas__input__id" readonly>
+                <input  class="ventana__modProd__caracteristicas__input"  name="_id"       id="ventana__modProd__caracteristicas__input__id"           readonly>
                 <h4 class="ventana__modProd-h4" >Nombre</h4>
-                <input  class="ventana__modProd__caracteristicas__input"  name="nombre"    id="ventana__modProd__caracteristicas__input__nombre">
+                <input  class="ventana__modProd__caracteristicas__input"  name="nombre"    id="ventana__modProd__caracteristicas__input__nombre"     placeholder="Ingrese el nombre del producto"     >
                 <h4 class="ventana__modProd-h4" >Precio Unitario</h4>
-                <input  class="ventana__modProd__caracteristicas__input"  name="precio"    id="ventana__modProd__caracteristicas__input__precio" type="number">
+                <input  class="ventana__modProd__caracteristicas__input"  name="precio"    id="ventana__modProd__caracteristicas__input__precio"     placeholder="Ingrese el precio del producto"      type="number">
                 <h4 class="ventana__modProd-h4" >Marca</h4>
-                <input  class="ventana__modProd__caracteristicas__input"  name="marca"     id="ventana__modProd__caracteristicas__input__marca">
+                <input  class="ventana__modProd__caracteristicas__input"  name="marca"     id="ventana__modProd__caracteristicas__input__marca"      placeholder="Ingrese la marca del producto"    >
                 <h4 class="ventana__modProd-h4" >Modelo</h4>
-                <input  class="ventana__modProd__caracteristicas__input"  name="modelo"    id="ventana__modProd__caracteristicas__input__modelo">
+                <input  class="ventana__modProd__caracteristicas__input"  name="modelo"    id="ventana__modProd__caracteristicas__input__modelo"     placeholder="Ingrese el modelo del producto"     >
                 <h4 class="ventana__modProd-h4" >Categoria</h4>
-                <select class="ventana__modProd__caracteristicas__input" name="categoria"  id="ventana__modProd__caracteristicas__select__categoria">
+                <select class="ventana__modProd__caracteristicas__input" name="categoria"  id="ventana__modProd__caracteristicas__select__categoria"          >
                     <option>BMX</option>
                     <option>MTB</option>
                     <option>Niños</option>
@@ -264,9 +264,10 @@
                 Agrupar por productos
                 <input type="checkbox"  id="seleccionProductos__botonSoloVariantes" checked>
             </label>
-            <input id="seleccionProductos__input-buscarSKU" class="inputRegistener1" placeholder="Buscar un SKU">
-            <input id="seleccionProductos__input-buscar" class="inputRegistener1" placeholder="Buscar un producto">
-            <div id="seleccionProductos__div-productos" > </div>
+            <form id="seleccionProductos__form-buscarSKU"><input id="seleccionProductos__input-buscarSKU" class="inputRegistener1" placeholder="Buscar un SKU"></form>
+            <form id="seleccionProductos__form-buscar"><input id="seleccionProductos__input-buscar" class="inputRegistener1" placeholder="Buscar un producto"></form>
+            <div id="seleccionProductos__div-productos" ></div>
+            <div id="seleccionProductos__div-paginado" ></div>
         </div>
         <div class="contenedorRegistener2" id="seleccionProductos__div-productosFav">
             <h2>Productos favoritos</h2>

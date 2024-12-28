@@ -5,12 +5,12 @@ import { producto } from "../../../models/interfaces/producto.js"
 import { buscarCargarCategorias } from "../helpers/categorias.js"
 import { obtenerProductos, solicitudEliminarProducto } from "../services/productosAPI.js"
 import { agregarProductosDOM, alternarDisponibilidadProducto } from "./productos.js"
-import { ventanaEmergenteModificarProducto } from "./ventanasEmergentes/modificarProducto.js"
+import { cargarVentanaModificarProducto, ventanaEmergenteModificarProducto } from "./ventanasEmergentes/modificarProducto.js"
 import { preguntar } from "./ventanasEmergentes/preguntar.js"
 
 import { url, usuarioVerificado } from "../global.js"
 import { usuario } from "../../../models/interfaces/usuario.js"
-import { cargarVentaPublico } from "./ventaPublico.js"
+import { cargarBotonesVentaPublico, cargarVentaPublico } from "./ventaPublico.js"
 import { cargarRegistrosVentaDOM } from "./registroVentas.js"
 import { actualizarIngresos, cargarSeccionCaja } from "./seccionCaja.js"
 import { conexionConServidor } from "../services/conexionAPI.js"
@@ -158,7 +158,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         solicitudObtenerMetodosPago()
     ])
 
-
     // Si no se inicio sesion reedirije al usuario a la pagina de inicio de sesion
     if(!usuarioInformacion) {
         localStorage.setItem('mostrarMensajeError',"Inicia sesion primero") // Define un mensaje de error para que sea mostrado al usuario una vez que carge la pagina a la que se redirige
@@ -186,9 +185,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         return
     }
 
+    cargarVentanaModificarProducto()
     cargarSeccionConfiguracion()
     cargarSeccionCaja()
-    cargarVentaPublico()
+    cargarBotonesVentaPublico() // Luego que se obtuvieron los metodos de pago carga los botones de la seccion de venta al publico
+    cargarVentaPublico() // Carga el resto de la venta al publico
     cargarSeccionRegistros()
 
     document.getElementById('ventanaCarga')!.classList.add('ventanaCarga-desaparecer')

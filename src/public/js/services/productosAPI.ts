@@ -10,15 +10,17 @@ import { CategoriaI } from "../../../models/interfaces/categorias.js";
 
 
 // Realiza la peticion GET para obtener los productos
-export const obtenerProductos=async(desde:string='',hasta:string='',precioMin:string='',precioMax:string='',palabraBuscada:string='',categorias:string='',ordenar:string='',categoriasNombre:string='',SKUBuscado:string='')=>{
+export const obtenerProductos=async(desde:string='',cantidadElementos:string='',precioMin:string='',precioMax:string='',palabraBuscada:string='',categorias:string='',ordenar:string='',categoriasNombre:string='',SKUBuscado:string='',pagina:string='')=>{
     let respuesta:{
         productos:producto[],
-        categoriasCompletas:CategoriaI[]
+        categoriasCompletas:CategoriaI[],
+        paginasCantidad:number
     } = {
         productos: [],
-        categoriasCompletas:[]
+        categoriasCompletas:[],
+        paginasCantidad:0
     }
-    await fetch(urlProductos+`?variantes=true&desde=${desde}&hasta=${hasta}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}&categoriasNombre=${categoriasNombre}&SKUBuscado=${SKUBuscado}`, { 
+    await fetch(urlProductos+`?variantes=true&desde=${desde}&cantidadElementos=${cantidadElementos}&precioMin=${precioMin}&precioMax=${precioMax}&palabraBuscada=${palabraBuscada}&categorias=${categorias}&ordenar=${ordenar}&categoriasNombre=${categoriasNombre}&SKUBuscado=${SKUBuscado}&pagina=${pagina}`, { 
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
     })
@@ -28,6 +30,7 @@ export const obtenerProductos=async(desde:string='',hasta:string='',precioMin:st
         else { // Si no hay errores entonces almacena la respuesta del servidor
             respuesta.productos = data.productos 
             respuesta.categoriasCompletas = data.categoriasCompletas 
+            respuesta.paginasCantidad = data.paginasCantidad 
         }
     })
     .catch(error => { // Si hay un error se manejan y se muestra en consola

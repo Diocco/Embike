@@ -44,7 +44,7 @@
 /*Contenedores de variantes*/
 .ventaPublico__div-variantes{
     display: grid;
-    grid-template-columns: 20px 60px 310px 60px 45px 45px 65px 65px;
+    grid-template-columns: 40px 30px 50px 270px 60px 45px 45px 65px 65px;
     align-items: center;
     min-width: 670px;
     border-bottom: 1px solid gray;
@@ -82,6 +82,7 @@
 }
 /*Boton de agregar a favorito una variante*/
 .botonAgregarVarianteFavorito{
+    order: -1;
     background-color: transparent;
     border: none;
 }
@@ -100,10 +101,22 @@
 .div-productos__div-precio{
     text-align: end;
 }
-/*Input de busqueda*/
-#seleccionProductos__input-buscar,#seleccionProductos__input-buscarSKU{
+/*Form de los inputs de busqueda*/
+#seleccionProductos__form-buscar,#seleccionProductos__form-buscarSKU{
     width: 49%;
     margin-bottom:17px
+}
+
+/*Inputs de busqueda*/
+#seleccionProductos__input-buscar,#seleccionProductos__input-buscarSKU{
+    width: 100%;
+}
+
+/* Contenedor del paginado */
+#seleccionProductos__div-paginado{
+    display: flex;
+    width: 100%;
+    justify-content: center;
 }
 
 /*Contenedor de productos favoritos*/

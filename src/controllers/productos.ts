@@ -21,7 +21,8 @@ const verProductos = async(req: Request, res: Response)=>{
 
     // Si se envian queryparams entonces se buscan todos los productos filtrados por los parametros recibidos
     const desde:number = Math.abs(Number(req.query.desde)) || 0;  // Valor por defecto 0 si no se pasa el parámetro o es invalido
-    const cantidad:number = Math.abs(Number(req.query.cantidad)) || 10;  // Valor por defecto 10 si no se pasa el parámetro o es invalido
+    const cantidadElementos:number = Math.abs(Number(req.query.cantidadElementos)) || 10;  // Valor por defecto 10 si no se pasa el parámetro o es invalido
+    const pagina:number = Math.abs(Number(req.query.pagina)) || 1;  // Valor que indica la pagina de los resultados
     const precioMin:number = Math.abs(Number(req.query.precioMin)) || 0 // Precio minimo del producto
     const precioMax:number = Math.abs(Number(req.query.precioMax)) || 1000000000 // Precio maximo del producto
     const palabraBuscada:string = req.query.palabraBuscada as string || ''; // Palabra buscada por el usuario
@@ -93,12 +94,13 @@ const verProductos = async(req: Request, res: Response)=>{
         // Crea un array de promesas que no son independientes entre ellas para procesarlas en paralelo
         const [productos, productosCantidad]:[producto[],number] = await Promise.all([ // Una vez que se cumplen todas se devuelve un array con sus resultados
             Producto.find(filtros)  // Busca a todos los productos en la base de datos que cumplen la condicion
-                .skip(desde).sort(ordenar as any).limit(cantidad).populate(poblarVariante).populate(categoriasNombre!),
+                .skip(desde+((pagina-1)*cantidadElementos)).sort(ordenar as any).limit(cantidadElementos).populate(poblarVariante).populate(categoriasNombre!),
             Producto.countDocuments(filtros) // Devuelve la cantidad de objetos que hay que cumplen con la condicion
         ])
 
+
         // Indica la cantidad de paginas que se necesitan para mostrar todos los resultados
-        const paginasCantidad:number = Math.ceil(productosCantidad/cantidad); 
+        const paginasCantidad:number = Math.ceil(productosCantidad/cantidadElementos); 
 
         res.status(200).json({
             categoriasCompletas,

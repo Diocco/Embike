@@ -157,8 +157,8 @@ const cargarMetodosPago=async ()=>{
         metodoPagoDIV.className="seleccionCaja__tablaSaldos__fila"
         metodoPagoDIV.innerHTML=`
         <div class="seleccionCaja__tablaSaldos__metodo">${metodo.nombre}</div>
-        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input-inicial" type="number" placeholder="$ 0" value="${localStorage.getItem(`saldoInicialMetodo-${metodo.nombre}`)||''}">
-        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input-final nodisponible" type="number"  placeholder="$ 0" disabled>
+        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input-inicial"  autocomplete="off" type="number" placeholder="$ 0" value="${localStorage.getItem(`saldoInicialMetodo-${metodo.nombre}`)||''}">
+        <input class="inputRegistener1 seleccionCaja__tablaSaldos__input-final nodisponible" autocomplete="off"  type="number"  placeholder="$ 0" disabled>
         <div class="seleccionCaja__tablaSaldos__input-esperado" >$ 0</div>
         <div class="seleccionCaja__tablaSaldos__input-diferencia">$ 0</div>
         `

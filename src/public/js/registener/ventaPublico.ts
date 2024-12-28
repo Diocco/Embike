@@ -13,8 +13,12 @@ import { mostrarMensaje } from "../helpers/mostrarMensaje.js"
 import { metodosPago, usuarioInformacion } from "../registener/index.js"
 import { registrarVenta } from "../services/registroVentasAPI.js"
 import { ElementoCarritoI } from "../../../interfaces/elementoCarrito.js"
+import { formatearPrecio } from "../helpers/formatearPrecio.js"
+import { cargarPaginadoRegistros } from "../helpers/paginadoRegistros.js"
 
 let productosVenta:producto[]
+
+
 
 class Carrito{
     private carrito:ElementoCarritoI[]
@@ -131,8 +135,11 @@ const botonesDesplazamiento=()=>{
 const inputBusqueda=()=>{
     // Escucha si el usuario busca un SKU especifico
     const inputBuscarSKU = document.getElementById('seleccionProductos__input-buscarSKU')! as HTMLInputElement
+    const formBuscarSKU = document.getElementById('seleccionProductos__form-buscarSKU')! as HTMLFormElement
     inputBuscarSKU.value = sessionStorage.getItem('SKUBuscado')||''
-    inputBuscarSKU.addEventListener('input',()=>{
+
+    formBuscarSKU.addEventListener('submit',(event)=>{
+        event.preventDefault()
         sessionStorage.setItem('SKUBuscado',inputBuscarSKU.value)
         cargarVentaPublico()
     })
@@ -140,12 +147,23 @@ const inputBusqueda=()=>{
 
     // Escucha si el usuario busca una palabra especifica
     const inputBuscarProducto = document.getElementById('seleccionProductos__input-buscar')! as HTMLInputElement
+    const formBuscarProducto = document.getElementById('seleccionProductos__form-buscar')! as HTMLFormElement
     inputBuscarProducto.value=sessionStorage.getItem('palabraBuscada')||''
-    inputBuscarProducto.addEventListener('input',()=>{
+    formBuscarProducto.addEventListener('submit',(event)=>{
+        event.preventDefault()
         sessionStorage.setItem('palabraBuscada', inputBuscarProducto.value ); // Si no existe, lo crea; si existe, lo actualiza
         cargarVentaPublico()
     })
     /////////////////////
+
+    // Verifica si se hizo click fuera del input para volver a poner el valor actualmente buscado
+    document.addEventListener('click',(event)=>{
+        const elementoClickeado = event.target as HTMLElement
+        const esInputBuscarSKU = elementoClickeado.id==='seleccionProductos__input-buscarSKU'
+        const esInputBuscarProducto = elementoClickeado.id==='seleccionProductos__input-buscarSKU'
+        if(!esInputBuscarSKU) inputBuscarSKU.value = sessionStorage.getItem('SKUBuscado')||''
+        if(!esInputBuscarProducto) inputBuscarProducto.value=sessionStorage.getItem('palabraBuscada')||''
+    })
 }
 
 const checkboxAgrupadores=()=>{
@@ -165,7 +183,7 @@ const checkboxAgrupadores=()=>{
 
     // Escucha si el usuario elige ver solo las variantes o agrupadas por producto
     const botonSoloVariantes = document.getElementById('seleccionProductos__botonSoloVariantes')! as HTMLInputElement
-    botonAgruparCategorias.checked = sessionStorage.getItem('soloVariantes')==='true'
+    botonSoloVariantes.checked = sessionStorage.getItem('soloVariantes')!=='true'
 
     botonSoloVariantes.onclick=()=>{
         const esActivo = sessionStorage.getItem('soloVariantes')==='true'; // Verifica el estado actual
@@ -184,27 +202,6 @@ const botonesMetodosPago=()=>{
     const fragmento = document.createDocumentFragment()
 
     contenedorMediosPago.innerHTML='<h4>Modo de pago</h4>' // Vacia el contenedor
-
-    // // Primero crea un input inicial para medios de pago no contemplados
-    // const inputMedioPago = document.createElement('input')
-    // inputMedioPago.className='inputRegistener1'
-    // inputMedioPago.placeholder='Ingrese un metodo'
-
-    // // Cuando se realiza un cambio en le input:
-    // inputMedioPago.addEventListener('input',()=>{
-    //     const esVacio = inputMedioPago.value?false:true
-    //     contenedorMediosPago.querySelectorAll('*').forEach(opcionMedio=>opcionMedio.classList.remove('boton__activo')) // Desactiva cualquier boton activo previamente
-    //     if(esVacio){ // Si el input esta vacio elimina su estado activo
-    //         inputMedioPago.classList.remove('boton__activo')
-    //         sessionStorage.setItem('metodoSeleccionado','') 
-    //     }else{ // Si el input no esta vacio lo coloca en estado activo y almacena su valor 
-    //         inputMedioPago.classList.add('boton__activo')
-    //         sessionStorage.setItem('metodoSeleccionado',inputMedioPago.value) 
-    //     }
-    //     calcularTotal() // Vuelve a calcular el total del carrito
-    // })
-
-    // fragmento.appendChild(inputMedioPago) // Agrega el input al fragmento
 
     // Recorre los medios de pago que posee el usuario en sus preferencias
     metodosPago.forEach(medio=>{ 
@@ -244,6 +241,7 @@ const botonesModificacionPago=()=>{
 
     // Primero crea un input inicial para modificadores de pago no contemplados
     const inputModificacion = document.createElement('input')
+    inputModificacion.autocomplete='off'
     inputModificacion.className='inputRegistener1'
     inputModificacion.placeholder='Ingrese un porcentaje de descuento'
     inputModificacion.type='number'
@@ -300,23 +298,6 @@ const botonesModificacionPago=()=>{
     /////////////////////
 }
 
-const contenedorVuelto=()=>{
-    // Le da la funcion al input del pago 1 para calcular el vuelto
-    const pago1Input = document.getElementById('div-pago__div-total__div-pago1')! as HTMLInputElement
-    pago1Input.addEventListener('input',()=>{
-        // Obtiene y elimina cualquier carácter que no sea número o punto decimal
-        let value = pago1Input.value.replace(/[^0-9]/g, '');  // Elimina cualquier carácter no numérico
-        if (value) {
-            const valueNumerico = Number(value) / 100
-            value = parseFloat(valueNumerico.toString()).toFixed(2);     // Formatea a decimales
-            pago1Input.value = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(Number(value));
-        } else {
-            pago1Input.value = '';  // Restablece si no hay números
-        }
-        calcularTotal() // Vuelve a calcular el total
-    })
-}
-
 const cargarBotonConfirmar=()=>{
     const botonConfirmar = document.getElementById('div-pago__confirmar__boton')! as HTMLButtonElement
     const textAreaObervacion = document.getElementById('div-pago__confirmar__observacion')! as HTMLTextAreaElement
@@ -349,32 +330,39 @@ const cargarBotonConfirmar=()=>{
 }
 
 export const cargarBotonesVentaPublico=()=>{
+    const pago1Input = document.getElementById('div-pago__div-total__div-pago1')! as HTMLInputElement
+
     botonesDesplazamiento()
     inputBusqueda()
     checkboxAgrupadores()
     botonesMetodosPago()
     botonesModificacionPago()
-    contenedorVuelto()
+    formatearPrecio(pago1Input,calcularTotal)
     cargarBotonConfirmar()
 }
 
 export const cargarVentaPublico =async()=>{
+
     // Define los query params para enviarlos en el fetch y asi filtrar los productos
     const palabraBuscada = sessionStorage.getItem('palabraBuscada') || '';
+    const desde = sessionStorage.getItem('ventaPublico-desde')||undefined
+    const pagina = sessionStorage.getItem('ventaPublico-pagina')||undefined
     const esAgruparPorCategoria = sessionStorage.getItem('agruparPorCategorias')==='true';
     const esSoloVariantes = sessionStorage.getItem('soloVariantes')==='true';
     const SKUBuscado = sessionStorage.getItem('SKUBuscado')||''
+    const contenedorPaginado = document.getElementById('seleccionProductos__div-paginado')!
 
-    const respuesta = await obtenerProductos('','100000000000','','',palabraBuscada,'','','true',SKUBuscado)
+
+    const respuesta = await obtenerProductos(desde,'20','','',palabraBuscada,'','','true',SKUBuscado,pagina)
     productosVenta = respuesta.productos
     const categoriasCompletas = respuesta.categoriasCompletas
     
     const nombreCategorias:string[] = categoriasCompletas.map(categoria=>categoria.nombre)
 
+    cargarPaginadoRegistros(respuesta.paginasCantidad,contenedorPaginado,'ventaPublico',cargarVentaPublico)
     cargarVariantesVentaDOM(productosVenta,nombreCategorias,esAgruparPorCategoria,esSoloVariantes)
     cargarVariantesFavoritosDOM(nombreCategorias)
     cargarCarrito()
-    cargarBotonesVentaPublico()
     calcularTotal()
 }
 
@@ -491,8 +479,12 @@ const cargarVariantesVentaDOM =(productos:producto[],nombreCategorias:string[],e
                 `
                 titulo.onclick=(event)=>{ // Cuando se hace click la categoria alterna la visibilidad de los productos que contiene
                     event.stopPropagation()
+                    console.log(esSoloVariantes)
                     if(esSoloVariantes) categoriaDIV.querySelectorAll('.ventaPublico__div-varianteCompleta').forEach(productoDIV=>productoDIV.classList.toggle('noActivo'))
-                    else categoriaDIV.querySelectorAll('.ventaPublico__div-producto').forEach(productoDIV=>productoDIV.classList.toggle('noActivo'))
+                    else {
+                    categoriaDIV.querySelectorAll('.ventaPublico__div-producto').forEach(productoDIV=>productoDIV.classList.toggle('noActivo')) // Desactiva los productos
+                    categoriaDIV.querySelectorAll('.ventaPublico__div-variantes').forEach(varianteDIV=>varianteDIV.classList.add('noActivo'))   // Desactiva las variantes
+                    }   
                 }
                 categoriaDIV.appendChild(titulo)
 
@@ -703,7 +695,7 @@ const crearVariantesCompletasDOM =(productos:producto[],nombreCategorias:string[
             // Precio del producto
             const precioDIV = document.createElement('div')
             precioDIV.className="div-productos__div-precio"
-            precioDIV.textContent=(Number(producto.precio)).toLocaleString('es-AR')
+            precioDIV.textContent=`$ ${(Number(producto.precio)).toLocaleString('es-AR')}`
             varianteDIV.appendChild(precioDIV)
 
 
@@ -719,13 +711,16 @@ const crearVariantesCompletasDOM =(productos:producto[],nombreCategorias:string[
 const crearVariantesDOM=(productos:producto[],nombreCategorias:string[],productosDIV: HTMLDivElement[][])=>{
 
     productos.forEach(producto=>{
+
+        if(producto.variantes.length<1) return // Si el producto no tiene variantes pasa al siguiente producto (en el caso de una busqueda es posible que se encuentren productos y no variantes)
+
         // Calcula el stock del producto
         let stockTotal:number = 0
         producto.variantes.forEach(variante => stockTotal = (variante as variante).stock+stockTotal);
 
         // Crea el contenedor general del producto
         const productoDIV = document.createElement('div')
-        productoDIV.onclick=()=>productoDIV.querySelectorAll(".ventaPublico__div-variantes").forEach(varianteDIV=>varianteDIV.classList.toggle('noActivo')) // Alterna la visibilidad de las variantes del producto seleccionado
+        
 
 
         // Crea el contenedor de la informacion del producto
@@ -740,6 +735,7 @@ const crearVariantesDOM=(productos:producto[],nombreCategorias:string[],producto
         <div>${stockTotal}</div>
         <div class="div-productos__div-precio" >$ ${(Number(producto.precio)).toLocaleString('es-AR')}</div>
         `
+        productoInformacionDIV.onclick=()=>productoDIV.querySelectorAll(".ventaPublico__div-variantes").forEach(varianteDIV=>varianteDIV.classList.toggle('noActivo')) // Alterna la visibilidad de las variantes del producto seleccionado
         productoDIV.appendChild(productoInformacionDIV);
 
         // Crea el indice para la seccion
@@ -747,7 +743,7 @@ const crearVariantesDOM=(productos:producto[],nombreCategorias:string[],producto
         indiceDIV.classList.add('ventaPublico__div-variantes');
         indiceDIV.classList.add('noActivo');
         indiceDIV.innerHTML=`
-        <div> </div>
+        <div></div>
         <i class="fa-solid fa-palette"></i>
         <i class="fa-solid fa-ruler-horizontal"></i>
         <div>SKU</div>
@@ -766,10 +762,27 @@ const crearVariantesDOM=(productos:producto[],nombreCategorias:string[],producto
             <div class="div-productos__div-color ${variante.color}"></div>
             <div>${variante.talle}</div>
             <div>${variante.SKU}</div>
-            <div></div>
             <div class="div-productos__div-varianteCantidad">${carrito1.verCantidadVariante(variante.SKU)}</div>
             <div>${variante.stock}</div>
+            <div></div>
             `;
+
+            // Boton para agregar a favoritos el producto
+            const botonFavorito = document.createElement('button')
+            botonFavorito.className=`botonAgregarVarianteFavorito ${variante.esFavorito?'esVarianteFavorito':''}`;
+            botonFavorito.innerHTML=`
+            <i class="fa-solid fa-star"></i>
+            `
+            botonFavorito.onclick=async ()=>{
+                botonFavorito.classList.toggle('esVarianteFavorito')
+                const formData = new FormData()
+                formData.append('esFavorito',botonFavorito.classList.contains('esVarianteFavorito').toString());
+                formData.append('stock',variante.stock.toString());
+                await actualizarVariante(formData,variante._id!.toString());
+                cargarVariantesFavoritosDOM(nombreCategorias)
+            }
+            varianteDIV.appendChild(botonFavorito)
+
 
             // Nombre del producto y boton para sumar cantidad
             const botonSumar = document.createElement('button')
