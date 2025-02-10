@@ -11,7 +11,8 @@ export const solicitudObtenerMetodosPago =async()=>{
     await fetch(urlMetodoPago, { 
         method: 'GET',
         headers: {  'Content-Type': 'application/json' ,
-            'tokenAcceso' : `${tokenAcceso}`  },
+            'tokenAcceso' : `${tokenAcceso}`  ,
+            'conexionID':`${process.env.conexionID}`},
     })
     .then(response => response.json()) // Parsear la respuesta como JSON
     .then(data=> { // Maneja la respuesta del servidor
