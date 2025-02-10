@@ -9,9 +9,6 @@ import cors from 'cors'
 const __filename = fileURLToPath(import.meta.url); // Obtiene el nombre del archivo actual
 const __dirname = path.dirname(__filename); // Obtiene el directorio del archivo actual
 
-// Base de datos
-import  conexionDB  from '../routes/conexionConServidor.js'
-
 // Controladores
 import { 
     cargarCatalogo, 
@@ -24,15 +21,6 @@ import {
     cargarRegistener,
     } from '../controllers/archivos.js';
 
-// Rutas
-import usuariosRoutes from '../routes/usuarios.js';
-import authRoutes from '../routes/auth.js'; 
-import metodosPagoRoutes from '../routes/metodosPago.js'; 
-import categoriasRoutes from '../routes/categorias.js'; 
-import productosRoutes from '../routes/productos.js'; 
-import variantesRoutes from '../routes/variantes.js';
-import registroVentasRoutes from '../routes/registroVentas.js';
-import registroCajaRoutes from '../routes/registroCaja.js';
 
 import fileUpload from 'express-fileupload';
 import mongoose from 'mongoose';
@@ -101,17 +89,6 @@ class Server {
 
     // Configura las rutas
     routes() {
-        
-        // API
-        this.app.use(this.conexionConServidor,conexionDB)
-        this.app.use(this.usuariosPath, usuariosRoutes);
-        this.app.use(this.authPath, authRoutes);
-        this.app.use(this.categoriasPath, categoriasRoutes);
-        this.app.use(this.metodoPagoPath, metodosPagoRoutes);
-        this.app.use(this.productosPath, productosRoutes);
-        this.app.use(this.variantesPath, variantesRoutes);
-        this.app.use(this.registroVentasPath, registroVentasRoutes);
-        this.app.use(this.registroCajaPath, registroCajaRoutes);
         
         // HTML
         this.app.get('/', cargarIndex); // Configura la ruta
