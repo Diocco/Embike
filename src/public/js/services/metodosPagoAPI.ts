@@ -12,7 +12,7 @@ export const solicitudObtenerMetodosPago =async()=>{
         method: 'GET',
         headers: {  'Content-Type': 'application/json' ,
             'tokenAcceso' : `${tokenAcceso}`  ,
-            'conexionID':`679959cdb0fdadd33e932c95`},
+            'conexionID':`67995a37b0fdadd33e932c98`},
     })
     .then(response => response.json()) // Parsear la respuesta como JSON
     .then(data=> { // Maneja la respuesta del servidor

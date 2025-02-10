@@ -10,7 +10,7 @@ export const obtenerCategorias =async()=>{
         urlCategorias , { 
         method: 'GET',
         headers: { 'Content-Type': 'application/json' ,
-            'conexionID':`679959cdb0fdadd33e932c95`},
+            'conexionID':`67995a37b0fdadd33e932c98`},
     })
     .then(response => response.json()) // Parsear la respuesta como JSON
     .then(data=> { // Maneja la respuesta del servidor

@@ -1,6 +1,7 @@
 
 import { producto } from "../../models/interfaces/producto.js"
 import { variante } from "../../models/interfaces/variante.js";
+import { formatearImagen64 } from "./helpers/formatearImagen64.js";
 import { obtenerProducto } from "./services/productosAPI.js";
 import { obtenerListaDeseados, solicitudAlternarProductoDeseado } from "./services/usuariosAPI.js";
 
@@ -115,9 +116,12 @@ const cargarInformacionProducto =(productoInformacion:producto)=>{
 
 const cargarImagenesProducto=(productoInformacion:producto)=>{
     // Carga la imagen principal del producto
-    const productoImagen = document.getElementById('catalogoProducto__imagen')!
-    let imagenPrincipal:String = productoInformacion.imagenes[0]
-    productoImagen.style.backgroundImage=`url(${imagenPrincipal})`;
+    const productoImagen = document.getElementById('catalogoProducto__imagen') as HTMLImageElement
+    let imagenPrincipal64:string 
+    if(productoInformacion.imagenes.length>0) imagenPrincipal64=formatearImagen64(productoInformacion.imagenes[0])
+    else imagenPrincipal64 = '../img/icons/sinfoto.png' 
+    
+    productoImagen.src = imagenPrincipal64;
 
     // Carga la lista de imagenes
     const listaImagenes = document.getElementById('catalogoProducto__listaImagenes')!
@@ -125,29 +129,13 @@ const cargarImagenesProducto=(productoInformacion:producto)=>{
     productoInformacion.imagenes.forEach((imagen)=>{
         const nuevaImagen = document.createElement('img')
         nuevaImagen.classList.add('catalogoProducto__listaImagenes__img')
-        nuevaImagen.id=imagen
-        nuevaImagen.style.backgroundImage=`url(${imagen})`
+        nuevaImagen.src = formatearImagen64(imagen)
+        nuevaImagen.onclick=()=>productoImagen.src=nuevaImagen.src // Si se apreta una imagen de la lista de imagenes, la imagen presionada se colocara como imagen principal del producto
         fragmento.appendChild(nuevaImagen)
     })
     listaImagenes.appendChild(fragmento)
-
-    // Les asigna una funcion a las imagenes creadas
-
-    const imagenesDOM = listaImagenes.querySelectorAll('.catalogoProducto__listaImagenes__img') as NodeListOf<HTMLImageElement>
-    imagenesDOM.forEach((imagenDOM)=>{
-        imagenDOM.onclick=()=>{ // Si se apreta una imagen de la lista de imagenes, la imagen presionada se colocara como imagen principal del producto
-            imagenPrincipal=imagenDOM.id
-            productoImagen.style.backgroundImage=`url(${imagenPrincipal})`;
-            
-        }
-        imagenDOM.onmouseover=()=>{ // Si el usuario pasa por encima el mouse entonces mostrara la imagen como imagen principal del producto
-            productoImagen.style.backgroundImage=`url(${imagenDOM.id})`;
-        }
-    })
-    listaImagenes.onmouseleave=()=>{ // Cuando el usuario quite el mouse de la lista de imagenes, volvera a colocar la imagen por default o la ultima imagen seleccionada como imagen principal
-        productoImagen.style.backgroundImage=`url(${imagenPrincipal})`;
-    }
 }
+
 
 document.addEventListener("DOMContentLoaded",async()=>{
 

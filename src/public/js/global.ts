@@ -14,14 +14,10 @@ window.addEventListener("pageshow", () => {
 
 
 // Define el entorno
-export let url:string
-export const esDesarollo:Boolean = window.location.hostname.includes('localhost'); // Revisa el url actual
+export let url:string = 'https://registener-production.up.railway.app';
 
-if(esDesarollo){ // Si incluye localhost entonces estas en desarrollo, por lo que define el url para la peticion
-    url = 'http://localhost:8080';
-}else{ // Si no tiene localhost define el url en la pagina web para la peticion
-    url= 'https://registener-production.up.railway.app';
-}
+
+
 
 // Define los url del REST server
 export const urlProductos:string = url + '/api/productos'

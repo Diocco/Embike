@@ -1,5 +1,6 @@
 import { producto } from "../../../models/interfaces/producto.js";
 import { variante } from "../../../models/interfaces/variante.js";
+import { formatearImagen64 } from "./formatearImagen64.js";
 
 export const agregarProductosDOM = (productos:producto[],contenedorProductos:HTMLElement) => {
 
@@ -10,10 +11,11 @@ export const agregarProductosDOM = (productos:producto[],contenedorProductos:HTM
         const fragmento: DocumentFragment = document.createDocumentFragment(); //Crea un fragmento para alojar todos los elementos antes de agregarlos al catalogo
     
     
+        console.log(productos)
         productos.forEach((producto) => { // Recorre los productos
             let agregarElemento = document.createElement('div'); // Crea un div para alojar el nuevo producto
             // Verifica que exista una imagen, sino muestra un icono de error
-            const imagenProducto = producto.imagenes[0]?producto.imagenes[0]:'../img/icons/sinFoto.webp' 
+            const imagen64 = producto.imagenes.length>0?formatearImagen64(producto.imagenes[0]):'../img/icons/sinfoto.png' 
             const tieneDescuento:boolean = producto.precioViejo?true:false
             
             // Verifica que exista al menos una variante, y si existe refleja sus caracteristicas
@@ -44,7 +46,7 @@ export const agregarProductosDOM = (productos:producto[],contenedorProductos:HTM
                 const precioViejo = (Number(producto.precioViejo))
                 const porcentajeDescuento = Math.floor((1-precio/precioViejo)*100)
                 agregarElemento.innerHTML=`
-                <div class="catalogo__div__imagen imagenProducto" style='background-image: url("${imagenProducto}');">${coloresHTML}</div>
+                <img class="catalogo__div__imagen imagenProducto" src="${imagen64}">${coloresHTML}</img>
                 <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
                 <div class="catalogo__div__descuento">
                     <h3 class="descuento__precioViejo">$ ${(Number(producto.precioViejo)).toLocaleString('es-AR')}</h3>
@@ -54,7 +56,7 @@ export const agregarProductosDOM = (productos:producto[],contenedorProductos:HTM
                 `;
             }else{
                 agregarElemento.innerHTML=`
-                <div class="catalogo__div__imagen" style='background-image: url("${imagenProducto}');">${coloresHTML}</div>
+                <img class="catalogo__div__imagen" src="${imagen64}">${coloresHTML}</img>
                 <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
                 <div class="catalogo__div__descuento"></div>
                 <h3 class="catalogo__div__precio">$ ${(Number(producto.precio)).toLocaleString('es-AR')}</h3>

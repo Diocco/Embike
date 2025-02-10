@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "tsc",
     "start": "node app",
-    "startdev": "tsc node app"
+    "startdev": "tsc && node app"
   },
   "type": "module",
   "keywords": [],
