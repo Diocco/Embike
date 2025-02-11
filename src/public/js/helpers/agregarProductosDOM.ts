@@ -46,7 +46,8 @@ export const agregarProductosDOM = (productos:producto[],contenedorProductos:HTM
                 const precioViejo = (Number(producto.precioViejo))
                 const porcentajeDescuento = Math.floor((1-precio/precioViejo)*100)
                 agregarElemento.innerHTML=`
-                <img class="catalogo__div__imagen imagenProducto" src="${imagen64}">${coloresHTML}</img>
+                <img class="catalogo__div__imagen imagenProducto" src="${imagen64}"></img>
+                <div class="catalogo__div__colores">${coloresHTML}</div>
                 <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
                 <div class="catalogo__div__descuento">
                     <h3 class="descuento__precioViejo">$ ${(Number(producto.precioViejo)).toLocaleString('es-AR')}</h3>
@@ -56,7 +57,8 @@ export const agregarProductosDOM = (productos:producto[],contenedorProductos:HTM
                 `;
             }else{
                 agregarElemento.innerHTML=`
-                <img class="catalogo__div__imagen" src="${imagen64}">${coloresHTML}</img>
+                <img class="catalogo__div__imagen" src="${imagen64}"></img>
+                <div class="catalogo__div__colores">${coloresHTML}</div>
                 <h2 class="catalogo__div__nombre">${producto.nombre}</h2>
                 <div class="catalogo__div__descuento"></div>
                 <h3 class="catalogo__div__precio">$ ${(Number(producto.precio)).toLocaleString('es-AR')}</h3>

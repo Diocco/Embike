@@ -148,6 +148,13 @@ html{
 .catalogo__div__nombre{
 	font-size: 20px;
 }
+/*Colores*/
+.catalogo__div__colores{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-self: end;
+}
 /*Precio del producto*/
 .catalogo__div__precio{
 	font-size: 30px;
