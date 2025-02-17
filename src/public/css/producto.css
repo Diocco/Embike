@@ -33,9 +33,7 @@
     width: 70px;
     height: 70px;
     margin: 5px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+    object-fit: contain;
     border: 1px solid lightgray;
     border-radius: 8px;
     cursor: pointer;
@@ -49,9 +47,7 @@
     height: 600px;
     width: 600px;
     margin-right: 20px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+    object-fit: contain;
     border: 1px solid lightgray;
     border-radius: 20px;
 }

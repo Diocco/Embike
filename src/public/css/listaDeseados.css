@@ -109,9 +109,7 @@ html{
     width: 200px;
     height: 200px;
     margin: 5px 25px 5px 5px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
+    object-fit: contain;
     order: 1;
 }
 /*Imagen de un producto no disponible*/
